@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Set</string>
+    <string name="play_set">세트 플레이하기</string>
+    <string name="score">맞춘 수 : %s</string>
+    <string name="leftcard">남은 카드 : %s</string>
+    <string name="leftCombination">가능한 조합 : %s</string>
+    <string name="score1">대단합니다!\n당신은 %s개를\n맞추셨습니다</string>
+    <string name="replay">다시하기</string>
+</resources>
