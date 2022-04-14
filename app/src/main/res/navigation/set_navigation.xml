@@ -8,11 +8,7 @@
     <fragment
         android:id="@+id/setFragment"
         android:name="com.example.set.SetFragment"
-        android:label="SetFragment" >
-        <action
-            android:id="@+id/action_setFragment_to_endFragment"
-            app:destination="@id/endFragment" />
-    </fragment>
+        android:label="SetFragment" />
     <fragment
         android:id="@+id/startFragment"
         android:name="com.example.set.StartFragment"
@@ -21,15 +17,5 @@
         <action
             android:id="@+id/action_startFragment_to_setFragment"
             app:destination="@id/setFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/endFragment"
-        android:name="com.example.set.EndFragment"
-        android:label="EndFragment" >
-        <action
-            android:id="@+id/action_endFragment_to_setFragment"
-            app:destination="@id/setFragment"
-            app:popUpTo="@id/setFragment"
-            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

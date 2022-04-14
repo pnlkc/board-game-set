@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.set.databinding.SetFragmentBinding
 import com.example.set.model.CardItem
 import com.example.set.model.SetViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class SetFragment : Fragment() {
     private var _binding: SetFragmentBinding? = null
@@ -21,7 +22,7 @@ class SetFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = SetFragmentBinding.inflate(inflater, container, false)
 
@@ -286,8 +287,24 @@ class SetFragment : Fragment() {
 
     // 끝내기 버튼 기능
     fun endButton() {
-        sharedViewModel.resetAllValue()
-        findNavController().navigate(R.id.action_setFragment_to_endFragment)
+        showFinalScoreDialog()
+    }
+
+    // 끝내기 버튼 누르면 MaterialDialog가 나오는 기능
+    fun showFinalScoreDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("대단합니다")
+            .setMessage("당신은 ${sharedViewModel.score.value}개를\n맞추셨습니다")
+            .setCancelable(false)
+            .setNegativeButton("나가기") { _, _ ->
+                activity?.finish()
+            }
+            .setPositiveButton("다시하기") { _, _ ->
+                sharedViewModel.resetAllValue()
+                sharedViewModel.resetScore()
+                startGame()
+            }
+            .show()
     }
 
     override fun onDestroyView() {
