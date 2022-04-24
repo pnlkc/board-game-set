@@ -1,11 +1,23 @@
 package com.example.set
 
+import android.animation.AnimatorSet
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
+import android.view.*
+import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -13,18 +25,44 @@ import com.example.set.databinding.SetFragmentBinding
 import com.example.set.model.CardItem
 import com.example.set.model.SetViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import render.animations.Attention
+import render.animations.Flip
+import render.animations.Render
+import render.animations.Slide
 
 class SetFragment : Fragment() {
     private var _binding: SetFragmentBinding? = null
     private val binding get() = _binding!!
     private val sharedViewModel: SetViewModel by activityViewModels()
 
+    private lateinit var backpressCallback: OnBackPressedCallback
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = SetFragmentBinding.inflate(inflater, container, false)
+
+        // OnBackPressedCallback (익명 클래스) 객체 생성
+        backpressCallback = object : OnBackPressedCallback(true) {
+            // 뒤로가기 했을 때 실행되는 기능
+            var backWait: Long = 0
+            override fun handleOnBackPressed() {
+                if (System.currentTimeMillis() - backWait >= 1000) {
+                    backWait = System.currentTimeMillis()
+
+                    } else {
+                    findNavController().navigate(R.id.action_setFragment_to_startFragment)
+                }
+            }
+        }
+        // 액티비티의 BackPressedDispatcher에 여기서 만든 callback 객체를 등록
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backpressCallback)
 
         return binding.root
     }
@@ -138,7 +176,7 @@ class SetFragment : Fragment() {
         }
     }
 
-    // 카드 클릭시 카드 값을 selectedCardN에 저장하는 기능
+    // 카드 클릭시 카드 값을 selectedCard에 저장하는 기능
     private fun clickImage(it: CardItem) {
         when {
             sharedViewModel.selectedCard1 == null
@@ -201,11 +239,97 @@ class SetFragment : Fragment() {
                 sharedViewModel.resetSelectedCard()
             } else {
                 Toast.makeText(activity, "오답", Toast.LENGTH_SHORT).show()
+
+                // 오답이면 카드 흔드는 기능
+                shakeCard(sharedViewModel.selectedCard1)
+                shakeCard(sharedViewModel.selectedCard2)
+                shakeCard(sharedViewModel.selectedCard3)
+
                 invisibleAllSelectedCard()
                 sharedViewModel.resetSelectedCard()
             }
         }
     }
+
+
+    // 오답일 때 카드 흔드는 기능
+    fun shakeCard(cardItem: CardItem?) {
+        when (cardItem) {
+            sharedViewModel.cardImage1 -> {
+                val render = Render(requireContext())
+                render.setAnimation(Attention().Tada(binding.card1))
+                render.setDuration(700L)
+                render.start()
+            }
+            sharedViewModel.cardImage2 -> {
+                val render = Render(requireContext())
+                render.setAnimation(Attention().Tada(binding.card2))
+                render.setDuration(700L)
+                render.start()
+            }
+            sharedViewModel.cardImage3 -> {
+                val render = Render(requireContext())
+                render.setAnimation(Attention().Tada(binding.card3))
+                render.setDuration(700L)
+                render.start()
+            }
+            sharedViewModel.cardImage4 -> {
+                val render = Render(requireContext())
+                render.setAnimation(Attention().Tada(binding.card4))
+                render.setDuration(700L)
+                render.start()
+            }
+            sharedViewModel.cardImage5 -> {
+                val render = Render(requireContext())
+                render.setAnimation(Attention().Tada(binding.card5))
+                render.setDuration(700L)
+                render.start()
+            }
+            sharedViewModel.cardImage6 -> {
+                val render = Render(requireContext())
+                render.setAnimation(Attention().Tada(binding.card6))
+                render.setDuration(700L)
+                render.start()
+            }
+            sharedViewModel.cardImage7 -> {
+                val render = Render(requireContext())
+                render.setAnimation(Attention().Tada(binding.card7))
+                render.setDuration(700L)
+                render.start()
+            }
+            sharedViewModel.cardImage8 -> {
+                val render = Render(requireContext())
+                render.setAnimation(Attention().Tada(binding.card8))
+                render.setDuration(700L)
+                render.start()
+            }
+            sharedViewModel.cardImage9 -> {
+                val render = Render(requireContext())
+                render.setAnimation(Attention().Tada(binding.card9))
+                render.setDuration(700L)
+                render.start()
+            }
+            sharedViewModel.cardImage10 -> {
+                val render = Render(requireContext())
+                render.setAnimation(Attention().Tada(binding.card10))
+                render.setDuration(700L)
+                render.start()
+            }
+            sharedViewModel.cardImage11 -> {
+                val render = Render(requireContext())
+                render.setAnimation(Attention().Tada(binding.card11))
+                render.setDuration(700L)
+                render.start()
+            }
+            sharedViewModel.cardImage12 -> {
+                val render = Render(requireContext())
+                render.setAnimation(Attention().Tada(binding.card12))
+                render.setDuration(700L)
+                render.start()
+            }
+        }
+    }
+
 
     // 정답이면 selectedCard 와 동일한 카드를 찾는 코드
     private fun selectedCardMatchCardImage(cardItem: CardItem?) {
@@ -279,10 +403,23 @@ class SetFragment : Fragment() {
 
     // 카드섞기 버튼 기능
     fun shuffleButton() {
-        sharedViewModel.resetSelectedCard()
-        invisibleAllSelectedCard()
-        sharedViewModel.shuffleCard()
-        startGame()
+        CoroutineScope(Dispatchers.Main).launch {
+            val render = Render(requireContext())
+            render.setAnimation(Slide().OutRight(binding.constraintLayout))
+            render.setDuration(250L)
+            render.start()
+
+            delay(125L)
+            sharedViewModel.resetSelectedCard()
+            invisibleAllSelectedCard()
+            sharedViewModel.shuffleCard()
+            startGame()
+
+            delay(150L)
+            render.setAnimation(Slide().InLeft(binding.constraintLayout))
+            render.setDuration(250L)
+            render.start()
+        }
     }
 
     // 끝내기 버튼 기능
@@ -291,20 +428,50 @@ class SetFragment : Fragment() {
     }
 
     // 끝내기 버튼 누르면 MaterialDialog가 나오는 기능
+    @SuppressLint("SetTextI18n")
     fun showFinalScoreDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("대단합니다")
-            .setMessage("당신은 ${sharedViewModel.score.value}개를\n맞추셨습니다")
-            .setCancelable(false)
-            .setNegativeButton("나가기") { _, _ ->
-                activity?.finish()
-            }
-            .setPositiveButton("다시하기") { _, _ ->
-                sharedViewModel.resetAllValue()
-                sharedViewModel.resetScore()
-                startGame()
-            }
-            .show()
+
+        // 커스텀 Dialog 만들기
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.end_dialog)
+        dialog.setCancelable(false)
+        dialog.show()
+
+        // Dialog 레이아웃의 뷰를 변수와 연결하기
+        // 그냥 연결이 안되서 dialog 변수를 따로 만들고 거기서 findViewById해서 찾음
+        val dialogTextView = dialog.findViewById<TextView>(R.id.dialog_textview)
+        val dialogExitBtn = dialog.findViewById<TextView>(R.id.dialog_exit_btn)
+        val dialogReplayBtn = dialog.findViewById<TextView>(R.id.dialog_replay_btn)
+
+        // Dialog 창에 스코어를 알려주는 TextView 부분만 강조해서 보여주는 코드
+        val dialogText = "당신은 ${sharedViewModel.score.value}개를\n 맞추셨습니다!"
+        val spannableString = SpannableString(dialogText)
+        val word = sharedViewModel.score.value.toString() + "개"
+        val start = dialogText.indexOf(word)
+        val end = start + word.length
+        spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#ae3b75")),
+            start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(StyleSpan(Typeface.BOLD),
+            start,
+            end,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(RelativeSizeSpan(1.3f),
+            start,
+            end,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        // Dialog 뷰 기능 구현
+        dialogTextView.text = spannableString
+        dialogExitBtn.setOnClickListener {
+            activity?.finish()
+        }
+        dialogReplayBtn.setOnClickListener {
+            sharedViewModel.resetAllValue()
+            sharedViewModel.resetScore()
+            startGame()
+            dialog.dismiss()
+        }
     }
 
     override fun onDestroyView() {

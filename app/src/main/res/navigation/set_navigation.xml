@@ -6,10 +6,6 @@
     app:startDestination="@id/startFragment">
 
     <fragment
-        android:id="@+id/setFragment"
-        android:name="com.example.set.SetFragment"
-        android:label="SetFragment" />
-    <fragment
         android:id="@+id/startFragment"
         android:name="com.example.set.StartFragment"
         android:label="start_fragment"
@@ -17,5 +13,14 @@
         <action
             android:id="@+id/action_startFragment_to_setFragment"
             app:destination="@id/setFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/setFragment"
+        android:name="com.example.set.SetFragment"
+        android:label="set_fragment"
+        tools:layout="@layout/set_fragment" >
+        <action
+            android:id="@+id/action_setFragment_to_startFragment"
+            app:destination="@id/startFragment" />
     </fragment>
 </navigation>

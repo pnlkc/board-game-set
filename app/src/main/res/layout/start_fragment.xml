@@ -6,21 +6,40 @@
     android:id="@+id/layout_start_order"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/set_bg"
     tools:context="com.example.set.StartFragment">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_animation_view"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="150dp"
+        app:lottie_rawRes="@raw/card_game"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/start_order_btn"
+        />
+
     <Button
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:id="@+id/start_order_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="300dp"
+        android:layout_height="60dp"
         android:padding="10dp"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:textSize="20sp"
+        android:layout_marginTop="100dp"
         android:text="@string/play_set"
+        android:textColor="@color/btn_text_color"
+        android:textSize="20sp"
+        android:fontFamily="@font/cookierunregular"
+        android:background="@drawable/btn_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/lottie_animation_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

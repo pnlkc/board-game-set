@@ -7,7 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-<!--  커스텀 색상  -->
+    <!--  커스텀 색상  -->
     <color name="btn_bg">#cc699b</color>
     <color name="btn_stroke_color">#e2d0e1</color>
     <color name="set_bg">#ece0eb</color>
