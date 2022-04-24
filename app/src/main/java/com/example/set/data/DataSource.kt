@@ -4,7 +4,7 @@ import com.example.set.R
 import com.example.set.model.CardItem
 
 object DataSource {
-    // 카트 81장 정보
+    // 카드 81장 정보
     val allCardList: Map<String, CardItem> =
         mapOf(
             "card1" to CardItem(1, 1, 1, 1, R.drawable.aaaa),
