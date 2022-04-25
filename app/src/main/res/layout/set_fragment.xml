@@ -27,10 +27,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
-            android:fontFamily="@font/cookierunregular"
+            android:fontFamily="@font/bm_jua"
             android:text="@{@string/leftcard(viewModel.leftCard)}"
             android:textColor="@color/text_color"
-            android:textSize="17sp"
+            android:textSize="20sp"
+            android:layout_marginTop="5dp"
             app:layout_constraintEnd_toStartOf="@id/textView2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -41,26 +42,26 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="30dp"
-            android:fontFamily="@font/cookierunregular"
+            android:fontFamily="@font/bm_jua"
             android:gravity="end"
             android:text="@{@string/score(viewModel.score)}"
             android:textColor="@color/text_color"
-            android:textSize="17sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/textView3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textView1"
             app:layout_constraintTop_toTopOf="@id/textView1"
-            tools:text="맟춘 수 : 0" />
+            tools:text="맞춘 수 : 0" />
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:fontFamily="@font/cookierunregular"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/bm_jua"
             android:text="@{@string/leftCombination(viewModel.leftCombination)}"
             android:textColor="@color/text_color"
-            android:textSize="17sp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@id/textView2"
             app:layout_constraintStart_toStartOf="@id/textView1"
             app:layout_constraintTop_toBottomOf="@id/textView1"
@@ -73,7 +74,9 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView3">
+            app:layout_constraintTop_toBottomOf="@id/textView3"
+            app:layout_constraintBottom_toTopOf="@id/backButton"
+            android:layout_marginBottom="30dp">
 
 
             <ImageView
@@ -357,15 +360,16 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="15dp"
             android:background="@drawable/btn_bg"
-            android:fontFamily="@font/gmarketsansmedium"
             android:onClick="@{ () -> setFragment.endButton() }"
             android:padding="15dp"
             android:text="끝내기"
             android:textColor="@color/btn_text_color"
             android:textSize="17sp"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:layout_marginBottom="30dp"
             app:layout_constraintEnd_toStartOf="@id/shuffleButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/constraint_layout" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <Button
             style="@style/Widget.AppCompat.Button.Borderless"
@@ -383,7 +387,8 @@
             android:textSize="17sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/backButton"
-            app:layout_constraintTop_toTopOf="@id/backButton" />
+            app:layout_constraintTop_toTopOf="@id/backButton"
+            app:layout_constraintBottom_toBottomOf="@id/backButton"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

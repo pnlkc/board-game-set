@@ -1,6 +1,5 @@
 package com.example.set.model
 
-import android.media.Image
 import androidx.annotation.DrawableRes
 
 data class CardItem (

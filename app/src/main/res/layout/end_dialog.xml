@@ -8,10 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="대단합니다"
-        android:textSize="20sp"
+        android:textSize="23sp"
         android:textColor="@color/dialog_title_text"
         android:paddingVertical="20dp"
-        android:fontFamily="@font/cookierunregular"
+        android:fontFamily="@font/bm_jua"
         android:gravity="center"
         android:background="@color/dialog_bg" />
 
@@ -44,8 +44,8 @@
             android:layout_height="40dp"
             android:background="@drawable/dialog_btn_bg"
             android:text="나가기"
-            android:textSize="17sp"
-            android:fontFamily="@font/cookierunregular"
+            android:textSize="20sp"
+            android:fontFamily="@font/bm_jua"
             android:textColor="@color/dialog_btn_text"
             android:layout_marginEnd="40dp"
             />
@@ -57,8 +57,8 @@
             android:layout_height="40dp"
             android:background="@drawable/dialog_btn_bg"
             android:text="다시하기"
-            android:textSize="17sp"
-            android:fontFamily="@font/cookierunregular"
+            android:textSize="20sp"
+            android:fontFamily="@font/bm_jua"
             android:textColor="@color/dialog_btn_text"
             />
 

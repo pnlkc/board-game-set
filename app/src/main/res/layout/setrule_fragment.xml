@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SetRuleFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:background="@color/set_bg">
+
+        <Button
+            android:id="@+id/back_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_baseline_arrow_back_24"
+            />
+
+
+        <TextView
+            android:id="@+id/rule_one"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="@string/rule_one" />
+
+        <ImageView
+            android:src="@drawable/dash_line"
+            android:layerType="software"
+            android:layout_marginHorizontal="20dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:layout_height="3dp" />
+
+        <TextView
+            android:id="@+id/rule_two"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="@string/rule_two" />
+
+        <ImageView
+            android:src="@drawable/dash_line"
+            android:layerType="software"
+            android:layout_marginHorizontal="20dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:layout_height="3dp" />
+
+        <TextView
+            android:id="@+id/rule_three"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="@string/rule_three" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/abac"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/bbac"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/cbac" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="모양 = 원,  삼각형,  사각형" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/aaac"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/abac"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/acac" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="색상 = 빨강,  녹색,  파랑" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/abac"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/abbc"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/abcc" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="갯수 = 1개,  2개,  3개" />
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/abaa"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/abab"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/abac" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="음영 = 빈 무늬,  줄 무늬,  꽉찬 무늬" />
+
+        <ImageView
+            android:src="@drawable/dash_line"
+            android:layerType="software"
+            android:layout_marginHorizontal="20dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:layout_height="3dp" />
+
+        <TextView
+            android:id="@+id/rule_four"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="@string/rule_four" />
+
+        <ImageView
+            android:src="@drawable/dash_line"
+            android:layerType="software"
+            android:layout_marginHorizontal="20dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:layout_height="3dp" />
+
+        <TextView
+            android:id="@+id/rule_five"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="@string/rule_five" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/bacc"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/bbcc"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/bccc" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="1가지 속성만 다른 경우 (색상)" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/aabc"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/bcbc"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/cbbc" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="2가지 속성이 다른 경우 (모양, 색상)" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/cbaa"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/cabb"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/cccc" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="3가지 속성이 다른 경우 (색상, 갯수, 음영)" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/aaac"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/bbbb"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/ccca" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="4가지 속성이 모두 다른 경우" />
+
+
+        <ImageView
+            android:src="@drawable/dash_line"
+            android:layerType="software"
+            android:layout_marginHorizontal="20dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:layout_height="3dp" />
+
+        <TextView
+            android:id="@+id/rule_six"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="@string/rule_six" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/aabc"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/bcbc"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/cbbb" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_marginBottom="30dp"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="꽉찬 무늬의 음영이 두개만 일치 X" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/bcca"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/bccb"
+                android:layout_marginEnd="30dp"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="90dp"
+                android:src="@drawable/bbcc" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="파란 색상이 두개만 일치 X" />
+
+        <ImageView
+            android:src="@drawable/dash_line"
+            android:layerType="software"
+            android:layout_marginHorizontal="20dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:layout_height="3dp" />
+
+        <TextView
+            android:id="@+id/rule_seven"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="@string/rule_seven" />
+
+        <ImageView
+            android:src="@drawable/dash_line"
+            android:layerType="software"
+            android:layout_marginHorizontal="20dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:layout_height="3dp" />
+
+        <TextView
+            android:id="@+id/rule_eight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="@string/rule_eight"/>
+
+        <ImageView
+            android:src="@drawable/dash_line"
+            android:layerType="software"
+            android:layout_marginHorizontal="20dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:layout_height="3dp" />
+
+        <TextView
+            android:id="@+id/rule_nine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_marginBottom="50dp"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmarketsansmedium"
+            android:lineSpacingExtra="10dp"
+            android:text="@string/rule_nine" />
+
+
+        <Button
+            android:id="@+id/game_start_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:background="@drawable/btn_bg"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="30dp"
+            android:text="게임 시작"
+            android:textColor="@color/btn_text_color"
+            android:textSize="17sp"
+            android:fontFamily="@font/gmarketsansmedium"
+            />
+
+    </LinearLayout>
+
+
+</ScrollView>

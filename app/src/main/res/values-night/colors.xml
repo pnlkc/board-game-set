@@ -20,5 +20,7 @@
     <color name="dialog_btn_text">#cc699b</color>
     <color name="btn_ripple_color">#ece0eb</color>
     <color name="dialog_btn_ripple_color">#cc699b</color>
+    <color name="rule_btn_bg">#9bcc69</color>
+    <color name="rule_btn_ripple">#69cc9a</color>
 
 </resources>

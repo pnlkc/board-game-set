@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_startFragment_to_setFragment"
             app:destination="@id/setFragment" />
+        <action
+            android:id="@+id/action_startFragment_to_setRuleFragment"
+            app:destination="@id/setRuleFragment" />
     </fragment>
     <fragment
         android:id="@+id/setFragment"
@@ -21,6 +24,18 @@
         tools:layout="@layout/set_fragment" >
         <action
             android:id="@+id/action_setFragment_to_startFragment"
+            app:destination="@id/startFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/setRuleFragment"
+        android:name="com.example.set.SetRuleFragment"
+        android:label="setrule_fragment"
+        tools:layout="@layout/setrule_fragment" >
+        <action
+            android:id="@+id/action_setRuleFragment_to_setFragment"
+            app:destination="@id/setFragment" />
+        <action
+            android:id="@+id/action_setRuleFragment_to_startFragment"
             app:destination="@id/startFragment" />
     </fragment>
 </navigation>

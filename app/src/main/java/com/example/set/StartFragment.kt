@@ -32,6 +32,10 @@ class StartFragment : Fragment() {
             findNavController().navigate(R.id.action_startFragment_to_setFragment)
         }
 
+        binding.ruleBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_startFragment_to_setRuleFragment)
+        }
+
         // OnBackPressedCallback (익명 클래스) 객체 생성
         backpressCallback = object : OnBackPressedCallback(true) {
             // 뒤로가기 했을 때 실행되는 기능
