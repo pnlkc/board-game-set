@@ -6,7 +6,6 @@
     tools:context=".SetFragment">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.example.set.model.SetViewModel" />

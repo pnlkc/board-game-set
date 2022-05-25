@@ -16,7 +16,7 @@ class StartFragment : Fragment() {
     private val binding get() = _binding!!
     // private val sharedViewModel: SetViewModel by activityViewModels()
 
-    private lateinit var backpressCallback: OnBackPressedCallback
+    private lateinit var backPressCallback: OnBackPressedCallback
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,18 +26,21 @@ class StartFragment : Fragment() {
         _binding = StartFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        // 로티 애니메이션 재생 길이 제한
         binding.lottieAnimationView.setMaxFrame(80)
 
-        binding.startOrderBtn.setOnClickListener {
+        // 세트 플레이하기 버튼
+        binding.startGameBtn.setOnClickListener {
             findNavController().navigate(R.id.action_startFragment_to_setFragment)
         }
 
-        binding.ruleBtn.setOnClickListener {
+        // ?(룰) 버튼튼
+       binding.ruleBtn.setOnClickListener {
             findNavController().navigate(R.id.action_startFragment_to_setRuleFragment)
         }
 
         // OnBackPressedCallback (익명 클래스) 객체 생성
-        backpressCallback = object : OnBackPressedCallback(true) {
+        backPressCallback = object : OnBackPressedCallback(true) {
             // 뒤로가기 했을 때 실행되는 기능
             var backWait: Long = 0
             override fun handleOnBackPressed() {
@@ -50,7 +53,7 @@ class StartFragment : Fragment() {
             }
         }
         // 액티비티의 BackPressedDispatcher에 여기서 만든 callback 객체를 등록
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backpressCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backPressCallback)
 
         return root
     }
@@ -58,5 +61,6 @@ class StartFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        backPressCallback.remove()
     }
 }
