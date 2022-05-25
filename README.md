@@ -1,4 +1,6 @@
 # board-game-set  
+보드게임 set를 혼자 플레이할 수 있도록 만든 앱입니다  
+
 시작 화면 이미지 lottie animation 출처  
 https://lottiefiles.com/91317-card-game
 
