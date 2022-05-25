@@ -1,4 +1,7 @@
-# board-game-set
+# board-game-set  
+시작 화면 이미지 lottie animation 출처  
+https://lottiefiles.com/91317-card-game
+
 #### changelog 
 ***ver 1.3***  
 UI 개선  
