@@ -1,8 +1,10 @@
 # board-game-set  
-보드게임 set를 혼자 플레이할 수 있도록 만든 앱입니다  
+보드게임 set를 혼자 플레이할 수 있도록 만든 앱입니다
 
-시작 화면 이미지 lottie animation 출처  
-https://lottiefiles.com/91317-card-game
+>이어하기 기능은 SharedPreference과 Gson을 사용  
+>카드 애니메이션은 Android View Animations in Kotlin(https://github.com/gayanvoice/android-animations-kotlin) 사용
+
+시작 화면 이미지 lottie animation 출처 : https://lottiefiles.com/91317-card-game
 <br>
 <br>
 ### changelog 
@@ -18,5 +20,7 @@ https://lottiefiles.com/91317-card-game
 >남은 카드가 없을 때 가능한 조합이 없을 시 종료 다이얼로그 띄우게 수정
 
 ***ver 1.5.1***  
->불필요한 변수 제거 및 코드 축소
-
+>불필요한 변수 제거 및 코드 축소  
+  
+***ver 1.6***  
+>이어하기 기능 추가 (게임을 완료하거나 끝내기 버튼을 누르지 않으면 게임 자동 저장)
