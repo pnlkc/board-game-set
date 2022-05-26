@@ -9,6 +9,8 @@ class SetViewModel : ViewModel() {
 
     private val allCardList = DataSource.allCardList
 
+    var isContinueGame: Boolean = false
+
     // 점수 변수 (일단은 한개)
     private var _score = MutableLiveData(0)
     val score: MutableLiveData<Int> get() = _score
@@ -23,17 +25,11 @@ class SetViewModel : ViewModel() {
     // 선택된 카드 3개
     var selectedCardList: Array<CardItem?> = arrayOf(null, null, null)
 
-    // 선택된 카드 속성 확인용 변수
-    private var checkShape = 0
-    private var checkColor = 0
-    private var checkNumber = 0
-    private var checkShade = 0
-
-    // shape, color, number, shade 순서
+    // 선택된 카드 속성 확인용 변수 (shape, color, number, shade 순서)
     private var checkList = arrayOf(0, 0, 0, 0)
 
     // 사용된 카드 확인용 변수
-    private var usedCardList: MutableList<CardItem> = mutableListOf()
+    var usedCardList: MutableList<CardItem> = mutableListOf()
     private lateinit var currentCard: CardItem
 
     // ImageView 와 카드정보 연결용 변수
@@ -54,8 +50,13 @@ class SetViewModel : ViewModel() {
                 temp = currentCard
             }
 
-            _leftCard.value = allCardList.size - usedCardList.size
+            showLeftCard()
         }
+    }
+
+    // 남은 카드 수 계산 및 표시
+    fun showLeftCard() {
+        _leftCard.value = allCardList.size - usedCardList.size
     }
 
     // 다음 카드의 이미지값을 반환해주는 코드
@@ -78,7 +79,7 @@ class SetViewModel : ViewModel() {
     fun checkCard(card1: CardItem, card2: CardItem, card3: CardItem) {
         resetCheckValue()
         if (card1 != card2 && card2 != card3 && card1 != card3) {
-            checkShape = when {
+            checkList[0] = when {
                 card1.shape == card2.shape && card1.shape == card3.shape -> 1
                 card1.shape != card2.shape
                         && card2.shape != card3.shape
@@ -86,7 +87,7 @@ class SetViewModel : ViewModel() {
                 else -> 0
             }
 
-            checkColor = when {
+            checkList[1] = when {
                 card1.color == card2.color && card1.color == card3.color -> 1
                 card1.color != card2.color
                         && card2.color != card3.color
@@ -94,7 +95,7 @@ class SetViewModel : ViewModel() {
                 else -> 0
             }
 
-            checkNumber = when {
+            checkList[2] = when {
                 card1.number == card2.number && card1.number == card3.number -> 1
                 card1.number != card2.number
                         && card2.number != card3.number
@@ -102,7 +103,7 @@ class SetViewModel : ViewModel() {
                 else -> 0
             }
 
-            checkShade = when {
+            checkList[3] = when {
                 card1.shade == card2.shade && card1.shade == card3.shade -> 1
                 card1.shade != card2.shade
                         && card2.shade != card3.shade
@@ -112,9 +113,9 @@ class SetViewModel : ViewModel() {
         }
     }
 
-    // 점수 올리는 기능 (현재는 1점)
+    // 점수 올리는 기능 (현재는 1점씩 증가)
     fun increaseScore(): Boolean {
-        return if (checkShape == 1 && checkColor == 1 && checkNumber == 1 && checkShade == 1) {
+        return if (checkList.count {it == 1} == checkList.size) {
             _score.value = _score.value!! + 1
             resetCheckValue()
             true
@@ -124,7 +125,7 @@ class SetViewModel : ViewModel() {
         }
     }
 
-    // 남은 조합수 표시
+    // 남은 조합수 계산 및 표시
     fun showLeftCombination() {
         _leftCombination.value = 0
         val tempList = cardDataList.distinct().toMutableList()
@@ -135,7 +136,7 @@ class SetViewModel : ViewModel() {
                 for (j in i + 1..tempList.size-2) {
                     for (k in j + 1 until tempList.size) {
                         checkCard(tempList[i], tempList[j], tempList[k])
-                        if (checkShape == 1 && checkColor == 1 && checkNumber == 1 && checkShade == 1) {
+                        if (checkList.count {it == 1} == checkList.size) {
                             _leftCombination.value = _leftCombination.value!! + 1
                             resetCheckValue()
                         } else {
@@ -152,10 +153,7 @@ class SetViewModel : ViewModel() {
     }
 
     private fun resetCheckValue() {
-        checkShape = 0
-        checkColor = 0
-        checkNumber = 0
-        checkShade = 0
+        checkList = arrayOf(0, 0, 0, 0)
     }
 
     fun resetAllValue() {

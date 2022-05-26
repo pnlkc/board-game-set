@@ -15,4 +15,5 @@
     <string name="rule_seven">➐\n세트를 성공시키면\n성공한 카드는 사라지고\n3장의 새로운 카드가 추가됩니다</string>
     <string name="rule_eight">➑\n만약 세트를 찾지 못할 경우\n카드섞기 버튼을 누르면\n필드의 카드를 다시 세팅할 수 있습니다</string>
     <string name="rule_nine">➒\n카드더미를 모두 사용하고\n필드에 세트가 가능한 조합이 없으면\n게임이 종료됩니다</string>
+    <string name="continue_set">이어하기</string>
 </resources>

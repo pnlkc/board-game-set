@@ -20,12 +20,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/start_game_btn"
+        app:layout_constraintBottom_toTopOf="@id/new_game_btn"
         />
 
     <Button
         style="@style/Widget.AppCompat.Button.Borderless"
-        android:id="@+id/start_game_btn"
+        android:id="@+id/continue_game_btn"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:padding="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/continue_set"
+        android:textColor="@color/btn_text_color"
+        android:textSize="23sp"
+        android:fontFamily="@font/bm_jua"
+        android:background="@drawable/btn_bg"
+        app:layout_constraintEnd_toEndOf="@id/new_game_btn"
+        app:layout_constraintStart_toStartOf="@id/new_game_btn"
+        app:layout_constraintTop_toBottomOf="@id/lottie_animation_view"
+        android:visibility="invisible"/>
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:id="@+id/new_game_btn"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:padding="10dp"
@@ -54,7 +73,7 @@
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/start_game_btn" />
+        app:layout_constraintTop_toBottomOf="@id/new_game_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -4,6 +4,12 @@ import com.example.set.R
 import com.example.set.model.CardItem
 
 object DataSource {
+    // sharedPreference 키
+    const val KEY_PREFS = "set_prefs"
+    const val KEY_USED_CARD_LIST = "used_card_list"
+    const val KEY_CARD_DATA_LIST = "card_data_list"
+    const val KEY_SCORE = "score"
+
     // 카드 81장 정보
     val allCardList: Map<String, CardItem> =
         mapOf(

@@ -2,15 +2,16 @@ package com.example.set
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
-import android.opengl.Visibility
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,13 +20,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.set.data.DataSource.KEY_CARD_DATA_LIST
+import com.example.set.data.DataSource.KEY_PREFS
+import com.example.set.data.DataSource.KEY_SCORE
+import com.example.set.data.DataSource.KEY_USED_CARD_LIST
 import com.example.set.databinding.SetFragmentBinding
 import com.example.set.model.CardItem
 import com.example.set.model.SetViewModel
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -41,6 +47,9 @@ class SetFragment : Fragment() {
 
     private lateinit var bindingCardList: List<ImageView>
     private lateinit var bindingSelectedCardList: List<ImageView>
+
+    // 게임을 저장할지 말지 알려주는 변수
+    private var saveIndicator: Boolean = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,7 +100,17 @@ class SetFragment : Fragment() {
             binding.selectedCard10, binding.selectedCard11, binding.selectedCard12
         )
 
-        startGame()
+        when (sharedViewModel.isContinueGame) {
+            true -> {
+                saveAndLoadGame("load")
+                bindingCardList.forEachIndexed { index, imageView ->
+                    imageView.setImageResource(sharedViewModel.cardDataList[index].cardImage)
+                }
+                sharedViewModel.showLeftCard()
+                sharedViewModel.showLeftCombination()
+            }
+            false -> startGame()
+        }
 
         clickCard()
 
@@ -137,7 +156,6 @@ class SetFragment : Fragment() {
         when {
             // 같은 카드를 다시 눌렀을 때 처리
             sharedViewModel.selectedCardList.contains(cardItem) -> {
-//                invisibleSelectedCard(cardItem)
                 setVisibilitySelectedCard(cardItem, View.INVISIBLE)
                 val index = sharedViewModel.selectedCardList.indexOf(cardItem)
                 sharedViewModel.selectedCardList[index] = null
@@ -146,14 +164,12 @@ class SetFragment : Fragment() {
             // 3개가 선택되면 정답인지 확인하도록 처리
             sharedViewModel.selectedCardList[0] == null -> {
                 sharedViewModel.selectedCardList[0] = cardItem
-//                visibleSelectedCard(sharedViewModel.selectedCardList[0]!!)
                 setVisibilitySelectedCard(sharedViewModel.selectedCardList[0]!!, View.VISIBLE)
             }
             sharedViewModel.selectedCardList[0] != null
                     && sharedViewModel.selectedCardList[0] != cardItem
                     && sharedViewModel.selectedCardList[1] == null -> {
                 sharedViewModel.selectedCardList[1] = cardItem
-//                visibleSelectedCard(sharedViewModel.selectedCardList[1]!!)
                 setVisibilitySelectedCard(sharedViewModel.selectedCardList[1]!!, View.VISIBLE)
             }
 
@@ -163,7 +179,6 @@ class SetFragment : Fragment() {
                     && sharedViewModel.selectedCardList[1] != cardItem
                     && sharedViewModel.selectedCardList[2] == null -> {
                 sharedViewModel.selectedCardList[2] = cardItem
-//                visibleSelectedCard(sharedViewModel.selectedCardList[2]!!)
                 setVisibilitySelectedCard(sharedViewModel.selectedCardList[2]!!, View.VISIBLE)
                 isCorrect()
             }
@@ -245,14 +260,14 @@ class SetFragment : Fragment() {
     // 카드 선택시 노란색 표시
     private fun setVisibilitySelectedCard(cardItem: CardItem, visibility: Int) {
         sharedViewModel.cardDataList.forEachIndexed { index, it ->
-            if (it == cardItem)  bindingSelectedCardList[index].visibility = visibility
+            if (it == cardItem) bindingSelectedCardList[index].visibility = visibility
         }
     }
 
     // 카드 선택시 노란색 표시
     private fun visibleSelectedCard(cardItem: CardItem) {
         sharedViewModel.cardDataList.forEachIndexed { index, it ->
-            if (it == cardItem)  bindingSelectedCardList[index].visibility = View.VISIBLE
+            if (it == cardItem) bindingSelectedCardList[index].visibility = View.VISIBLE
         }
     }
 
@@ -299,9 +314,12 @@ class SetFragment : Fragment() {
         showFinalScoreDialog()
     }
 
-    // 끝내기 버튼 누르면 MaterialDialog가 나오는 기능
+    // 끝내기 버튼 누르면 나오는 MaterialDialog
     @SuppressLint("SetTextI18n")
     fun showFinalScoreDialog() {
+
+        // 다이얼로그를 띄웠으면 게임 저장 안하도록 하는 코드
+        saveIndicator = false
 
         // 커스텀 Dialog 만들기
         val dialog = Dialog(requireContext())
@@ -345,6 +363,54 @@ class SetFragment : Fragment() {
         }
     }
 
+    private fun saveAndLoadGame(string: String) {
+        val sharedPreferences =
+            requireActivity().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
+        // Json 파일 변환을 위한 Gson 객체
+        val gson = GsonBuilder().create()
+
+        val typeUsedCardList: TypeToken<MutableList<CardItem>> =
+            object : TypeToken<MutableList<CardItem>>() {}
+        val typeCardDataList: TypeToken<Array<CardItem>> = object : TypeToken<Array<CardItem>>() {}
+
+        when (string) {
+            "save" -> {
+                val jsonUsedCardList = gson.toJson(sharedViewModel.usedCardList , typeUsedCardList.type)
+                val jsonCardDataList = gson.toJson(sharedViewModel.cardDataList, typeCardDataList.type)
+
+                editor.putString(KEY_USED_CARD_LIST, jsonUsedCardList)
+                editor.putString(KEY_CARD_DATA_LIST, jsonCardDataList)
+                editor.putInt(KEY_SCORE, sharedViewModel.score.value!!)
+                editor.apply()
+            }
+            "load" -> {
+                val jsonUsedCardList = sharedPreferences.getString(KEY_USED_CARD_LIST, "")
+                val jsonCardDataList = sharedPreferences.getString(KEY_CARD_DATA_LIST, "")
+
+                sharedViewModel.usedCardList = gson.fromJson(jsonUsedCardList, typeUsedCardList.type)
+                sharedViewModel.cardDataList = gson.fromJson(jsonCardDataList, typeCardDataList.type)
+                sharedViewModel.score.value = sharedPreferences.getInt(KEY_SCORE, 0)
+            }
+            "delete" -> {
+                editor.clear()
+                editor.apply()
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        // 게임이 완료되었거나 끝내기 버튼을 누르지 않았으면 게임 저장
+        if (saveIndicator) {
+            saveAndLoadGame("save")
+        } else {
+            saveAndLoadGame("delete")
+        }
+    }
+    
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
