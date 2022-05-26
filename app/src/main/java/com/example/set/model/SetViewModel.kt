@@ -1,11 +1,9 @@
 package com.example.set.model
 
-import android.util.Log
 import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.set.data.DataSource
-import java.util.ArrayList
 
 class SetViewModel : ViewModel() {
 
@@ -23,9 +21,7 @@ class SetViewModel : ViewModel() {
     val leftCombination: MutableLiveData<Int> get() = _leftCombination
 
     // 선택된 카드 3개
-    var selectedCard1: CardItem? = null
-    var selectedCard2: CardItem? = null
-    var selectedCard3: CardItem? = null
+    var selectedCardList: Array<CardItem?> = arrayOf(null, null, null)
 
     // 선택된 카드 속성 확인용 변수
     private var checkShape = 0
@@ -33,70 +29,39 @@ class SetViewModel : ViewModel() {
     private var checkNumber = 0
     private var checkShade = 0
 
+    // shape, color, number, shade 순서
+    private var checkList = arrayOf(0, 0, 0, 0)
+
     // 사용된 카드 확인용 변수
-    private var cardList: MutableList<CardItem> = mutableListOf()
+    private var usedCardList: MutableList<CardItem> = mutableListOf()
     private lateinit var currentCard: CardItem
-    private var tempCardList: MutableList<CardItem> = mutableListOf()
 
     // ImageView 와 카드정보 연결용 변수
     lateinit var temp: CardItem
-    var cardImage1 = CardItem(0, 0, 0, 0, 0)
-    var cardImage2 = CardItem(0, 0, 0, 0, 0)
-    var cardImage3 = CardItem(0, 0, 0, 0, 0)
-    var cardImage4 = CardItem(0, 0, 0, 0, 0)
-    var cardImage5 = CardItem(0, 0, 0, 0, 0)
-    var cardImage6 = CardItem(0, 0, 0, 0, 0)
-    var cardImage7 = CardItem(0, 0, 0, 0, 0)
-    var cardImage8 = CardItem(0, 0, 0, 0, 0)
-    var cardImage9 = CardItem(0, 0, 0, 0, 0)
-    var cardImage10 = CardItem(0, 0, 0, 0, 0)
-    var cardImage11 = CardItem(0, 0, 0, 0, 0)
-    var cardImage12 = CardItem(0, 0, 0, 0, 0)
 
-    var cardImageList = mutableListOf(
-        cardImage1, cardImage2, cardImage3, cardImage4, cardImage5, cardImage6,
-        cardImage7, cardImage8, cardImage9, cardImage10, cardImage11, cardImage12
-    )
-
+    // ImageView 와 카드정보 연결 및 남은 조합수 계산시 사용
+    var cardDataList = Array(12) { CardItem(0, 0, 0, 0, 0) }
 
     // 다음 카드 받기
     private fun getNextCard() {
         if (_leftCard.value != 0) {
             currentCard = allCardList.values.toList().random()
 
-            if (cardList.contains(currentCard)) {
+            if (usedCardList.contains(currentCard)) {
                 getNextCard()
             } else {
-                cardList.add(currentCard)
-                tempCardList.add(currentCard)
+                usedCardList.add(currentCard)
+                temp = currentCard
             }
 
-            _leftCard.value = allCardList.size - cardList.size
+            _leftCard.value = allCardList.size - usedCardList.size
         }
     }
 
     // 다음 카드의 이미지값을 반환해주는 코드
     private fun setNextCardImageResource(): Int {
         getNextCard()
-        temp = tempCardList.random()
-        tempCardList.remove(temp)
         return temp.cardImage
-    }
-
-    // 카드 섞기 버튼 누르면 카드리스트에 지금 필드에 있는거를 제거해서 다시 뽑을 수 있도록 구현
-    fun shuffleCard() {
-        cardList.remove(cardImage1)
-        cardList.remove(cardImage2)
-        cardList.remove(cardImage3)
-        cardList.remove(cardImage4)
-        cardList.remove(cardImage5)
-        cardList.remove(cardImage6)
-        cardList.remove(cardImage7)
-        cardList.remove(cardImage8)
-        cardList.remove(cardImage9)
-        cardList.remove(cardImage10)
-        cardList.remove(cardImage11)
-        cardList.remove(cardImage12)
     }
 
     // 카드 이미지 바꾸는 코드
@@ -104,51 +69,44 @@ class SetViewModel : ViewModel() {
         view.setImageResource(setNextCardImageResource())
     }
 
+    // 카드 섞기 버튼 누르면 카드리스트에 지금 필드에 있는거를 제거해서 다시 뽑을 수 있도록 구현
+    fun shuffleCard() {
+        cardDataList.forEach { usedCardList.remove(it) }
+    }
 
     // 선택된 카드 3개가 정답인지 확인하는 기능
-    fun checkCard(
-        selectedCard1: CardItem,
-        selectedCard2: CardItem,
-        selectedCard3: CardItem,
-    ) {
+    fun checkCard(card1: CardItem, card2: CardItem, card3: CardItem) {
         resetCheckValue()
-        if (selectedCard1 != selectedCard2
-            && selectedCard2 != selectedCard3
-            && selectedCard1 != selectedCard3
-        ) {
+        if (card1 != card2 && card2 != card3 && card1 != card3) {
             checkShape = when {
-                selectedCard1.shape == selectedCard2.shape
-                        && selectedCard1.shape == selectedCard3.shape -> 1
-                selectedCard1.shape != selectedCard2.shape
-                        && selectedCard2.shape != selectedCard3.shape
-                        && selectedCard1.shape != selectedCard3.shape -> 1
+                card1.shape == card2.shape && card1.shape == card3.shape -> 1
+                card1.shape != card2.shape
+                        && card2.shape != card3.shape
+                        && card1.shape != card3.shape -> 1
                 else -> 0
             }
 
             checkColor = when {
-                selectedCard1.color == selectedCard2.color
-                        && selectedCard1.color == selectedCard3.color -> 1
-                selectedCard1.color != selectedCard2.color
-                        && selectedCard2.color != selectedCard3.color
-                        && selectedCard1.color != selectedCard3.color -> 1
+                card1.color == card2.color && card1.color == card3.color -> 1
+                card1.color != card2.color
+                        && card2.color != card3.color
+                        && card1.color != card3.color -> 1
                 else -> 0
             }
 
             checkNumber = when {
-                selectedCard1.number == selectedCard2.number
-                        && selectedCard1.number == selectedCard3.number -> 1
-                selectedCard1.number != selectedCard2.number
-                        && selectedCard2.number != selectedCard3.number
-                        && selectedCard1.number != selectedCard3.number -> 1
+                card1.number == card2.number && card1.number == card3.number -> 1
+                card1.number != card2.number
+                        && card2.number != card3.number
+                        && card1.number != card3.number -> 1
                 else -> 0
             }
 
             checkShade = when {
-                selectedCard1.shade == selectedCard2.shade
-                        && selectedCard1.shade == selectedCard3.shade -> 1
-                selectedCard1.shade != selectedCard2.shade
-                        && selectedCard2.shade != selectedCard3.shade
-                        && selectedCard1.shade != selectedCard3.shade -> 1
+                card1.shade == card2.shade && card1.shade == card3.shade -> 1
+                card1.shade != card2.shade
+                        && card2.shade != card3.shade
+                        && card1.shade != card3.shade -> 1
                 else -> 0
             }
         }
@@ -169,7 +127,7 @@ class SetViewModel : ViewModel() {
     // 남은 조합수 표시
     fun showLeftCombination() {
         _leftCombination.value = 0
-        val tempList = cardImageList.distinct().toMutableList()
+        val tempList = cardDataList.distinct().toMutableList()
         tempList.remove(CardItem(0,0,0,0,0))
 
         if (tempList.size >= 3) {
@@ -178,7 +136,6 @@ class SetViewModel : ViewModel() {
                     for (k in j + 1 until tempList.size) {
                         checkCard(tempList[i], tempList[j], tempList[k])
                         if (checkShape == 1 && checkColor == 1 && checkNumber == 1 && checkShade == 1) {
-                            Log.d("로그", "_leftCombination.value : ${_leftCombination.value}")
                             _leftCombination.value = _leftCombination.value!! + 1
                             resetCheckValue()
                         } else {
@@ -191,9 +148,7 @@ class SetViewModel : ViewModel() {
     }
 
     fun resetSelectedCard() {
-        selectedCard1 = null
-        selectedCard2 = null
-        selectedCard3 = null
+        selectedCardList = arrayOf(null, null, null)
     }
 
     private fun resetCheckValue() {
@@ -207,8 +162,7 @@ class SetViewModel : ViewModel() {
         resetCheckValue()
         resetSelectedCard()
         _leftCard.value = 81
-        cardList.clear()
-        tempCardList.clear()
+        usedCardList.clear()
         _score.value = 0
     }
 }

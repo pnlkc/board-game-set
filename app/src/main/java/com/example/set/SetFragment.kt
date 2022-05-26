@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.Typeface
+import android.opengl.Visibility
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -18,6 +19,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -28,9 +30,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import render.animations.Attention
-import render.animations.Render
-import render.animations.Slide
+import render.animations.*
 
 class SetFragment : Fragment() {
     private var _binding: SetFragmentBinding? = null
@@ -93,25 +93,21 @@ class SetFragment : Fragment() {
 
         startGame()
 
-        // 카드 클릭시 코드
-        binding.card1.setOnClickListener { clickImage(sharedViewModel.cardImage1) }
-        binding.card2.setOnClickListener { clickImage(sharedViewModel.cardImage2) }
-        binding.card3.setOnClickListener { clickImage(sharedViewModel.cardImage3) }
-        binding.card4.setOnClickListener { clickImage(sharedViewModel.cardImage4) }
-        binding.card5.setOnClickListener { clickImage(sharedViewModel.cardImage5) }
-        binding.card6.setOnClickListener { clickImage(sharedViewModel.cardImage6) }
-        binding.card7.setOnClickListener { clickImage(sharedViewModel.cardImage7) }
-        binding.card8.setOnClickListener { clickImage(sharedViewModel.cardImage8) }
-        binding.card9.setOnClickListener { clickImage(sharedViewModel.cardImage9) }
-        binding.card10.setOnClickListener { clickImage(sharedViewModel.cardImage10) }
-        binding.card11.setOnClickListener { clickImage(sharedViewModel.cardImage11) }
-        binding.card12.setOnClickListener { clickImage(sharedViewModel.cardImage12) }
+        clickCard()
 
+    }
+
+    // 카드 클릭시 코드
+    private fun clickCard() {
+        bindingCardList.forEachIndexed { index, imageView ->
+            imageView.setOnClickListener { clickImage(sharedViewModel.cardDataList[index]) }
+        }
     }
 
     // 초기 12장 세팅
     private fun startGame() {
         bindingCardList.forEach {
+// 게임 시작 될 때 한번만 실행하면 될거 같은데...
             if (sharedViewModel.leftCard.value != 0) it.visibility = View.VISIBLE
             connectImageToCard(it)
         }
@@ -121,61 +117,14 @@ class SetFragment : Fragment() {
     private fun connectImageToCard(imageView: ImageView) {
         if (sharedViewModel.leftCard.value != 0) {
             sharedViewModel.changeCardImage(imageView)
-            when (imageView) {
-                binding.card1 -> {
-                    sharedViewModel.cardImage1 = sharedViewModel.temp
-                    sharedViewModel.cardImageList[0] = sharedViewModel.cardImage1
-                }
-                binding.card2 -> {
-                    sharedViewModel.cardImage2 = sharedViewModel.temp
-                    sharedViewModel.cardImageList[1] = sharedViewModel.cardImage2
-                }
-                binding.card3 -> {
-                    sharedViewModel.cardImage3 = sharedViewModel.temp
-                    sharedViewModel.cardImageList[2] = sharedViewModel.cardImage3
-                }
-                binding.card4 -> {
-                    sharedViewModel.cardImage4 = sharedViewModel.temp
-                    sharedViewModel.cardImageList[3] = sharedViewModel.cardImage4
-                }
-                binding.card5 -> {
-                    sharedViewModel.cardImage5 = sharedViewModel.temp
-                    sharedViewModel.cardImageList[4] = sharedViewModel.cardImage5
-                }
-                binding.card6 -> {
-                    sharedViewModel.cardImage6 = sharedViewModel.temp
-                    sharedViewModel.cardImageList[5] = sharedViewModel.cardImage6
-                }
-                binding.card7 -> {
-                    sharedViewModel.cardImage7 = sharedViewModel.temp
-                    sharedViewModel.cardImageList[6] = sharedViewModel.cardImage7
-                }
-                binding.card8 -> {
-                    sharedViewModel.cardImage8 = sharedViewModel.temp
-                    sharedViewModel.cardImageList[7] = sharedViewModel.cardImage8
-                }
-                binding.card9 -> {
-                    sharedViewModel.cardImage9 = sharedViewModel.temp
-                    sharedViewModel.cardImageList[8] = sharedViewModel.cardImage9
-                }
-                binding.card10 -> {
-                    sharedViewModel.cardImage10 = sharedViewModel.temp
-                    sharedViewModel.cardImageList[9] = sharedViewModel.cardImage10
-                }
-                binding.card11 -> {
-                    sharedViewModel.cardImage11 = sharedViewModel.temp
-                    sharedViewModel.cardImageList[10] = sharedViewModel.cardImage11
-                }
-                binding.card12 -> {
-                    sharedViewModel.cardImage12 = sharedViewModel.temp
-                    sharedViewModel.cardImageList[11] = sharedViewModel.cardImage12
-                }
+            bindingCardList.forEachIndexed { index, it ->
+                if (it == imageView) sharedViewModel.cardDataList[index] = sharedViewModel.temp
             }
         } else {
             bindingCardList.forEachIndexed { index, it ->
                 if (imageView == it) {
                     it.visibility = View.INVISIBLE
-                    sharedViewModel.cardImageList[index] =
+                    sharedViewModel.cardDataList[index] =
                         CardItem(0, 0, 0, 0, 0)
                 }
             }
@@ -184,73 +133,90 @@ class SetFragment : Fragment() {
     }
 
     // 카드 클릭시 카드 값을 selectedCard에 저장하는 기능
-    private fun clickImage(it: CardItem) {
+    private fun clickImage(cardItem: CardItem) {
         when {
-            sharedViewModel.selectedCard1 == null -> {
-                sharedViewModel.selectedCard1 = it
-                visibleSelectedCard(sharedViewModel.selectedCard1!!)
+            // 같은 카드를 다시 눌렀을 때 처리
+            sharedViewModel.selectedCardList.contains(cardItem) -> {
+//                invisibleSelectedCard(cardItem)
+                setVisibilitySelectedCard(cardItem, View.INVISIBLE)
+                val index = sharedViewModel.selectedCardList.indexOf(cardItem)
+                sharedViewModel.selectedCardList[index] = null
             }
 
-            sharedViewModel.selectedCard1 != null
-                    && sharedViewModel.selectedCard1 != it
-                    && sharedViewModel.selectedCard2 == null -> {
-                sharedViewModel.selectedCard2 = it
-                visibleSelectedCard(sharedViewModel.selectedCard2!!)
+            // 3개가 선택되면 정답인지 확인하도록 처리
+            sharedViewModel.selectedCardList[0] == null -> {
+                sharedViewModel.selectedCardList[0] = cardItem
+//                visibleSelectedCard(sharedViewModel.selectedCardList[0]!!)
+                setVisibilitySelectedCard(sharedViewModel.selectedCardList[0]!!, View.VISIBLE)
+            }
+            sharedViewModel.selectedCardList[0] != null
+                    && sharedViewModel.selectedCardList[0] != cardItem
+                    && sharedViewModel.selectedCardList[1] == null -> {
+                sharedViewModel.selectedCardList[1] = cardItem
+//                visibleSelectedCard(sharedViewModel.selectedCardList[1]!!)
+                setVisibilitySelectedCard(sharedViewModel.selectedCardList[1]!!, View.VISIBLE)
             }
 
-            sharedViewModel.selectedCard1 != null
-                    && sharedViewModel.selectedCard1 != it
-                    && sharedViewModel.selectedCard2 != null
-                    && sharedViewModel.selectedCard2 != it
-                    && sharedViewModel.selectedCard3 == null -> {
-                sharedViewModel.selectedCard3 = it
-                visibleSelectedCard(sharedViewModel.selectedCard3!!)
+            sharedViewModel.selectedCardList[0] != null
+                    && sharedViewModel.selectedCardList[0] != cardItem
+                    && sharedViewModel.selectedCardList[1] != null
+                    && sharedViewModel.selectedCardList[1] != cardItem
+                    && sharedViewModel.selectedCardList[2] == null -> {
+                sharedViewModel.selectedCardList[2] = cardItem
+//                visibleSelectedCard(sharedViewModel.selectedCardList[2]!!)
+                setVisibilitySelectedCard(sharedViewModel.selectedCardList[2]!!, View.VISIBLE)
                 isCorrect()
-            }
-
-            sharedViewModel.selectedCard1 == it -> {
-                invisibleSelectedCard(it)
-                sharedViewModel.selectedCard1 = null
-            }
-
-            sharedViewModel.selectedCard2 == it -> {
-                invisibleSelectedCard(it)
-                sharedViewModel.selectedCard2 = null
-            }
-
-            sharedViewModel.selectedCard3 == it -> {
-                invisibleSelectedCard(it)
-                sharedViewModel.selectedCard3 = null
             }
         }
     }
 
     // 정답이면 카드 변경하는 코드
     private fun isCorrect() {
-        sharedViewModel.checkCard(sharedViewModel.selectedCard1!!,
-            sharedViewModel.selectedCard2!!,
-            sharedViewModel.selectedCard3!!)
+        sharedViewModel.checkCard(
+            sharedViewModel.selectedCardList[0]!!,
+            sharedViewModel.selectedCardList[1]!!,
+            sharedViewModel.selectedCardList[2]!!
+        )
         sharedViewModel.increaseScore().apply {
             if (this) {
-                selectedCardMatchCardImage(sharedViewModel.selectedCard1)
-                selectedCardMatchCardImage(sharedViewModel.selectedCard2)
-                selectedCardMatchCardImage(sharedViewModel.selectedCard3)
+                // 정답 애니메이션
+                sharedViewModel.selectedCardList.forEach { bounceInCard(it) }
 
-                if (sharedViewModel.leftCard.value == 0 && sharedViewModel.leftCombination.value == 0) {
+                // 정답시 처리
+                sharedViewModel.selectedCardList.forEach { selectedCardMatchCardImage(it) }
+
+                // 마지막 조합 정답시 처리
+                if (
+                    sharedViewModel.leftCard.value == 0
+                    && sharedViewModel.leftCombination.value == 0
+                ) {
                     showFinalScoreDialog()
                 }
 
                 invisibleAllSelectedCard()
                 sharedViewModel.resetSelectedCard()
             } else {
-                // 오답이면 카드 흔드는 기능
-                shakeCard(sharedViewModel.selectedCard1)
-                shakeCard(sharedViewModel.selectedCard2)
-                shakeCard(sharedViewModel.selectedCard3)
+                // 오답 애니메이션
+                sharedViewModel.selectedCardList.forEach { shakeCard(it) }
 
                 invisibleAllSelectedCard()
                 sharedViewModel.resetSelectedCard()
             }
+        }
+    }
+
+    // 새 카드가 들어올 때 애니메이션
+    private fun bounceInAnimation(imageView: ImageView) {
+        val render = Render(requireContext())
+        render.setAnimation(Bounce().In(imageView))
+        render.setDuration(300L)
+        render.start()
+    }
+
+    // 정답일 때 카드 흔드는 기능
+    private fun bounceInCard(cardItem: CardItem?) {
+        sharedViewModel.cardDataList.forEachIndexed { index, it ->
+            if (it == cardItem) bounceInAnimation(bindingCardList[index])
         }
     }
 
@@ -264,73 +230,36 @@ class SetFragment : Fragment() {
 
     // 오답일 때 카드 흔드는 기능
     private fun shakeCard(cardItem: CardItem?) {
-        when (cardItem) {
-            sharedViewModel.cardImage1 -> shakeAnimation(binding.card1)
-            sharedViewModel.cardImage2 -> shakeAnimation(binding.card2)
-            sharedViewModel.cardImage3 -> shakeAnimation(binding.card3)
-            sharedViewModel.cardImage4 -> shakeAnimation(binding.card4)
-            sharedViewModel.cardImage5 -> shakeAnimation(binding.card5)
-            sharedViewModel.cardImage6 -> shakeAnimation(binding.card6)
-            sharedViewModel.cardImage7 -> shakeAnimation(binding.card7)
-            sharedViewModel.cardImage8 -> shakeAnimation(binding.card8)
-            sharedViewModel.cardImage9 -> shakeAnimation(binding.card9)
-            sharedViewModel.cardImage10 -> shakeAnimation(binding.card10)
-            sharedViewModel.cardImage11 -> shakeAnimation(binding.card11)
-            sharedViewModel.cardImage12 -> shakeAnimation(binding.card12)
+        sharedViewModel.cardDataList.forEachIndexed { index, it ->
+            if (it == cardItem) shakeAnimation(bindingCardList[index])
         }
     }
 
     // 정답이면 selectedCard 와 동일한 카드를 찾는 코드
     private fun selectedCardMatchCardImage(cardItem: CardItem?) {
-        when (cardItem) {
-            sharedViewModel.cardImage1 -> connectImageToCard(binding.card1)
-            sharedViewModel.cardImage2 -> connectImageToCard(binding.card2)
-            sharedViewModel.cardImage3 -> connectImageToCard(binding.card3)
-            sharedViewModel.cardImage4 -> connectImageToCard(binding.card4)
-            sharedViewModel.cardImage5 -> connectImageToCard(binding.card5)
-            sharedViewModel.cardImage6 -> connectImageToCard(binding.card6)
-            sharedViewModel.cardImage7 -> connectImageToCard(binding.card7)
-            sharedViewModel.cardImage8 -> connectImageToCard(binding.card8)
-            sharedViewModel.cardImage9 -> connectImageToCard(binding.card9)
-            sharedViewModel.cardImage10 -> connectImageToCard(binding.card10)
-            sharedViewModel.cardImage11 -> connectImageToCard(binding.card11)
-            sharedViewModel.cardImage12 -> connectImageToCard(binding.card12)
+        sharedViewModel.cardDataList.forEachIndexed { index, it ->
+            if (it == cardItem) connectImageToCard(bindingCardList[index])
+        }
+    }
+
+    // 카드 선택시 노란색 표시
+    private fun setVisibilitySelectedCard(cardItem: CardItem, visibility: Int) {
+        sharedViewModel.cardDataList.forEachIndexed { index, it ->
+            if (it == cardItem)  bindingSelectedCardList[index].visibility = visibility
         }
     }
 
     // 카드 선택시 노란색 표시
     private fun visibleSelectedCard(cardItem: CardItem) {
-        when (cardItem) {
-            sharedViewModel.cardImage1 -> binding.selectedCard1.visibility = View.VISIBLE
-            sharedViewModel.cardImage2 -> binding.selectedCard2.visibility = View.VISIBLE
-            sharedViewModel.cardImage3 -> binding.selectedCard3.visibility = View.VISIBLE
-            sharedViewModel.cardImage4 -> binding.selectedCard4.visibility = View.VISIBLE
-            sharedViewModel.cardImage5 -> binding.selectedCard5.visibility = View.VISIBLE
-            sharedViewModel.cardImage6 -> binding.selectedCard6.visibility = View.VISIBLE
-            sharedViewModel.cardImage7 -> binding.selectedCard7.visibility = View.VISIBLE
-            sharedViewModel.cardImage8 -> binding.selectedCard8.visibility = View.VISIBLE
-            sharedViewModel.cardImage9 -> binding.selectedCard9.visibility = View.VISIBLE
-            sharedViewModel.cardImage10 -> binding.selectedCard10.visibility = View.VISIBLE
-            sharedViewModel.cardImage11 -> binding.selectedCard11.visibility = View.VISIBLE
-            sharedViewModel.cardImage12 -> binding.selectedCard12.visibility = View.VISIBLE
+        sharedViewModel.cardDataList.forEachIndexed { index, it ->
+            if (it == cardItem)  bindingSelectedCardList[index].visibility = View.VISIBLE
         }
     }
 
     // 카드 두번 선택시 노란색 해제 기능
     private fun invisibleSelectedCard(cardItem: CardItem) {
-        when (cardItem) {
-            sharedViewModel.cardImage1 -> binding.selectedCard1.visibility = View.INVISIBLE
-            sharedViewModel.cardImage2 -> binding.selectedCard2.visibility = View.INVISIBLE
-            sharedViewModel.cardImage3 -> binding.selectedCard3.visibility = View.INVISIBLE
-            sharedViewModel.cardImage4 -> binding.selectedCard4.visibility = View.INVISIBLE
-            sharedViewModel.cardImage5 -> binding.selectedCard5.visibility = View.INVISIBLE
-            sharedViewModel.cardImage6 -> binding.selectedCard6.visibility = View.INVISIBLE
-            sharedViewModel.cardImage7 -> binding.selectedCard7.visibility = View.INVISIBLE
-            sharedViewModel.cardImage8 -> binding.selectedCard8.visibility = View.INVISIBLE
-            sharedViewModel.cardImage9 -> binding.selectedCard9.visibility = View.INVISIBLE
-            sharedViewModel.cardImage10 -> binding.selectedCard10.visibility = View.INVISIBLE
-            sharedViewModel.cardImage11 -> binding.selectedCard11.visibility = View.INVISIBLE
-            sharedViewModel.cardImage12 -> binding.selectedCard12.visibility = View.INVISIBLE
+        sharedViewModel.cardDataList.forEachIndexed { index, it ->
+            if (it == cardItem) bindingSelectedCardList[index].visibility = View.INVISIBLE
         }
     }
 
@@ -350,13 +279,12 @@ class SetFragment : Fragment() {
                 render.setDuration(250L)
                 render.start()
 
-                delay(125L)
+                delay(50L)
                 sharedViewModel.resetSelectedCard()
                 invisibleAllSelectedCard()
                 sharedViewModel.shuffleCard()
                 startGame()
 
-                delay(150L)
                 render.setAnimation(Slide().InLeft(binding.constraintLayout))
                 render.setDuration(250L)
                 render.start()
