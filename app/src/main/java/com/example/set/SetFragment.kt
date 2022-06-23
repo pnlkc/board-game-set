@@ -3,7 +3,6 @@ package com.example.set
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
@@ -11,7 +10,6 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +18,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -63,8 +62,9 @@ class SetFragment : Fragment() {
             // 뒤로가기 했을 때 실행되는 기능
             var backWait: Long = 0
             override fun handleOnBackPressed() {
-                if (System.currentTimeMillis() - backWait >= 1000) {
+                if (System.currentTimeMillis() - backWait >= 2000) {
                     backWait = System.currentTimeMillis()
+                    Toast.makeText(context, "뒤로가기 버튼을 한번 더 누르면 시작화면으로 돌아갑니다", Toast.LENGTH_SHORT).show()
 
                 } else {
                     findNavController().navigate(R.id.action_setFragment_to_startFragment)
@@ -340,7 +340,9 @@ class SetFragment : Fragment() {
         val word = sharedViewModel.score.value.toString() + "개"
         val start = dialogText.indexOf(word)
         val end = start + word.length
-        spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#ae3b75")),
+//        spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#ae3b75")),
+        spannableString.setSpan(ForegroundColorSpan(ContextCompat
+            .getColor(requireContext(), R.color.dialog_score_text)),
             start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(StyleSpan(Typeface.BOLD),
             start,
@@ -377,8 +379,10 @@ class SetFragment : Fragment() {
 
         when (string) {
             "save" -> {
-                val jsonUsedCardList = gson.toJson(sharedViewModel.usedCardList , typeUsedCardList.type)
-                val jsonCardDataList = gson.toJson(sharedViewModel.cardDataList, typeCardDataList.type)
+                val jsonUsedCardList =
+                    gson.toJson(sharedViewModel.usedCardList, typeUsedCardList.type)
+                val jsonCardDataList =
+                    gson.toJson(sharedViewModel.cardDataList, typeCardDataList.type)
 
                 editor.putString(KEY_USED_CARD_LIST, jsonUsedCardList)
                 editor.putString(KEY_CARD_DATA_LIST, jsonCardDataList)
@@ -389,8 +393,10 @@ class SetFragment : Fragment() {
                 val jsonUsedCardList = sharedPreferences.getString(KEY_USED_CARD_LIST, "")
                 val jsonCardDataList = sharedPreferences.getString(KEY_CARD_DATA_LIST, "")
 
-                sharedViewModel.usedCardList = gson.fromJson(jsonUsedCardList, typeUsedCardList.type)
-                sharedViewModel.cardDataList = gson.fromJson(jsonCardDataList, typeCardDataList.type)
+                sharedViewModel.usedCardList =
+                    gson.fromJson(jsonUsedCardList, typeUsedCardList.type)
+                sharedViewModel.cardDataList =
+                    gson.fromJson(jsonCardDataList, typeCardDataList.type)
                 sharedViewModel.score.value = sharedPreferences.getInt(KEY_SCORE, 0)
             }
             "delete" -> {
@@ -410,7 +416,7 @@ class SetFragment : Fragment() {
             saveAndLoadGame("delete")
         }
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

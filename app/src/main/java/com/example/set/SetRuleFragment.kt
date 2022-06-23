@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.set.databinding.SetruleFragmentBinding
@@ -63,7 +64,8 @@ class SetRuleFragment : Fragment() {
         val start = fullText.indexOf(specificWord)
         val end = start + specificWord.length
         // 색상이 하드코딩 밖에 안됨
-        spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#ae3b75")),
+        spannableString.setSpan(ForegroundColorSpan(ContextCompat
+            .getColor(requireContext(), R.color.rule_highlight_text)),
             start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(StyleSpan(Typeface.BOLD),
             start,
