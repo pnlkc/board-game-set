@@ -5,6 +5,7 @@
 >카드 애니메이션은 Android View Animations in Kotlin(https://github.com/gayanvoice/android-animations-kotlin) 사용
 
 시작 화면 이미지 lottie animation 출처 : https://lottiefiles.com/91317-card-game
+사용된 폰트 : Gmarket Sans / 배민 주아체
 <br>
 <br>
 ### changelog 
