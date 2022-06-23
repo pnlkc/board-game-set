@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_start_order"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/set_bg"
+    tools:context="com.example.set.StartFragment">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_animation_view"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="150dp"
+        app:lottie_rawRes="@raw/card_game"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/new_game_btn"
+        />
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:id="@+id/continue_game_btn"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:padding="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/continue_set"
+        android:textColor="@color/btn_text_color"
+        android:textSize="23sp"
+        android:fontFamily="@font/bm_jua"
+        android:background="@drawable/btn_bg"
+        app:layout_constraintEnd_toEndOf="@id/new_game_btn"
+        app:layout_constraintStart_toStartOf="@id/new_game_btn"
+        app:layout_constraintTop_toBottomOf="@id/lottie_animation_view"
+        android:visibility="invisible"/>
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:id="@+id/new_game_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:padding="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:layout_marginTop="100dp"
+        android:text="@string/play_set"
+        android:textColor="@color/btn_text_color"
+        android:textSize="23sp"
+        android:fontFamily="@font/bm_jua"
+        android:background="@drawable/btn_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lottie_animation_view" />
+
+    <Button
+        android:id="@+id/rule_btn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="\?"
+        android:textColor="@color/btn_text_color"
+        android:textSize="23sp"
+        android:fontFamily="@font/bm_jua"
+        android:background="@drawable/rule_btn_bg"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/new_game_btn" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Set</string>
+    <string name="play_set">세트 플레이하기</string>
+    <string name="score">맞춘 수 : %s</string>
+    <string name="leftcard">남은 카드 : %s</string>
+    <string name="leftCombination">가능한 조합 : %s</string>
+    <string name="score1">대단합니다!\n당신은 %s개를\n맞추셨습니다</string>
+    <string name="replay">다시하기</string>
+    <string name="rule_one">➊\n세트는\n4가지 속성을 가진\n카드 81장으로 진행됩니다</string>
+    <string name="rule_two">➋\n각 카드는\n모양, 색상, 갯수, 음영의\n속성을 가집니다</string>
+    <string name="rule_three">➌\n각 속성은 아래와 같이\n3개의 유형으로 이루어져 있습니다</string>
+    <string name="rule_four">➍\n게임을 시작할 때\n필드에 12장의 카드가 세팅됩니다</string>
+    <string name="rule_five">➎\n플레이어는 필드의 카드에서\n각 속성이 모두 같거나 다른\n세장의 카드를 찾아야합니다</string>
+    <string name="rule_six">➏\n아래의 경우처럼 어떠한 속성이\n두장만 같으면 안됩니다</string>
+    <string name="rule_seven">➐\n세트를 성공시키면\n성공한 카드는 사라지고\n3장의 새로운 카드가 추가됩니다</string>
+    <string name="rule_eight">➑\n만약 세트를 찾지 못할 경우\n카드섞기 버튼을 누르면\n필드의 카드를 다시 세팅할 수 있습니다</string>
+    <string name="rule_nine">➒\n카드더미를 모두 사용하고\n필드에 세트가 가능한 조합이 없으면\n게임이 종료됩니다</string>
+    <string name="continue_set">이어하기</string>
+</resources>
