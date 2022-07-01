@@ -1,9 +1,9 @@
-package com.example.set.model
+package com.pnlkc.set.model
 
 import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.set.data.DataSource
+import com.pnlkc.set.data.DataSource
 
 class SetViewModel : ViewModel() {
 

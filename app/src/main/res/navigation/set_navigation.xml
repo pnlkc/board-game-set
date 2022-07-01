@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/startFragment"
-        android:name="com.example.set.StartFragment"
+        android:name="com.pnlkc.set.StartFragment"
         android:label="start_fragment"
         tools:layout="@layout/start_fragment" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/setFragment"
-        android:name="com.example.set.SetFragment"
+        android:name="com.pnlkc.set.SetFragment"
         android:label="set_fragment"
         tools:layout="@layout/set_fragment" >
         <action
@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/setRuleFragment"
-        android:name="com.example.set.SetRuleFragment"
+        android:name="com.pnlkc.set.SetRuleFragment"
         android:label="setrule_fragment"
         tools:layout="@layout/setrule_fragment" >
         <action

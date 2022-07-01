@@ -1,7 +1,7 @@
-package com.example.set.data
+package com.pnlkc.set.data
 
-import com.example.set.R
-import com.example.set.model.CardItem
+import com.pnlkc.set.R
+import com.pnlkc.set.model.CardItem
 
 object DataSource {
     // sharedPreference 키

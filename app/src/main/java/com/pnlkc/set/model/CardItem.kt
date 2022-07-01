@@ -1,4 +1,4 @@
-package com.example.set.model
+package com.pnlkc.set.model
 
 import androidx.annotation.DrawableRes
 

@@ -1,4 +1,4 @@
-package com.example.set
+package com.pnlkc.set
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

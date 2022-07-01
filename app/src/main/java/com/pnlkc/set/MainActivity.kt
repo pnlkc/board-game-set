@@ -1,11 +1,10 @@
-package com.example.set
+package com.pnlkc.set
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.set.databinding.ActivityMainBinding
-import com.example.set.model.CardItem
+import com.pnlkc.set.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 

@@ -8,11 +8,11 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.set.model.SetViewModel" />
+            type="com.pnlkc.set.model.SetViewModel" />
 
         <variable
             name="setFragment"
-            type="com.example.set.SetFragment" />
+            type="com.pnlkc.set.SetFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,6 +1,5 @@
-package com.example.set
+package com.pnlkc.set
 
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
@@ -11,12 +10,10 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.set.databinding.SetruleFragmentBinding
+import com.pnlkc.set.databinding.SetruleFragmentBinding
 
 class SetRuleFragment : Fragment() {
 

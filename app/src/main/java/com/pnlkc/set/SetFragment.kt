@@ -1,4 +1,4 @@
-package com.example.set
+package com.pnlkc.set
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -22,13 +22,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.set.data.DataSource.KEY_CARD_DATA_LIST
-import com.example.set.data.DataSource.KEY_PREFS
-import com.example.set.data.DataSource.KEY_SCORE
-import com.example.set.data.DataSource.KEY_USED_CARD_LIST
-import com.example.set.databinding.SetFragmentBinding
-import com.example.set.model.CardItem
-import com.example.set.model.SetViewModel
+import com.pnlkc.set.data.DataSource.KEY_CARD_DATA_LIST
+import com.pnlkc.set.data.DataSource.KEY_PREFS
+import com.pnlkc.set.data.DataSource.KEY_SCORE
+import com.pnlkc.set.data.DataSource.KEY_USED_CARD_LIST
+import com.pnlkc.set.databinding.SetFragmentBinding
+import com.pnlkc.set.model.CardItem
+import com.pnlkc.set.model.SetViewModel
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope

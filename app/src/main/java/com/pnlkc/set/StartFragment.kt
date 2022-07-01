@@ -1,4 +1,4 @@
-package com.example.set
+package com.pnlkc.set
 
 import android.content.Context
 import android.os.Bundle
@@ -10,14 +10,10 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.set.data.DataSource
-import com.example.set.data.DataSource.KEY_CARD_DATA_LIST
-import com.example.set.data.DataSource.KEY_USED_CARD_LIST
-import com.example.set.databinding.StartFragmentBinding
-import com.example.set.model.CardItem
-import com.example.set.model.SetViewModel
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
+import com.pnlkc.set.data.DataSource
+import com.pnlkc.set.data.DataSource.KEY_USED_CARD_LIST
+import com.pnlkc.set.databinding.StartFragmentBinding
+import com.pnlkc.set.model.SetViewModel
 
 class StartFragment : Fragment() {
 
