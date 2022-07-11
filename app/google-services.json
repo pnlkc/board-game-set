@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "457299609269",
+    "project_id": "board-game-set",
+    "storage_bucket": "board-game-set.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:457299609269:android:38ad2d63ffc707dab0e0fc",
+        "android_client_info": {
+          "package_name": "com.pnlkc.set"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "457299609269-20pvq13fhlk61dja4400bcdoirsc659i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pnlkc.set",
+            "certificate_hash": "dca77043dfae3419715bf5b5b2a2aa3f9a73360f"
+          }
+        },
+        {
+          "client_id": "457299609269-jblbq9u1ail7m5ujti4itr6m8ckutf9o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-V_CLOLnoXHqxXCn59McWw_rtmNkPn3Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "457299609269-jblbq9u1ail7m5ujti4itr6m8ckutf9o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

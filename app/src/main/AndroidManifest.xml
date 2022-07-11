@@ -8,7 +8,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Set">
+        android:theme="@style/Theme.Set"
+        android:name=".util.App">
         <activity
             android:name="com.pnlkc.set.MainActivity"
             android:exported="true">

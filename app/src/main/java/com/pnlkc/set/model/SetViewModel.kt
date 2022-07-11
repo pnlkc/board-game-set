@@ -3,6 +3,8 @@ package com.pnlkc.set.model
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pnlkc.set.data.DataSource.allCardList
+import com.pnlkc.set.data.GameState
+import com.pnlkc.set.data.UserMode
 
 class SetViewModel : ViewModel() {
 
@@ -26,17 +28,19 @@ class SetViewModel : ViewModel() {
     private var _leftCombination = MutableLiveData(0)
     val leftCombination: MutableLiveData<Int> get() = _leftCombination
 
-    var selectedCardIndex: Array<Int?> = arrayOf(null, null, null)
+    var selectedCardIndex: MutableList<Int?> = mutableListOf(null, null, null)
 
     // 선택된 카드 정답 확인용 변수 (shape, color, number, shade 순서)
     private var checkList = arrayOf(0, 0, 0, 0)
 
-    init {
-        initCard()
-    }
+    // 온라인 모드에서 유저가 방장인지 아닌지 확인하기 위한 변수
+    var userMode = UserMode.CLIENT
+    var nickname = ""
+    var roomCode: String? = null
+    var gameState = GameState.WAIT
 
     // 초기 카드 목록 세팅
-    private fun initCard() {
+    fun initCard() {
         fieldCardList.clear()
         repeat (12) {
             fieldCardList.add(shuffledCardList.first())
@@ -45,7 +49,7 @@ class SetViewModel : ViewModel() {
     }
 
     // 다음 카드 받기
-    private fun getNextCard() {
+    fun getNextCard() {
         if (shuffledCardList.isNotEmpty()) {
             fieldCardList[selectedCardIndex[0]!!] = shuffledCardList.first()
             shuffledCardList.removeFirst()
@@ -150,15 +154,19 @@ class SetViewModel : ViewModel() {
     }
 
     fun resetSelectedCard() {
-        selectedCardIndex = arrayOf(null, null, null)
+        selectedCardIndex = mutableListOf(null, null, null)
     }
 
     private fun resetCheckValue() {
         checkList = arrayOf(0, 0, 0, 0)
     }
 
-    fun resetAllValue() {
+    fun resetShuffledCardList() {
         shuffledCardList = allCardList.shuffled().toMutableList()
+    }
+
+    fun resetAllValue() {
+        resetShuffledCardList()
         initCard()
         _leftCard.value = 69
         _score.value = 0

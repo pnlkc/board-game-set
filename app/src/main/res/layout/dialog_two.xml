@@ -1,0 +1,101 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    >
+
+    <TextView
+        android:id="@+id/dialog_two_title_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="멀티플레이"
+        android:textSize="23sp"
+        android:textColor="@color/dialog_title_text"
+        android:paddingVertical="20dp"
+        android:fontFamily="@font/bm_jua"
+        android:gravity="center"
+        android:background="@color/dialog_title_bg" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingHorizontal="60dp"
+        android:paddingVertical="30dp"
+        android:background="@color/dialog_text_bg">
+
+        <EditText
+            android:id="@+id/dialog_edittext1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:hint="닉네임을 입력하세요"
+            android:maxLength="10"
+            android:gravity="center"
+            android:background="@null"
+            android:fontFamily="@font/bm_jua"
+            android:textSize="22sp"
+            android:visibility="gone"
+            />
+
+        <Button
+            android:id="@+id/dialog_btn1"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_bg"
+            android:text="게임 만들기"
+            android:textSize="20sp"
+            android:fontFamily="@font/bm_jua"
+            android:textColor="@color/btn_text_color"
+            android:paddingHorizontal="30dp"
+            android:paddingVertical="20dp"
+            />
+
+        <EditText
+            android:id="@+id/dialog_edittext2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="1) 닉네임을 입력하세요"
+            android:maxLength="10"
+            android:gravity="center"
+            android:background="@null"
+            android:fontFamily="@font/bm_jua"
+            android:textSize="22sp"
+            android:visibility="gone"
+            />
+
+        <EditText
+            android:id="@+id/room_code_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:hint="2) 코드를 입력하세요"
+            android:gravity="center"
+            android:background="@null"
+            android:fontFamily="@font/bm_jua"
+            android:textSize="22sp"
+            android:visibility="gone"
+            />
+
+        <Button
+            android:id="@+id/dialog_btn2"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/btn_bg"
+            android:text="게임 참가하기"
+            android:textSize="20sp"
+            android:fontFamily="@font/bm_jua"
+            android:textColor="@color/btn_text_color"
+            android:paddingHorizontal="30dp"
+            android:paddingVertical="20dp"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>

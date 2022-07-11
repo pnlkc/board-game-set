@@ -36,7 +36,7 @@ class SetRuleFragment : Fragment() {
 
         // 뒤로가기 버튼이 눌렸을 때
         binding.backBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_setRuleFragment_to_startFragment)
+            findNavController().navigate(R.id.action_setRuleFragment_pop)
         }
 
         // 게임시작 버튼이 눌렸을 때

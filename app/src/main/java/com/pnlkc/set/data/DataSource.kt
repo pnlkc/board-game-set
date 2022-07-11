@@ -3,6 +3,14 @@ package com.pnlkc.set.data
 import com.pnlkc.set.R
 import com.pnlkc.set.model.CardItem
 
+enum class UserMode {
+    HOST, CLIENT
+}
+
+enum class GameState {
+    WAIT, READY, START
+}
+
 object DataSource {
     // sharedPreference 키
     const val KEY_PREFS = "set_prefs"

@@ -26,4 +26,5 @@
     <color name="rule_btn_ripple">#69cc9a</color>
     <color name="rule_dash_line">#F3EFF2</color>
     <color name="rule_highlight_text">#ae3b75</color>
+    <color name="answer_player_highlight">#cc699b</color>
 </resources>

@@ -1,0 +1,81 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <TextView
+        android:id="@+id/dialog_title_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="다이얼로그 타이틀"
+        android:textSize="21sp"
+        android:textColor="@color/dialog_title_text"
+        android:paddingVertical="20dp"
+        android:fontFamily="@font/bm_jua"
+        android:gravity="center"
+        android:background="@color/dialog_title_bg" />
+
+    <TextView
+        android:id="@+id/dialog_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="다이얼로그 내용이 들어갈 자리"
+        android:textColor="@color/dialog_text"
+        android:textSize="23sp"
+        android:fontFamily="@font/bm_jua"
+        android:lineSpacingExtra="15dp"
+        android:background="@color/dialog_text_bg"
+        android:gravity="center"
+        android:paddingVertical="40dp"
+        tools:text="당신은 0개를\n맞추셨습니다!"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginHorizontal="25dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="20dp"
+        android:background="@color/dialog_text_bg">
+
+        <Button
+            android:id="@+id/dialog_left_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_btn_bg"
+            android:text="왼쪽버튼"
+            android:textSize="18sp"
+            android:fontFamily="@font/bm_jua"
+            android:textColor="@color/dialog_btn_text"
+            android:maxLines="1"
+            android:paddingHorizontal="10dp"
+            />
+
+        <Button
+            android:id="@+id/dialog_right_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_btn_bg"
+            android:text="오른쪽버튼"
+            android:textSize="18sp"
+            android:fontFamily="@font/bm_jua"
+            android:maxLines="1"
+            android:textColor="@color/dialog_btn_text"
+            android:paddingHorizontal="10dp"
+            android:layout_marginStart="20dp"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>

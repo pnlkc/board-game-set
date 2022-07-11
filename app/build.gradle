@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    // 파이어베이스 사용하기 위해 필요
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -9,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.pnlkc.set"
-        minSdk 21
+        minSdk 26
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -39,22 +41,40 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.5.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0-rc02")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.0-rc02")
-    implementation "androidx.navigation:navigation-fragment-ktx:2.4.2"
-    implementation "androidx.navigation:navigation-ui-ktx:2.4.2"
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0-alpha01")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.0-alpha01")
+    implementation "androidx.navigation:navigation-fragment-ktx:2.5.0"
+    implementation "androidx.navigation:navigation-ui-ktx:2.5.0"
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.github.gayanvoice:android-animations-kotlin:1.0.1'
-    implementation 'com.airbnb.android:lottie:5.0.3'
+    implementation 'com.airbnb.android:lottie:5.2.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
 
     // gson (SharedPreference 객체 저장용)
     implementation 'com.google.code.gson:gson:2.9.0'
+
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:30.1.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    // 파이어베이스 Authentication 기능을 사용하기 위해 필요
+    implementation('com.google.firebase:firebase-auth-ktx')
+
+    // 파이어베이스 구글 인증을 사용하기 위해 필요
+    implementation('com.google.android.gms:play-services-auth:20.2.0')
+
+    // FirebaseAuth를 전역으로 설정할때 MultiDexApplication()을 상속받기 위해 필요
+    implementation('androidx.multidex:multidex:2.0.1')
+
+    // Firebase Firestore
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.2.0'
+
 }

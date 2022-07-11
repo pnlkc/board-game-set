@@ -25,16 +25,14 @@
             android:id="@+id/textView1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
             android:fontFamily="@font/bm_jua"
-            android:text="@{@string/leftcard(viewModel.leftCard)}"
+            android:text="@{@string/leftCombination(viewModel.leftCombination)}"
             android:textColor="@color/text_color"
             android:textSize="20sp"
-            android:layout_marginTop="5dp"
-            app:layout_constraintEnd_toStartOf="@id/textView2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="남은 카드 : 69" />
+            android:layout_marginStart="30dp"
+            tools:text="가능한 조합 : 3" />
 
         <TextView
             android:id="@+id/textView2"
@@ -46,26 +44,9 @@
             android:text="@{@string/score(viewModel.score)}"
             android:textColor="@color/text_color"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@id/textView3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/textView1"
             app:layout_constraintTop_toTopOf="@id/textView1"
             tools:text="맞춘 수 : 0" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/bm_jua"
-            android:text="@{@string/leftCombination(viewModel.leftCombination)}"
-            android:textColor="@color/text_color"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@id/textView2"
-            app:layout_constraintStart_toStartOf="@id/textView1"
-            app:layout_constraintTop_toBottomOf="@id/textView1"
-            tools:text="가능한 조합 : 3" />
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_layout"
@@ -73,10 +54,10 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView3"
+            app:layout_constraintTop_toBottomOf="@id/textView1"
             app:layout_constraintBottom_toTopOf="@id/backButton"
-            android:layout_marginBottom="30dp">
-
+            android:layout_marginBottom="50dp"
+            >
 
             <ImageView
                 android:id="@+id/selectedCard1"
@@ -210,145 +191,134 @@
                 app:layout_constraintStart_toStartOf="@id/card12"
                 app:layout_constraintTop_toTopOf="@id/card12" />
 
+            <!--  여기서부터 카드  -->
+
             <ImageView
                 android:id="@+id/card1"
                 android:layout_width="80dp"
                 android:layout_height="120dp"
-                android:layout_marginTop="25dp"
-                android:src="@drawable/card_bg"
-                android:elevation="10dp"
-                app:layout_constraintEnd_toStartOf="@id/card2"
-                app:layout_constraintStart_toStartOf="parent"
+                android:src="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/emptycard" />
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="15dp"/>
 
             <ImageView
                 android:id="@+id/card2"
                 android:layout_width="80dp"
                 android:layout_height="120dp"
-                android:src="@drawable/card_bg"
-                android:elevation="10dp"
-                app:layout_constraintEnd_toStartOf="@+id/card3"
-                app:layout_constraintStart_toEndOf="@+id/card1"
+                android:src="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@+id/card1"
-                tools:src="@drawable/emptycard" />
+                app:layout_constraintStart_toEndOf="@id/card1"
+                app:layout_constraintEnd_toStartOf="@id/card3" />
 
             <ImageView
                 android:id="@+id/card3"
                 android:layout_width="80dp"
                 android:layout_height="120dp"
-                android:src="@drawable/card_bg"
-                android:elevation="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/emptycard"
+                app:layout_constraintTop_toTopOf="@id/card1"
                 app:layout_constraintStart_toEndOf="@id/card2"
-                app:layout_constraintTop_toTopOf="@id/card2"
-                tools:src="@drawable/emptycard" />
+                app:layout_constraintEnd_toStartOf="@id/card4" />
 
             <ImageView
                 android:id="@+id/card4"
                 android:layout_width="80dp"
                 android:layout_height="120dp"
-                android:layout_marginTop="20dp"
-                android:src="@drawable/card_bg"
-                android:elevation="10dp"
-                app:layout_constraintEnd_toStartOf="@id/card5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card1"
-                tools:src="@drawable/emptycard" />
+                android:src="@drawable/emptycard"
+                app:layout_constraintTop_toTopOf="@id/card1"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="15dp"/>
 
             <ImageView
                 android:id="@+id/card5"
                 android:layout_width="80dp"
                 android:layout_height="120dp"
-                android:src="@drawable/card_bg"
-                android:elevation="10dp"
-                app:layout_constraintEnd_toStartOf="@id/card6"
-                app:layout_constraintStart_toEndOf="@id/card4"
-                app:layout_constraintTop_toTopOf="@id/card4"
-                tools:src="@drawable/emptycard" />
+                android:layout_marginTop="20dp"
+                android:src="@drawable/emptycard"
+                app:layout_constraintStart_toStartOf="@id/card1"
+                app:layout_constraintTop_toBottomOf="@id/card1" />
 
             <ImageView
                 android:id="@+id/card6"
                 android:layout_width="80dp"
                 android:layout_height="120dp"
-                android:src="@drawable/card_bg"
-                android:elevation="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/card5"
+                android:src="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@id/card5"
-                tools:src="@drawable/emptycard" />
+                app:layout_constraintStart_toEndOf="@id/card5"
+                app:layout_constraintEnd_toStartOf="@id/card7" />
 
             <ImageView
                 android:id="@+id/card7"
                 android:layout_width="80dp"
                 android:layout_height="120dp"
-                android:layout_marginTop="20dp"
-                android:src="@drawable/card_bg"
-                android:elevation="10dp"
-                app:layout_constraintEnd_toStartOf="@id/card8"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card4"
-                tools:src="@drawable/emptycard" />
+                android:src="@drawable/emptycard"
+                app:layout_constraintTop_toTopOf="@id/card5"
+                app:layout_constraintStart_toEndOf="@id/card6"
+                app:layout_constraintEnd_toStartOf="@id/card8" />
 
             <ImageView
                 android:id="@+id/card8"
                 android:layout_width="80dp"
                 android:layout_height="120dp"
-                android:src="@drawable/card_bg"
-                android:elevation="10dp"
-                app:layout_constraintEnd_toStartOf="@id/card9"
-                app:layout_constraintStart_toEndOf="@id/card7"
-                app:layout_constraintTop_toTopOf="@id/card7"
-                tools:src="@drawable/emptycard" />
+                android:src="@drawable/emptycard"
+                app:layout_constraintTop_toTopOf="@id/card5"
+                app:layout_constraintEnd_toEndOf="@id/card4" />
 
             <ImageView
                 android:id="@+id/card9"
                 android:layout_width="80dp"
                 android:layout_height="120dp"
-                android:src="@drawable/card_bg"
-                android:elevation="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/card8"
-                app:layout_constraintTop_toTopOf="@id/card7"
-                tools:src="@drawable/emptycard" />
+                android:layout_marginTop="20dp"
+                android:src="@drawable/emptycard"
+                app:layout_constraintTop_toBottomOf="@id/card5"
+                app:layout_constraintStart_toStartOf="@id/card1" />
 
             <ImageView
                 android:id="@+id/card10"
                 android:layout_width="80dp"
                 android:layout_height="120dp"
-                android:layout_marginTop="20dp"
-                android:src="@drawable/card_bg"
-                android:elevation="10dp"
+                android:src="@drawable/emptycard"
+                app:layout_constraintTop_toTopOf="@id/card9"
+                app:layout_constraintStart_toEndOf="@id/card9"
                 app:layout_constraintEnd_toStartOf="@id/card11"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card7"
-                tools:src="@drawable/emptycard" />
+                />
 
             <ImageView
                 android:id="@+id/card11"
                 android:layout_width="80dp"
                 android:layout_height="120dp"
-                android:src="@drawable/card_bg"
-                android:elevation="10dp"
-                app:layout_constraintEnd_toStartOf="@id/card12"
+                android:src="@drawable/emptycard"
+                app:layout_constraintTop_toTopOf="@id/card9"
                 app:layout_constraintStart_toEndOf="@id/card10"
-                app:layout_constraintTop_toTopOf="@id/card10"
-                tools:src="@drawable/emptycard" />
+                app:layout_constraintEnd_toStartOf="@id/card12"
+                />
 
             <ImageView
                 android:id="@+id/card12"
                 android:layout_width="80dp"
                 android:layout_height="120dp"
-                android:src="@drawable/card_bg"
-                android:elevation="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/card11"
-                app:layout_constraintTop_toTopOf="@id/card11"
+                android:src="@drawable/emptycard"
+                app:layout_constraintTop_toTopOf="@id/card9"
+                app:layout_constraintEnd_toEndOf="@id/card4"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="25dp"
-                tools:src="@drawable/emptycard" />
+                android:layout_marginBottom="20dp"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/leftcard_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bm_jua"
+            android:text="@{@string/leftcard(viewModel.leftCard)}"
+            android:textColor="@color/text_color"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/constraint_layout"
+            android:layout_marginEnd="20dp"
+            tools:text="남은 카드 : 69" />
 
         <Button
             style="@style/Widget.AppCompat.Button.Borderless"

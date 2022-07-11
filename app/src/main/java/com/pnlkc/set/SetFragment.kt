@@ -71,7 +71,7 @@ class SetFragment : Fragment() {
                         .show()
 
                 } else {
-                    findNavController().navigate(R.id.action_setFragment_to_startFragment)
+                    findNavController().navigate(R.id.action_setFragment_pop)
                 }
             }
         }
@@ -143,7 +143,6 @@ class SetFragment : Fragment() {
     // 초기 12장 세팅
     private fun startGame() {
         bindingCardList.forEachIndexed { index, imageView ->
-            // 게임 시작 될 때 한번만 실행하면 될거 같은데...
             if (sharedViewModel.leftCard.value != 0) imageView.visibility = View.VISIBLE
             connectImageToCard(index)
         }
@@ -297,7 +296,9 @@ class SetFragment : Fragment() {
         // 커스텀 Dialog 만들기
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.end_dialog)
+        dialog.setContentView(R.layout.dialog_one)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.setCancelable(false)
         dialog.show()
 

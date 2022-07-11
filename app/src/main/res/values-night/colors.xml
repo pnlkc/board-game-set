@@ -16,14 +16,15 @@
     <color name="text_color">#FFFFFF</color>
     <color name="dialog_title_bg">#362C35</color>
     <color name="dialog_text_bg">#4a4149</color>
-    <color name="dialog_title_text">#cc699b</color>
+    <color name="dialog_title_text">#CD82A8</color>
     <color name="dialog_text">#FFFFFF</color>
     <color name="dialog_score_text">#cc699b</color>
-    <color name="dialog_btn_text">#cc699b</color>
+    <color name="dialog_btn_text">#CD82A8</color>
     <color name="dialog_btn_ripple_color">#cc699b</color>
     <color name="dialog_btn_stroke_color">#493849</color>
     <color name="rule_btn_bg">#275800</color>
     <color name="rule_btn_ripple">#317000</color>
     <color name="rule_dash_line">#F3EFF2</color>
     <color name="rule_highlight_text">#cc699b</color>
+    <color name="answer_player_highlight">#BD5B8C</color>
 </resources>
