@@ -9,7 +9,7 @@
                 android:bottomRightRadius="15dp"
                 />
 
-            <solid android:color="@color/answer_player_highlight" />
+            <solid android:color="#FCE4EC" />
         </shape>
     </item>
 

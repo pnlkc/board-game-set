@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -16,8 +17,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FieldValue
 import com.pnlkc.set.data.DataSource
 import com.pnlkc.set.data.DataSource.KEY_SHUFFLED_CARD_LIST
 import com.pnlkc.set.data.UserMode
@@ -67,45 +66,18 @@ class StartFragment : Fragment() {
         sharedPreferences =
             requireActivity().getSharedPreferences(DataSource.KEY_PREFS, Context.MODE_PRIVATE)
 
-        checkExistSaveGame()
-
         // 로티 애니메이션 재생 길이 제한
         binding.lottieAnimationView.setMaxFrame(80)
 
-        binding.multiGameBtn.setOnClickListener {
-            showMultiDialog()
-        }
+        // 멀티플레이하기 버튼
+        binding.multiGameBtn.setOnClickListener { showMultiDialog() }
 
-        // 새로 플레이하기 버튼
-        binding.newGameBtn.setOnClickListener {
-            if (sharedPreferences.contains(KEY_SHUFFLED_CARD_LIST)) {
-                showNewGameDialog()
-            } else {
-                findNavController().navigate(R.id.action_startFragment_to_setFragment)
-                sharedViewModel.isContinueGame = false
-            }
-        }
-
-        // 이어하기 버튼
-        binding.continueGameBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_startFragment_to_setFragment)
-            sharedViewModel.isContinueGame = true
-        }
+        // 싱글플레이하기 버튼
+        binding.singleGameBtn.setOnClickListener { showSingleDialog() }
 
         // ?(룰) 버튼튼
         binding.ruleBtn.setOnClickListener {
             findNavController().navigate(R.id.action_startFragment_to_setRuleFragment)
-        }
-    }
-
-    // 저장된 게임이 있는지 확인
-    private fun checkExistSaveGame() {
-        if (sharedPreferences.contains(KEY_SHUFFLED_CARD_LIST)) {
-            binding.continueGameBtn.visibility = View.VISIBLE
-            binding.newGameBtn.text = "새로 시작하기"
-        } else {
-            binding.continueGameBtn.visibility = View.GONE
-            binding.newGameBtn.text = "세트 플레이하기"
         }
     }
 
@@ -114,7 +86,7 @@ class StartFragment : Fragment() {
         // 커스텀 Dialog 만들기
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_two)
+        dialog.setContentView(R.layout.dialog_play_multi)
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.setCancelable(true)
@@ -122,11 +94,14 @@ class StartFragment : Fragment() {
 
         // Dialog 레이아웃의 뷰를 변수와 연결하기
         // 그냥 연결이 안되서 dialog 변수를 따로 만들고 거기서 findViewById해서 찾음
-        val dialogEditText1 = dialog.findViewById<TextView>(R.id.dialog_edittext1)
-        val dialogBtn1 = dialog.findViewById<TextView>(R.id.dialog_btn1)
-        val dialogEditText2 = dialog.findViewById<TextView>(R.id.dialog_edittext2)
-        val dialogBtn2 = dialog.findViewById<TextView>(R.id.dialog_btn2)
-        val roomCodeEditText = dialog.findViewById<EditText>(R.id.room_code_edittext)
+        val dialogEditText1 =
+            dialog.findViewById<TextView>(R.id.dialog_play_multi_nickname_edittext1)
+        val dialogBtn1 = dialog.findViewById<TextView>(R.id.dialog_play_multi_btn1)
+        val dialogEditText2 =
+            dialog.findViewById<TextView>(R.id.dialog_play_multi_nickname_edittext2)
+        val dialogBtn2 = dialog.findViewById<TextView>(R.id.dialog_play_multi_btn2)
+        val roomCodeEditText =
+            dialog.findViewById<EditText>(R.id.dialog_play_multi_room_code_edittext)
 
         // 게임 만들기
         dialogBtn1.setOnClickListener {
@@ -157,7 +132,7 @@ class StartFragment : Fragment() {
                 dialogBtn1.visibility = View.GONE
             } else {
                 val nickname = dialogEditText2.text.toString()
-                val roomCode = roomCodeEditText.text.toString()
+                val roomCode = roomCodeEditText.text.toString().uppercase()
 
                 if (nickname.isBlank() && roomCode.isBlank()) {
                     Toast.makeText(activity, "닉네임과 코드를 입력하세요", Toast.LENGTH_SHORT).show()
@@ -167,44 +142,59 @@ class StartFragment : Fragment() {
                     Toast.makeText(activity, "코드를 입력하세요", Toast.LENGTH_SHORT).show()
                 } else {
                     val collection = App.firestore.collection(roomCode)
-                    collection.get().addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            if (task.result.size() == 0) {
-                                Toast.makeText(activity, "코드를 확인해 주십시오", Toast.LENGTH_SHORT).show()
-                            } else {
-                                collection.document("user").get()
-                                    .addOnSuccessListener { snapshot ->
-                                        sharedViewModel.roomCode = roomCode
-                                        val result: MutableList<String> =
-                                            snapshot.data!!["user"] as MutableList<String>
-                                        if (result.size < 4) {
-                                            if (result.contains(nickname)) {
-                                                Toast.makeText(activity,
-                                                    "이미 사용중인 닉네임입니다",
-                                                    Toast.LENGTH_SHORT).show()
+                    collection.get()
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                if (task.result.size() == 0) {
+                                    Toast.makeText(activity, "코드를 확인해 주십시오", Toast.LENGTH_SHORT)
+                                        .show()
+                                } else {
+                                    collection.document("user").get()
+                                        .addOnSuccessListener { snapshot ->
+                                            sharedViewModel.roomCode = roomCode
+                                            val result: MutableList<String> =
+                                                snapshot.data!!["user"] as MutableList<String>
+                                            if (result.size < 4) {
+                                                if (result.contains(nickname)) {
+                                                    Toast.makeText(activity,
+                                                        "이미 사용중인 닉네임입니다",
+                                                        Toast.LENGTH_SHORT).show()
+                                                } else {
+                                                    if (snapshot.data!!["start"] == false) {
+                                                        sharedViewModel.nickname = nickname
+                                                        result.add(nickname)
+                                                        val readyList =
+                                                            snapshot.data!!["ready"] as MutableList<Boolean>
+                                                        readyList.add(false)
+                                                        val scoreList =
+                                                            snapshot.data!!["score"] as MutableList<String>
+                                                        scoreList.add("0")
+                                                        collection.document("user")
+                                                            .update(
+                                                                "user", result,
+                                                                "ready", readyList,
+                                                                "score", scoreList
+                                                            )
+                                                        dialog.dismiss()
+                                                        findNavController().navigate(R.id.action_startFragment_to_setMultiReadyFragment)
+                                                    } else {
+                                                        Toast.makeText(activity,
+                                                            "게임이 이미 시작되어ㅜ 참가할 수 없습니다",
+                                                            Toast.LENGTH_SHORT).show()
+                                                    }
+                                                }
                                             } else {
-                                                sharedViewModel.nickname = nickname
-                                                result.add(nickname)
-                                                val readyList =
-                                                    snapshot.data!!["ready"] as MutableList<Boolean>
-                                                readyList.add(false)
-                                                collection.document("user")
-                                                    .update("user", result, "ready", readyList)
-                                                dialog.dismiss()
-                                                findNavController().navigate(R.id.action_startFragment_to_setMultiReadyFragment)
+                                                Toast.makeText(activity,
+                                                    "최대인원을 초과하여 참가할 수 없습니다",
+                                                    Toast.LENGTH_SHORT).show()
                                             }
-                                        } else {
-                                            Toast.makeText(activity,
-                                                "최대인원을 초과하여 참가할 수 없습니다",
-                                                Toast.LENGTH_SHORT).show()
                                         }
-                                    }
+                                }
+                            } else {
+                                dialog.dismiss()
+                                Log.d("로그", "데이터 로드 실패")
                             }
-                        } else {
-                            dialog.dismiss()
-                            Log.d("로그", "데이터 로드 실패")
                         }
-                    }
                 }
             }
         }
@@ -227,6 +217,7 @@ class StartFragment : Fragment() {
                         val data = hashMapOf(
                             "user" to mutableListOf(sharedViewModel.nickname),
                             "ready" to mutableListOf(false),
+                            "score" to mutableListOf("0"),
                             "start" to false
                         )
                         App.firestore.collection(sharedViewModel.roomCode!!).document("user")
@@ -239,11 +230,48 @@ class StartFragment : Fragment() {
             }
     }
 
+    private fun showSingleDialog() {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_play_single)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.setCancelable(true)
+        dialog.show()
+
+        val continueBtn = dialog.findViewById<Button>(R.id.dialog_play_single_continue_btn)
+        val newGameBtn = dialog.findViewById<Button>(R.id.dialog_play_single_new_game_btn)
+
+        if (sharedPreferences.contains(KEY_SHUFFLED_CARD_LIST)) {
+            continueBtn.visibility = View.VISIBLE
+            newGameBtn.text = "새로 시작하기"
+        } else {
+            continueBtn.visibility = View.GONE
+            newGameBtn.text = "세트 플레이하기"
+        }
+
+        continueBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_startFragment_to_setSinglePlayFragment)
+            sharedViewModel.isContinueGame = true
+            dialog.dismiss()
+        }
+
+        newGameBtn.setOnClickListener {
+            if (sharedPreferences.contains(KEY_SHUFFLED_CARD_LIST)) {
+                showNewGameDialog()
+            } else {
+                findNavController().navigate(R.id.action_startFragment_to_setSinglePlayFragment)
+                sharedViewModel.isContinueGame = false
+            }
+            dialog.dismiss()
+        }
+    }
+
     private fun showNewGameDialog() {
         // 커스텀 Dialog 만들기
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_one)
+        dialog.setContentView(R.layout.dialog_new_game)
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.setCancelable(true)
@@ -251,25 +279,19 @@ class StartFragment : Fragment() {
 
         // Dialog 레이아웃의 뷰를 변수와 연결하기
         // 그냥 연결이 안되서 dialog 변수를 따로 만들고 거기서 findViewById해서 찾음
-        val dialogTitleTextView = dialog.findViewById<TextView>(R.id.dialog_title_textview)
-        val dialogTextView = dialog.findViewById<TextView>(R.id.dialog_textview)
-        val dialogLeftBtn = dialog.findViewById<TextView>(R.id.dialog_left_btn)
-        val dialogRightBtn = dialog.findViewById<TextView>(R.id.dialog_right_btn)
+        val leftBtn = dialog.findViewById<TextView>(R.id.dialog_new_game_left_btn)
+        val rightBtn = dialog.findViewById<TextView>(R.id.dialog_new_game_right_btn)
 
         // Dialog 뷰 기능 구현
-        dialogTitleTextView.text = "새로 시작하시겠습니까?"
-        dialogTextView.text = "게임을 새로 시작하면\n저장된 데이터가 사라집니다"
-        dialogLeftBtn.apply {
-            text = "아니오"
-            setOnClickListener { dialog.dismiss() }
+        leftBtn.setOnClickListener {
+            dialog.dismiss()
+            showSingleDialog()
+
         }
-        dialogRightBtn.apply {
-            text = "예"
-            setOnClickListener {
-                findNavController().navigate(R.id.action_startFragment_to_setFragment)
-                sharedViewModel.isContinueGame = false
-                dialog.dismiss()
-            }
+        rightBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_startFragment_to_setSinglePlayFragment)
+            sharedViewModel.isContinueGame = false
+            dialog.dismiss()
         }
     }
 

@@ -1,5 +1,6 @@
 package com.pnlkc.set.model
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pnlkc.set.data.DataSource.allCardList
@@ -24,9 +25,12 @@ class SetViewModel : ViewModel() {
     private val _leftCard = MutableLiveData(69)
     val leftCard: MutableLiveData<Int> get() = _leftCard
 
-    // 남은 조합수 변수
+    // 필드 카드의 가능한 조합수 변수
     private var _leftCombination = MutableLiveData(0)
     val leftCombination: MutableLiveData<Int> get() = _leftCombination
+
+    // 전체 카드의 가능한 조합수 변수
+    var allCombination: Int = 1080
 
     var selectedCardIndex: MutableList<Int?> = mutableListOf(null, null, null)
 
@@ -68,7 +72,6 @@ class SetViewModel : ViewModel() {
     fun shuffleCard() {
         shuffledCardList.addAll(fieldCardList)
         shuffledCardList = shuffledCardList.shuffled().toMutableList()
-        initCard()
     }
 
     // 선택된 카드 3개가 정답인지 확인하는 기능
@@ -124,12 +127,11 @@ class SetViewModel : ViewModel() {
     }
 
     // 남은 카드수 표시 및 조합수 표시
-    fun showLeftCardAndCombination() {
+    fun calcLeftCardAndCombination() {
         // 남은 카드수 표시
         _leftCard.value = shuffledCardList.size
 
         // 남은 조합수 계산 및 표시
-//        _leftCombination.value = 0
         var count = 0
         // .toMutableList()를 붙이지 않으면 tempList 값 변경시 fieldList 값이 같이 바뀜
         val tempList = fieldCardList.distinct().toMutableList()
@@ -141,7 +143,6 @@ class SetViewModel : ViewModel() {
                         checkCard(tempList[i], tempList[j], tempList[k])
                         if (!checkList.contains(0)) {
                             count++
-//                            _leftCombination.value = _leftCombination.value!! + 1
                             resetCheckValue()
                         } else {
                             resetCheckValue()
@@ -151,6 +152,33 @@ class SetViewModel : ViewModel() {
             }
         }
         _leftCombination.value = count
+    }
+
+    // 남은 카드들로 만들수 있는 조합 계산
+    fun calcAllCombination() {
+        // 남은 조합수 계산
+        var count = 0
+        // .toMutableList()를 붙이지 않으면 tempList 값 변경시 fieldList 값이 같이 바뀜
+        val tempList = mutableListOf<CardItem>()
+        tempList.addAll(fieldCardList.distinct())
+        tempList.remove(CardItem(0,0,0,0,0))
+        tempList.addAll(shuffledCardList)
+        if (tempList.size >= 3) {
+            for (i in 0..tempList.size-3) {
+                for (j in i + 1..tempList.size-2) {
+                    for (k in j + 1 until tempList.size) {
+                        checkCard(tempList[i], tempList[j], tempList[k])
+                        if (!checkList.contains(0)) {
+                            count++
+                            resetCheckValue()
+                        } else {
+                            resetCheckValue()
+                        }
+                    }
+                }
+            }
+        }
+        allCombination = count
     }
 
     fun resetSelectedCard() {
@@ -170,5 +198,6 @@ class SetViewModel : ViewModel() {
         initCard()
         _leftCard.value = 69
         _score.value = 0
+        allCombination = 1080
     }
 }

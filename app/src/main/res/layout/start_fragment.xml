@@ -11,25 +11,30 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_animation_view"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="100dp"
+        android:layout_marginHorizontal="50dp"
         app:lottie_rawRes="@raw/card_game"
         app:lottie_loop="true"
         app:lottie_autoPlay="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/menu_linear_layout"
         />
 
     <LinearLayout
+        android:id="@+id/menu_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:layout_marginHorizontal="100dp"
-        app:layout_constraintTop_toBottomOf="@id/lottie_animation_view"
+        android:layout_marginBottom="150dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lottie_animation_view"
         app:layout_constraintEnd_toEndOf="parent">
 
         <Button
@@ -39,35 +44,23 @@
             android:layout_height="wrap_content"
             android:padding="20dp"
             android:layout_marginTop="15dp"
-            android:text="멀티플레이하기"
+            android:text="@string/play_multi"
             android:textColor="@color/btn_text_color"
             android:textSize="21sp"
             android:fontFamily="@font/bm_jua"
             android:background="@drawable/btn_bg"
             />
 
-        <Button
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:id="@+id/continue_game_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:layout_marginTop="15dp"
-            android:text="@string/continue_set"
-            android:textColor="@color/btn_text_color"
-            android:textSize="21sp"
-            android:fontFamily="@font/bm_jua"
-            android:background="@drawable/btn_bg"
-            android:visibility="visible"/>
+
 
         <Button
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:id="@+id/new_game_btn"
+            android:id="@+id/single_game_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="20dp"
-            android:layout_marginTop="15dp"
-            android:text="@string/play_set"
+            android:layout_marginTop="20dp"
+            android:text="@string/play_single"
             android:textColor="@color/btn_text_color"
             android:textSize="21sp"
             android:fontFamily="@font/bm_jua"
@@ -87,7 +80,7 @@
             android:background="@drawable/rule_btn_bg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/new_game_btn" />
+            app:layout_constraintTop_toBottomOf="@id/single_game_btn" />
 
     </LinearLayout>
 

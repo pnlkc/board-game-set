@@ -2,13 +2,9 @@ package com.pnlkc.set
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.text.style.RelativeSizeSpan
-import android.text.style.StyleSpan
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,25 +14,28 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.pnlkc.set.data.GameState
 import com.pnlkc.set.data.UserMode
 import com.pnlkc.set.databinding.SetMultiStartFragmentBinding
 import com.pnlkc.set.model.CardItem
 import com.pnlkc.set.model.SetViewModel
 import com.pnlkc.set.util.App
+import com.pnlkc.set.util.Vibrator
 import kotlinx.coroutines.*
 import render.animations.Attention
 import render.animations.Bounce
 import render.animations.Render
+import render.animations.Slide
 
 class SetMultiStartFragment : Fragment() {
     private var _binding: SetMultiStartFragmentBinding? = null
@@ -49,24 +48,22 @@ class SetMultiStartFragment : Fragment() {
     private lateinit var bindingSelectedCardList: List<ImageView>
 
     private lateinit var userList: MutableList<String>
+    private lateinit var scoreList: MutableList<String>
 
     // 뷰 리스트
-    private lateinit var readyViewList: List<TextView>
-    private lateinit var waitViewList: List<TextView>
-    private lateinit var scoreLinearLayoutList: List<LinearLayout>
-    private lateinit var scoreViewList: List<TextView>
-    private lateinit var nicknameViewList: List<TextView>
+    private lateinit var playerLinearLayoutList: List<LinearLayout>
+    private lateinit var scoreTextViewList: List<TextView>
+    private lateinit var nicknameTextViewList: List<TextView>
 
     // Firestore 경로 저장용 변수
     private lateinit var collection: CollectionReference
 
-    // SnapshotListener remove()를 위한 변수
-    private lateinit var userSnapshotListener: ListenerRegistration
-    private lateinit var cardSnapshotListener: ListenerRegistration
-    private lateinit var answerSnapshotListener: ListenerRegistration
-
     // 카운트다운 코루틴 작업 취소를 위한 Job
     private var myJob: Job? = null
+
+    private lateinit var userSnapshotListener: ListenerRegistration
+    private lateinit var answerSnapshotListener: ListenerRegistration
+    private lateinit var cardSnapshotListener: ListenerRegistration
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,7 +83,7 @@ class SetMultiStartFragment : Fragment() {
                         .show()
 
                 } else {
-                    findNavController().navigate(R.id.action_setMultiFragment_pop)
+                    deletePlayer()
                 }
             }
         }
@@ -105,12 +102,20 @@ class SetMultiStartFragment : Fragment() {
             setOnlineFragment = this@SetMultiStartFragment
         }
 
-        // 게임 창에 들어오면 대기 상태로 변경
-        sharedViewModel.gameState = GameState.WAIT
-
         // 파이어스토어 경로 지정 (룸코드)
         collection = App.firestore.collection(sharedViewModel.roomCode!!)
 
+        settingViewList()
+
+        userListListener()
+        settingInitCard()
+        connectClickListener()
+        attachAnswerSnapshotListener()
+        attachCardSnapshotListener()
+    }
+
+    // 뷰리스트 초기화
+    private fun settingViewList() {
         bindingCardList = listOf(
             binding.card1, binding.card2, binding.card3, binding.card4,
             binding.card5, binding.card6, binding.card7, binding.card8,
@@ -124,270 +129,65 @@ class SetMultiStartFragment : Fragment() {
             binding.selectedCard10, binding.selectedCard11, binding.selectedCard12
         )
 
-        readyViewList = listOf(
-            binding.player1ReadyTextview, binding.player2ReadyTextview,
-            binding.player3ReadyTextview, binding.player4ReadyTextview
-        )
-
-        waitViewList = listOf(
-            binding.player1WaitTextview, binding.player2WaitTextview,
-            binding.player3WaitTextview, binding.player4WaitTextview
-        )
-
-        nicknameViewList = listOf(
+        nicknameTextViewList = listOf(
             binding.player1NicknameTextview, binding.player2NicknameTextview,
             binding.player3NicknameTextview, binding.player4NicknameTextview
         )
 
-        scoreViewList = listOf(
+        scoreTextViewList = listOf(
             binding.player1ScoreTextview, binding.player2ScoreTextview,
             binding.player3ScoreTextview, binding.player4ScoreTextview,
         )
 
-        scoreLinearLayoutList = listOf(
+        playerLinearLayoutList = listOf(
             binding.player1LinearLayout, binding.player2LinearLayout,
             binding.player3LinearLayout, binding.player4LinearLayout
         )
-
-        controlReadySituation()
     }
 
-    // 게임 시작전 준비창 관련
+    // 유저 리스트 리스너
     @Suppress("UNCHECKED_CAST")
-    private fun controlReadySituation() {
+    private fun userListListener() {
         userSnapshotListener = collection.document("user")
             .addSnapshotListener { snapshot, _ ->
                 if (snapshot == null) return@addSnapshotListener
 
                 userList = snapshot.data!!["user"] as MutableList<String>
                 val myIndex = userList.indexOf(sharedViewModel.nickname)
+                scoreList = snapshot.data!!["score"] as MutableList<String>
 
                 // 플레이어 리스트 1번째에 있는 사람이 방장이 되는 코드 (방장이 나가는 경우 고려)
                 sharedViewModel.userMode = if (myIndex == 0) UserMode.HOST else UserMode.CLIENT
 
-                if (snapshot.data!!["start"] == true) {
-                    sharedViewModel.gameState = GameState.START
-                    startCountDown()
-                } else {
-                    // 플레이어 숫자에 맞춰서 뷰 변경
-                    when (userList.size) {
-                        1 -> {
-                            binding.player1NicknameTextview.text = userList[0]
-                            binding.player1ReadyNicknameTextview.text = userList[0]
-
-                            binding.player2LinearLayout.visibility = View.GONE
-                            binding.player2ReadyLinearLayout.visibility = View.GONE
-
-                            binding.player3LinearLayout.visibility = View.GONE
-                            binding.player3ReadyLinearLayout.visibility = View.GONE
-
-                            binding.player4LinearLayout.visibility = View.GONE
-                            binding.player4ReadyLinearLayout.visibility = View.GONE
-
-                        }
-                        2 -> {
-                            binding.player1NicknameTextview.text = userList[0]
-                            binding.player1ReadyNicknameTextview.text = userList[0]
-
-                            binding.player2NicknameTextview.text = userList[1]
-                            binding.player2ReadyNicknameTextview.text = userList[1]
-
-                            binding.player2LinearLayout.visibility = View.VISIBLE
-                            binding.player2ReadyLinearLayout.visibility = View.VISIBLE
-
-                            binding.player3LinearLayout.visibility = View.GONE
-                            binding.player3ReadyLinearLayout.visibility = View.GONE
-
-                            binding.player4LinearLayout.visibility = View.GONE
-                            binding.player4ReadyLinearLayout.visibility = View.GONE
-                        }
-                        3 -> {
-                            binding.player1NicknameTextview.text = userList[0]
-                            binding.player1ReadyNicknameTextview.text = userList[0]
-
-                            binding.player2NicknameTextview.text = userList[1]
-                            binding.player2ReadyNicknameTextview.text = userList[1]
-
-                            binding.player3NicknameTextview.text = userList[2]
-                            binding.player3ReadyNicknameTextview.text = userList[2]
-
-                            binding.player2LinearLayout.visibility = View.VISIBLE
-                            binding.player2ReadyLinearLayout.visibility = View.VISIBLE
-
-                            binding.player3LinearLayout.visibility = View.VISIBLE
-                            binding.player3ReadyLinearLayout.visibility = View.VISIBLE
-
-                            binding.player4LinearLayout.visibility = View.GONE
-                            binding.player4ReadyLinearLayout.visibility = View.GONE
-                        }
-                        4 -> {
-                            binding.player1NicknameTextview.text = userList[0]
-                            binding.player1ReadyNicknameTextview.text = userList[0]
-
-                            binding.player2NicknameTextview.text = userList[1]
-                            binding.player2ReadyNicknameTextview.text = userList[1]
-
-                            binding.player3NicknameTextview.text = userList[2]
-                            binding.player3ReadyNicknameTextview.text = userList[2]
-
-                            binding.player4NicknameTextview.text = userList[3]
-                            binding.player4ReadyNicknameTextview.text = userList[3]
-
-                            binding.player2LinearLayout.visibility = View.VISIBLE
-                            binding.player2ReadyLinearLayout.visibility = View.VISIBLE
-
-                            binding.player3LinearLayout.visibility = View.VISIBLE
-                            binding.player3ReadyLinearLayout.visibility = View.VISIBLE
-
-                            binding.player4LinearLayout.visibility = View.VISIBLE
-                            binding.player4ReadyLinearLayout.visibility = View.VISIBLE
-                        }
-                    }
-
-                    // 다른 유저의 준비 상태에 맞춰 뷰 변경하는 코드
-                    val readyList = snapshot.data!!["ready"] as MutableList<Boolean>
-                    readyList.forEachIndexed { index, b ->
-                        if (b) {
-                            if (index == myIndex) binding.readyBtn.text = "취소"
-                            binding.readyBtn.setBackgroundResource(R.drawable.btn_bg)
-                            readyViewList[index].visibility = View.VISIBLE
-                            waitViewList[index].visibility = View.GONE
-                        } else {
-                            if (index == myIndex) binding.readyBtn.text = "준비 완료"
-                            binding.readyBtn.setBackgroundResource(R.drawable.btn_bg)
-                            readyViewList[index].visibility = View.GONE
-                            waitViewList[index].visibility = View.VISIBLE
-                        }
-                    }
-
-                    if (readyList.size > 1 && !readyList.contains(false)) {
-                        allReady()
-                        sharedViewModel.gameState = GameState.READY
+                // 플레이어 숫자에 맞춰서 뷰 변경
+                (0..3).forEach { index ->
+                    if (index < userList.size) {
+                        nicknameTextViewList[index].text = userList[index]
+                        playerLinearLayoutList[index].visibility = View.VISIBLE
+                        scoreTextViewList[index].text = scoreList[index]
                     } else {
-                        sharedViewModel.gameState = GameState.WAIT
+                        playerLinearLayoutList[index].visibility = View.GONE
                     }
+                }
+
+                // 플레이어가 1명만 남았을 때 게임 종료 처리
+                if (userList.size == 1 && userList.contains(sharedViewModel.nickname)) {
+                    Toast.makeText(context, "남은 플레이어가 없어 게임을 플레이 할 수 없습니다",
+                        Toast.LENGTH_SHORT).show()
+                    showFinalScoreDialog()
                 }
             }
     }
 
-    // 준비 버튼 기능
-    @Suppress("UNCHECKED_CAST")
-    fun readyBtn() {
-        App.firestore.runTransaction { transaction ->
-            if (sharedViewModel.userMode == UserMode.HOST && sharedViewModel.gameState == GameState.READY) {
-                transaction.update(collection.document("user"), mapOf("start" to true))
-            } else {
-                val snapshot = transaction.get(collection.document("user"))
-                val myIndex = userList.indexOf(sharedViewModel.nickname)
-                val readyList = snapshot.data!!["ready"] as MutableList<Boolean>
-                readyList[myIndex] = !readyList[myIndex]
-                transaction.update(collection.document("user"), mapOf("ready" to readyList))
-            }
-        }
-
-    }
-
-    // 모두 준비가 완료 되었을 때 방장에게 게임 시작 버튼 보여주기
-    private fun allReady() {
-        if (sharedViewModel.userMode == UserMode.HOST) {
-            binding.readyBtn.setBackgroundResource(R.drawable.highlight_btn_bg)
-            binding.readyBtn.text = "게임 시작"
-        }
-    }
-
-    // 방장이 게임 시작 버튼을 누르면 카운트다운 실행
-    private fun startCountDown() {
-        CoroutineScope(Dispatchers.Main).launch {
-            startGame()
-            binding.readyBtn.visibility = View.INVISIBLE
-
-            binding.countdownTextview.text = "3"
-            binding.countdownTextview.visibility = View.VISIBLE
-            delay(750)
-            binding.countdownTextview.text = "2"
-            delay(750)
-            binding.countdownTextview.text = "1"
-            delay(750)
-            binding.countdownTextview.text = "GAME START!"
-            delay(750)
-            binding.countdownTextview.visibility = View.INVISIBLE
-            binding.readyConstraintLayout.visibility = View.INVISIBLE
-            binding.roomCodeTextview.visibility = View.INVISIBLE
-
-            binding.cardConstraintLayout.visibility = View.VISIBLE
-            binding.leftcardTextView.visibility = View.VISIBLE
-            binding.scoreLinearLayout.visibility = View.VISIBLE
-            binding.answerBtn.visibility = View.VISIBLE
-            binding.noCombinationBtn.visibility = View.VISIBLE
-            binding.touchBlocker.visibility = View.VISIBLE
-        }
-    }
-
-    // 게임이 시작되면 카드 세팅
-    @Suppress("UNCHECKED_CAST")
-    private fun startGame() {
-        val gson = GsonBuilder().create()
-        val cardItemType: TypeToken<MutableList<CardItem>> =
-            object : TypeToken<MutableList<CardItem>>() {}
-
-        when (sharedViewModel.userMode) {
-            UserMode.HOST -> {
-                sharedViewModel.resetShuffledCardList()
-                val cardListJson = gson.toJson(sharedViewModel.shuffledCardList, cardItemType.type)
-                val data = hashMapOf("cardList" to cardListJson)
-                collection.document("card").set(data).addOnSuccessListener {
-                    sharedViewModel.initCard()
-                    settingCard()
-                    clickCard()
-                    attachAnswerListener()
-                }
-            }
-            UserMode.CLIENT -> {
-                cardSnapshotListener =
-                    collection.document("card").addSnapshotListener { snapshot, _ ->
-                        if (snapshot == null) return@addSnapshotListener
-                        sharedViewModel.shuffledCardList =
-                            gson.fromJson(snapshot.data!!["cardList"].toString(), cardItemType.type)
-                        sharedViewModel.initCard()
-                        settingCard()
-                        clickCard()
-                        attachAnswerListener()
-                    }
-            }
-        }
-    }
-
-    // 카드 클릭시 코드
-    private fun clickCard() {
+    // 카드 이미지뷰에 클릭리스너 추가
+    private fun connectClickListener() {
         bindingCardList.forEachIndexed { index, imageView ->
-            imageView.setOnClickListener { clickImage(index) }
-        }
-    }
-
-    // 초기 12장 세팅
-    private fun settingCard() {
-        // cardSnapshotListener 제거
-        if (sharedViewModel.userMode == UserMode.CLIENT) cardSnapshotListener.remove()
-
-        bindingCardList.forEachIndexed { index, imageView ->
-            if (sharedViewModel.leftCard.value != 0) imageView.visibility = View.VISIBLE
-            connectImageToCard(index)
-        }
-        sharedViewModel.showLeftCardAndCombination()
-    }
-
-    // settingCard() 실행시 카드속성도 같이 연결
-    private fun connectImageToCard(index: Int) {
-        if (!sharedViewModel.fieldCardList.contains(CardItem(0, 0, 0, 0, 0))) {
-            bindingCardList[index].setImageResource(sharedViewModel.fieldCardList[index].cardImage)
-        } else {
-            bindingCardList[index].visibility = View.INVISIBLE
-            bindingCardList[index].setImageResource(R.drawable.emptycard)
+            imageView.setOnClickListener { selectCard(index) }
         }
     }
 
     // 카드 클릭시 카드 값을 selectedCard에 저장하는 기능
-    private fun clickImage(index: Int) {
+    private fun selectCard(index: Int) {
         when {
             // 같은 카드를 다시 눌렀을 때 처리
             sharedViewModel.selectedCardIndex.contains(index) -> {
@@ -419,6 +219,24 @@ class SetMultiStartFragment : Fragment() {
         }
     }
 
+    // 초기 12장 세팅
+    private fun settingInitCard() {
+        bindingCardList.forEachIndexed { index, _ -> connectImageToCard(index) }
+        sharedViewModel.calcLeftCardAndCombination()
+        sharedViewModel.calcAllCombination()
+    }
+
+    // 뷰와 fieldCardList 연결
+    private fun connectImageToCard(index: Int) {
+        if (sharedViewModel.fieldCardList[index] != CardItem(0, 0, 0, 0, 0)) {
+            bindingCardList[index].visibility = View.VISIBLE
+            bindingCardList[index].setImageResource(sharedViewModel.fieldCardList[index].cardImage)
+        } else {
+            bindingCardList[index].visibility = View.INVISIBLE
+            bindingCardList[index].setImageResource(R.drawable.emptycard)
+        }
+    }
+
     // 정답이면 카드 변경하는 코드
     private fun isCorrect() {
         sharedViewModel.selectedCardIndex.forEach {
@@ -435,8 +253,7 @@ class SetMultiStartFragment : Fragment() {
             if (myJob != null) myJob!!.cancel()
             binding.answerBtn.setBackgroundResource(R.drawable.btn_bg)
             binding.answerBtn.text = "정답"
-            binding.touchBlocker.visibility = View.VISIBLE
-            binding.answerBtn.isClickable = true
+            binding.cardTouchBlocker.visibility = View.VISIBLE
 
             if (this) {
                 correctAnswer()
@@ -445,7 +262,8 @@ class SetMultiStartFragment : Fragment() {
                     bounceInCard(it!!)
                     connectImageToCard(it)
                 }
-                sharedViewModel.showLeftCardAndCombination()
+                sharedViewModel.calcLeftCardAndCombination()
+                sharedViewModel.calcAllCombination()
             } else {
                 incorrectAnswer()
                 // 오답 애니메이션
@@ -453,6 +271,11 @@ class SetMultiStartFragment : Fragment() {
             }
             sharedViewModel.resetSelectedCard()
         }
+    }
+
+    // 카드 선택시 노란색 표시
+    private fun setVisibilitySelectedCard(index: Int, visibility: Int) {
+        bindingSelectedCardList[index].visibility = visibility
     }
 
     // 정답일 때 카드 흔드는 기능
@@ -471,11 +294,6 @@ class SetMultiStartFragment : Fragment() {
         render.start()
     }
 
-    // 카드 선택시 노란색 표시
-    private fun setVisibilitySelectedCard(index: Int, visibility: Int) {
-        bindingSelectedCardList[index].visibility = visibility
-    }
-
     // 전체카드 선택 해제 코드
     private fun invisibleAllSelectedCard() {
         bindingSelectedCardList.forEach {
@@ -483,27 +301,82 @@ class SetMultiStartFragment : Fragment() {
         }
     }
 
+
+    // 카드 관련 SnapshotListener
+    @Suppress("UNCHECKED_CAST")
+    private fun attachCardSnapshotListener() {
+        cardSnapshotListener = collection.document("card").addSnapshotListener { snapshot, _ ->
+            if (snapshot == null) return@addSnapshotListener
+
+            if (snapshot.data!!["cardList"] != null) {
+                val gson = GsonBuilder().create()
+                val cardItemType: TypeToken<MutableList<CardItem>> =
+                    object : TypeToken<MutableList<CardItem>>() {}
+
+                if (snapshot.data!!["complete"] != null) {
+                    val complete = snapshot.data!!["complete"] as MutableList<String>
+                    if (complete.size != userList.size) {
+                        if (!complete.contains(sharedViewModel.nickname)) {
+                            sharedViewModel.shuffledCardList =
+                                gson.fromJson(snapshot.data!!["cardList"].toString(),
+                                    cardItemType.type)
+                            sharedViewModel.initCard()
+                            collection.document("card")
+                                .update("complete", FieldValue.arrayUnion(sharedViewModel.nickname))
+                                .addOnSuccessListener { shuffleCardAnimation() }
+                        }
+                    } else {
+                        // 플레이들이 모두 카드를 받았으면 카드 문서를 초기화
+                        if (sharedViewModel.userMode == UserMode.HOST) {
+                            if (complete.size == userList.size) {
+                                val data = hashMapOf<String, Any>(
+                                    "cardList" to FieldValue.delete(),
+                                    "complete" to FieldValue.delete()
+                                )
+                                collection.document("card").update(data)
+                            }
+                        }
+                    }
+                } else {
+                    sharedViewModel.shuffledCardList =
+                        gson.fromJson(snapshot.data!!["cardList"].toString(), cardItemType.type)
+                    sharedViewModel.initCard()
+                    val data = hashMapOf("complete" to mutableListOf(sharedViewModel.nickname))
+                    collection.document("card").set(data)
+                        .addOnSuccessListener { shuffleCardAnimation() }
+                }
+            }
+        }
+    }
+
     // answerSnapshotListener 설정
     @Suppress("UNCHECKED_CAST")
-    private fun attachAnswerListener() {
+    private fun attachAnswerSnapshotListener() {
         answerSnapshotListener = collection.document("answer").addSnapshotListener { snapshot, _ ->
             if (snapshot == null) return@addSnapshotListener
             if (snapshot.exists()) {
-                val index = (snapshot.data!!["index"] as Long).toInt()
+                val playerNickname = snapshot.data!!["nickname"] as String
+                var index = (snapshot.data!!["index"] as Long).toInt()
+                if (userList.indexOf(playerNickname) != index) {
+                    index = userList.indexOf(playerNickname)
+                }
 
                 if (userList.indexOf(sharedViewModel.nickname) != index) {
                     if (myJob != null) myJob!!.cancel()
                     binding.answerBtn.setBackgroundResource(R.drawable.btn_bg)
+                    binding.noCombinationBtn.setBackgroundResource(R.drawable.btn_bg)
                     binding.answerBtn.text = "정답"
-                    binding.touchBlocker.visibility = View.VISIBLE
+                    binding.noCombinationBtn.text = "!"
+                    binding.cardTouchBlocker.visibility = View.VISIBLE
+                    binding.answerTouchBlocker.visibility = View.VISIBLE
 
                     if (snapshot.data!!["result"] == null) {
-                        binding.answerBtn.isClickable = false
-                        scoreLinearLayoutList[index].setBackgroundResource(R.drawable.answer_highlight_btn_bg)
-                        nicknameViewList[index].setTextColor(R.color.btn_text_color)
-                        scoreViewList[index].setTextColor(R.color.btn_text_color)
+                        playerLinearLayoutList[index].setBackgroundResource(R.drawable.answer_highlight_bg)
+                        val textColor =
+                            ContextCompat.getColor(requireContext(), R.color.answer_text)
+                        nicknameTextViewList[index].setTextColor(textColor)
+                        scoreTextViewList[index].setTextColor(textColor)
                     } else {
-                        var score = scoreViewList[index].text.toString().toInt()
                         val gson = GsonBuilder().create()
                         val cardIndexType: TypeToken<MutableList<Int?>> =
                             object : TypeToken<MutableList<Int?>>() {}
@@ -512,34 +385,94 @@ class SetMultiStartFragment : Fragment() {
                                 cardIndexType.type)
                         sharedViewModel.selectedCardIndex = selectedCard
 
-                        if (snapshot.data!!["result"] == true) {
-                            score += 1
-                            scoreViewList[index].text = score.toString()
-                            sharedViewModel.getNextCard()
-                            sharedViewModel.selectedCardIndex.forEach {
-                                bounceInCard(it!!)
-                                connectImageToCard(it)
+                        when (snapshot.data!!["mode"]) {
+                            "answer" -> {
+                                if (snapshot.data!!["result"] == true) {
+                                    showResultAnswerPlayer(true, index)
+                                    sharedViewModel.getNextCard()
+                                    sharedViewModel.selectedCardIndex.forEach {
+                                        bounceInCard(it!!)
+                                        connectImageToCard(it)
+                                    }
+                                    sharedViewModel.calcLeftCardAndCombination()
+                                    sharedViewModel.calcAllCombination()
+                                } else {
+                                    showResultAnswerPlayer(false, index)
+                                    if (!sharedViewModel.selectedCardIndex.contains(null)) {
+                                        sharedViewModel.selectedCardIndex.forEach { shakeCard(it!!) }
+                                    }
+                                }
+                                sharedViewModel.resetSelectedCard()
                             }
-                            sharedViewModel.showLeftCardAndCombination()
-                        } else {
-                            score -= 1
-                            scoreViewList[index].text = score.toString()
-                            if (!sharedViewModel.selectedCardIndex.contains(null)) {
-                                sharedViewModel.selectedCardIndex.forEach { shakeCard(it!!) }
+                            "noCombination" -> {
+                                if (snapshot.data!!["result"] == true) {
+                                    showResultAnswerPlayer(true, index)
+                                    sharedViewModel.calcLeftCardAndCombination()
+                                    sharedViewModel.calcAllCombination()
+                                } else {
+                                    showResultAnswerPlayer(false, index)
+                                }
                             }
                         }
-                        sharedViewModel.resetSelectedCard()
-                        binding.answerBtn.isClickable = true
-                        scoreLinearLayoutList[index].setBackgroundResource(0)
-                        nicknameViewList[index].setTextColor(R.color.text_color)
-                        scoreViewList[index].setTextColor(R.color.text_color)
+                        binding.answerTouchBlocker.visibility = View.INVISIBLE
                     }
                 } else {
                     if (snapshot.data!!["result"] == null) {
-                        binding.touchBlocker.visibility = View.INVISIBLE
                         if (myJob != null) myJob!!.cancel()
-                        answerCountDown()
+                        when (snapshot.data!!["mode"]) {
+                            "answer" -> {
+                                binding.cardTouchBlocker.visibility = View.INVISIBLE
+                                answerCountDown()
+                            }
+                            "noCombination" -> {
+                                Vibrator().makeVibration(requireContext())
+                                binding.noCombinationBtn.setBackgroundResource(R.drawable.highlight_btn_bg)
+                                binding.noCombinationBtn.text = "!"
+                                if (sharedViewModel.leftCombination.value == 0) {
+                                    Handler(Looper.getMainLooper()).postDelayed({
+                                        correctAnswer()
+                                        shuffleCard()
+                                    }, 1500)
+                                } else {
+                                    Handler(Looper.getMainLooper()).postDelayed({
+                                        incorrectAnswer()
+                                    }, 1500)
+                                }
+                            }
+                        }
+                    } else {
+                        binding.answerTouchBlocker.visibility = View.INVISIBLE
+                        binding.noCombinationBtn.setBackgroundResource(R.drawable.btn_bg)
                     }
+                }
+            }
+        }
+    }
+
+    // 플레이어의 답에 따라 스코어판 색을 0.5초 동안 변경
+    private fun showResultAnswerPlayer(result: Boolean, index: Int) {
+        when (result) {
+            true -> {
+                CoroutineScope(Dispatchers.Main).launch {
+                    playerLinearLayoutList[index].setBackgroundResource(R.drawable.answer_correct_bg)
+                    delay(500)
+                    playerLinearLayoutList[index].setBackgroundResource(0)
+                    val textColor = ContextCompat.getColor(requireContext(), R.color.text_color)
+                    nicknameTextViewList[index].setTextColor(textColor)
+                    scoreTextViewList[index].setTextColor(textColor)
+                }
+            }
+            else -> {
+                CoroutineScope(Dispatchers.Main).launch {
+                    playerLinearLayoutList[index].setBackgroundResource(R.drawable.answer_incorrect_bg)
+                    var textColor = ContextCompat.getColor(requireContext(), R.color.answer_text)
+                    nicknameTextViewList[index].setTextColor(textColor)
+                    scoreTextViewList[index].setTextColor(textColor)
+                    delay(500)
+                    playerLinearLayoutList[index].setBackgroundResource(0)
+                    textColor = ContextCompat.getColor(requireContext(), R.color.text_color)
+                    nicknameTextViewList[index].setTextColor(textColor)
+                    scoreTextViewList[index].setTextColor(textColor)
                 }
             }
         }
@@ -552,9 +485,10 @@ class SetMultiStartFragment : Fragment() {
             val snapshot = transaction.get(collection.document("answer"))
             val data = hashMapOf(
                 "nickname" to sharedViewModel.nickname,
-                "index" to userList.indexOf(sharedViewModel.nickname)
+                "index" to userList.indexOf(sharedViewModel.nickname),
+                "mode" to "answer"
             )
-            if (snapshot.data == null || snapshot.data!!.size == 4) {
+            if (snapshot.data == null || snapshot.data!!.size == 5) {
                 transaction.set(collection.document("answer"), data)
             }
         }
@@ -562,8 +496,7 @@ class SetMultiStartFragment : Fragment() {
 
     // 정답 버튼을 누르면 동시에 누른 사람이 있는지 확인
     private fun standByAnswer() {
-        binding.answerBtn.isClickable = false
-        binding.answerBtn.setBackgroundResource(R.drawable.highlight_btn_bg)
+        binding.answerTouchBlocker.visibility = View.VISIBLE
         myJob = CoroutineScope(Dispatchers.Main).launch {
             while (true) {
                 binding.answerBtn.text = "대기중."
@@ -579,27 +512,29 @@ class SetMultiStartFragment : Fragment() {
     // 정답 버튼을 제일 먼저 누른게 확인되면 카운트 다운 시작
     private fun answerCountDown() {
         myJob = CoroutineScope(Dispatchers.Main).launch {
-            binding.answerBtn.text = "카운트다운!"
-            delay(830)
+            Vibrator().makeVibration(requireContext())
+            binding.answerBtn.setBackgroundResource(R.drawable.highlight_btn_bg)
             binding.answerBtn.text = "5"
-            delay(830)
+            delay(1000)
             binding.answerBtn.text = "4"
-            delay(830)
+            delay(1000)
             binding.answerBtn.text = "3"
-            delay(830)
+            delay(1000)
             binding.answerBtn.text = "2"
-            delay(830)
+            delay(1000)
             binding.answerBtn.text = "1"
-            delay(830)
+            delay(1000)
+            invisibleAllSelectedCard()
             binding.answerBtn.setBackgroundResource(R.drawable.btn_bg)
             binding.answerBtn.text = "정답"
-            binding.touchBlocker.visibility = View.VISIBLE
-            binding.answerBtn.isClickable = true
+            binding.cardTouchBlocker.visibility = View.VISIBLE
             incorrectAnswer()
         }
     }
 
-    fun correctAnswer() {
+    // 정답인 카드를 골랐을 때
+    @Suppress("UNCHECKED_CAST")
+    private fun correctAnswer() {
         val gson = GsonBuilder().create()
         val cardIndexType: TypeToken<MutableList<Int?>> =
             object : TypeToken<MutableList<Int?>>() {}
@@ -610,14 +545,14 @@ class SetMultiStartFragment : Fragment() {
             "selectedCardIndex" to selectedCardIndexJson
         )
         collection.document("answer").set(data, SetOptions.merge())
-
-        val myIndex = userList.indexOf(sharedViewModel.nickname)
-        var score = scoreViewList[myIndex].text.toString().toInt()
-        score += 1
-        scoreViewList[myIndex].text = score.toString()
+        val index = userList.indexOf(sharedViewModel.nickname)
+        scoreList[index] = (scoreList[index].toInt() + 1).toString()
+        collection.document("user").update("score", scoreList)
     }
 
-    fun incorrectAnswer() {
+    // 오답인 카드를 골랐을 때
+    @Suppress("UNCHECKED_CAST")
+    private fun incorrectAnswer() {
         val gson = GsonBuilder().create()
         val cardIndexType: TypeToken<MutableList<Int?>> =
             object : TypeToken<MutableList<Int?>>() {}
@@ -628,87 +563,155 @@ class SetMultiStartFragment : Fragment() {
             "selectedCardIndex" to selectedCardIndexJson
         )
         collection.document("answer").set(data, SetOptions.merge())
-
-        val myIndex = userList.indexOf(sharedViewModel.nickname)
-        var score = scoreViewList[myIndex].text.toString().toInt()
-        score -= 1
-        scoreViewList[myIndex].text = score.toString()
+        val index = userList.indexOf(sharedViewModel.nickname)
+        scoreList[index] = (scoreList[index].toInt() - 1).toString()
+        collection.document("user").update("score", scoreList)
     }
 
     // 조합없음 버튼
     fun noCombinationBtn() {
-//        if (sharedViewModel.leftCard.value != 0) {
-//            CoroutineScope(Dispatchers.Main).launch {
-//                val render = Render(requireContext())
-//                render.setAnimation(Slide().OutRight(binding.cardConstraintLayout))
-//                render.setDuration(250L)
-//                render.start()
-//
-//                delay(50L)
-//                sharedViewModel.resetSelectedCard()
-//                invisibleAllSelectedCard()
-//                sharedViewModel.shuffleCard()
-//                settingCard()
-//
-//                render.setAnimation(Slide().InLeft(binding.cardConstraintLayout))
-//                render.setDuration(250L)
-//                render.start()
-//            }
-//        } else {
-//            Toast.makeText(activity, "남은카드가 없습니다", Toast.LENGTH_SHORT).show()
-//        }
+        standByNoCombination()
+        App.firestore.runTransaction { transaction ->
+            val snapshot = transaction.get(collection.document("answer"))
+            val data = hashMapOf(
+                "nickname" to sharedViewModel.nickname,
+                "index" to userList.indexOf(sharedViewModel.nickname),
+                "mode" to "noCombination"
+            )
+
+            if (snapshot.data == null || snapshot.data!!.size == 5) {
+                transaction.set(collection.document("answer"), data)
+            }
+        }
     }
 
-    // 게임이 끝나면 나오는 MaterialDialog
+    // 정답 버튼을 누르면 동시에 누른 사람이 있는지 확인
+    private fun standByNoCombination() {
+        binding.answerTouchBlocker.visibility = View.VISIBLE
+        myJob = CoroutineScope(Dispatchers.Main).launch {
+            while (true) {
+                binding.noCombinationBtn.text = "."
+                delay(250)
+                binding.noCombinationBtn.text = ".."
+                delay(250)
+                binding.noCombinationBtn.text = "..."
+                delay(250)
+            }
+        }
+    }
+
+    private fun shuffleCard() {
+        val gson = GsonBuilder().create()
+        val cardItemType: TypeToken<MutableList<CardItem>> =
+            object : TypeToken<MutableList<CardItem>>() {}
+
+        sharedViewModel.shuffleCard()
+        val cardListJson = gson.toJson(sharedViewModel.shuffledCardList, cardItemType.type)
+        val cardList = hashMapOf("cardList" to cardListJson)
+        collection.document("card").set(cardList)
+    }
+
+    private fun shuffleCardAnimation() {
+        // 남은 카드로 조합을 만들수 있을 때
+        if (sharedViewModel.allCombination != 0) {
+            CoroutineScope(Dispatchers.Main).launch {
+                val render = Render(requireContext())
+                render.setAnimation(Slide().OutRight(binding.cardConstraintLayout))
+                render.setDuration(250L)
+                render.start()
+
+                delay(50L)
+                sharedViewModel.resetSelectedCard()
+                invisibleAllSelectedCard()
+                settingInitCard()
+
+                render.setAnimation(Slide().InLeft(binding.cardConstraintLayout))
+                render.setDuration(250L)
+                render.start()
+            }
+        }
+        // 남은 카드로 조합을 만들수 없을 때
+        else {
+            showFinalScoreDialog()
+        }
+    }
+
+    // 게임이 끝나면 나오는 Dialog
     @SuppressLint("SetTextI18n")
-    fun showFinalScoreDialog() {
+    private fun showFinalScoreDialog() {
+        // SnapshotListener remove 없이 collection 제거하면 앱 팅김
+        userSnapshotListener.remove()
+        answerSnapshotListener.remove()
+        cardSnapshotListener.remove()
+
+        if (sharedViewModel.userMode == UserMode.HOST) deleteCollection()
+
         // 커스텀 Dialog 만들기
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_one)
+        dialog.setContentView(R.layout.dialog_score_multi)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.setCancelable(false)
         dialog.show()
 
+        // 점수에 따라 플레이어 정렬
+        val mapList = userList.mapIndexed { i, s -> s to scoreList[i].toInt() }
+            .groupBy({ it.second }, { it.first }).toList().sortedByDescending { it.first }.toMap()
+
         // Dialog 레이아웃의 뷰를 변수와 연결하기
         // 그냥 연결이 안되서 dialog 변수를 따로 만들고 거기서 findViewById해서 찾음
-        val dialogTitleTextView = dialog.findViewById<TextView>(R.id.dialog_title_textview)
-        val dialogTextView = dialog.findViewById<TextView>(R.id.dialog_textview)
-        val dialogLeftBtn = dialog.findViewById<TextView>(R.id.dialog_left_btn)
-        val dialogRightBtn = dialog.findViewById<TextView>(R.id.dialog_right_btn)
+        val dialogMainMenuBtn = dialog.findViewById<TextView>(R.id.dialog_score_multi_main_menu_btn)
+        val playConstraintLayoutList = listOf<ConstraintLayout>(
+            dialog.findViewById(R.id.dialog_score_multi_first_player_constraint_layout),
+            dialog.findViewById(R.id.dialog_score_multi_second_player_constraint_layout),
+            dialog.findViewById(R.id.dialog_score_multi_third_player_constraint_layout),
+            dialog.findViewById(R.id.dialog_score_multi_fourth_player_constraint_layout)
+        )
+        val playTextViewList = listOf<TextView>(
+            dialog.findViewById(R.id.dialog_score_multi_first_player_textview),
+            dialog.findViewById(R.id.dialog_score_multi_second_player_textview),
+            dialog.findViewById(R.id.dialog_score_multi_third_player_textview),
+            dialog.findViewById(R.id.dialog_score_multi_fourth_player_textview)
+        )
 
-        // Dialog 창에 스코어를 알려주는 TextView 부분만 강조해서 보여주는 코드
-        val dialogText = "당신은 ${sharedViewModel.score.value}개를\n 맞추셨습니다!"
-        val spannableString = SpannableString(dialogText)
-        val word = sharedViewModel.score.value.toString() + "개"
-        val start = dialogText.indexOf(word)
-        val end = start + word.length
-//        spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#ae3b75")),
-        spannableString.setSpan(ForegroundColorSpan(ContextCompat
-            .getColor(requireContext(), R.color.dialog_score_text)),
-            start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableString.setSpan(StyleSpan(Typeface.BOLD),
-            start,
-            end,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableString.setSpan(RelativeSizeSpan(1.3f),
-            start,
-            end,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        (0 until mapList.size).forEach { i ->
+            playConstraintLayoutList[i].visibility = View.VISIBLE
+            var text = ""
+            mapList[mapList.keys.toList()[i]]!!.forEach { text += it + "\n" }
+            playTextViewList[i].text = text.slice(0..text.lastIndex - 2)
+        }
 
         // Dialog 뷰 기능 구현
-        dialogTitleTextView.text = "대단합니다"
-        dialogTextView.text = spannableString
-        dialogLeftBtn.apply {
-            text = "나가기"
-            setOnClickListener { activity?.finish() }
+        dialogMainMenuBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_setMultiStartFragment_pop)
+            dialog.dismiss()
         }
-        dialogRightBtn.apply {
-            text = "다시하기"
-            setOnClickListener {
-                sharedViewModel.resetAllValue()
-                settingCard()
-                dialog.dismiss()
+    }
+
+    // 게임 중 플레이어가 나가면 플레이어 삭제
+    @Suppress("UNCHECKED_CAST")
+    private fun deletePlayer() {
+        val index = userList.indexOf(sharedViewModel.nickname)
+        collection.document("user").get().addOnSuccessListener { snapshot ->
+            val readyList = snapshot.data!!["ready"] as MutableList<Boolean>
+            userList.removeAt(index)
+            readyList.removeAt(index)
+            scoreList.removeAt(index)
+            collection.document("user").update(
+                "user", userList,
+                "ready", readyList,
+                "score", scoreList
+            ).addOnSuccessListener {
+                findNavController().navigate(R.id.action_setMultiStartFragment_pop)
             }
+        }
+    }
+
+    // 게임이 완료되면 Firestore Collection(게임방) 삭제
+    private fun deleteCollection() {
+        collection.get().addOnSuccessListener {
+            it.forEach { snapshot -> snapshot.reference.delete() }
         }
     }
 
@@ -716,5 +719,8 @@ class SetMultiStartFragment : Fragment() {
         super.onDestroyView()
         _binding = null
         backPressCallback.remove()
+        userSnapshotListener.remove()
+        answerSnapshotListener.remove()
+        cardSnapshotListener.remove()
     }
 }

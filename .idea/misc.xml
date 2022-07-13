@@ -4,15 +4,21 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/aaaa.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/answer_correct_bg.xml" value="0.1605" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/answer_highlight_bg.xml" value="0.1605" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/answer_highlight_btn_bg.xml" value="0.1605" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/answer_incorrect_bg.xml" value="0.1605" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/background.xml" value="0.1735" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/btn_bg.xml" value="0.1755" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/card_bg.xml" value="0.1755" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/crown.xml" value="0.16" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/dash_line.xml" value="0.25" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/dialog_btn_bg.xml" value="0.1755" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/highlight_btn_bg.xml" value="0.1605" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/host_icon.xml" value="0.1715" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.165" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/ic_baseline_stars_24.xml" value="0.1605" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/ic_crown.xml" value="0.1605" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/ic_launcher_background.xml" value="0.165" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/play_bg.xml" value="0.1755" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/rule_btn_bg.xml" value="0.165" />
@@ -20,15 +26,22 @@
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/test3.xml" value="0.22" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout-v26/set_multi_fragment.xml" value="0.3848958333333333" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/activity_main.xml" value="0.3848958333333333" />
-        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/dialog_one.xml" value="0.25" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/dialog_new_game.xml" value="0.3159469858914066" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/dialog_one.xml" value="0.33" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/dialog_play_multi.xml" value="0.3159469858914066" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/dialog_play_single.xml" value="0.3159469858914066" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/dialog_score_multi.xml" value="0.33" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/dialog_score_single.xml" value="0.3159469858914066" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/dialog_two.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/end_dialog.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/end_fragment.xml" value="0.2675925925925926" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/set_fragment.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/set_multi_fragment.xml" value="0.33" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/set_multi_ready_fragment.xml" value="0.16374519025224454" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/set_multi_start_fragment.xml" value="0.3159469858914066" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/set_multiplay_fragment.xml" value="0.3848958333333333" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/set_online_fragment.xml" value="0.25" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/set_single_play_fragment.xml" value="0.3159469858914066" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/setrule_fragment.xml" value="0.25" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/start_fragment.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.156" />

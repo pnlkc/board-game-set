@@ -41,7 +41,11 @@ class SetRuleFragment : Fragment() {
 
         // 게임시작 버튼이 눌렸을 때
         binding.gameStartBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_setRuleFragment_to_setFragment)
+            findNavController().navigate(R.id.action_setRuleFragment_to_setSinglePlayFragment)
+        }
+
+        binding.goMainMenuBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_setRuleFragment_pop)
         }
 
         binding.ruleOne.text = highlightString(getString(R.string.rule_one), "4가지 속성")

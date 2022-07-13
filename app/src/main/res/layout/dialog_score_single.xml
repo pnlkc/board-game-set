@@ -1,0 +1,78 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/dialog_text_bg" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/game_result"
+        android:textSize="21sp"
+        android:textColor="@color/dialog_title_text"
+        android:paddingVertical="20dp"
+        android:fontFamily="@font/bm_jua"
+        android:gravity="center"
+        android:background="@color/dialog_title_bg" />
+
+    <TextView
+        android:id="@+id/dialog_score_single_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/dialog_text"
+        android:textSize="23sp"
+        android:fontFamily="@font/bm_jua"
+        android:lineSpacingExtra="15dp"
+        android:gravity="center"
+        android:paddingVertical="40dp"
+        tools:text="당신은 0개를\n맞추셨습니다!"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:paddingHorizontal="25dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="20dp">
+
+        <Button
+            android:id="@+id/dialog_score_single_left_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_btn_bg"
+            android:text="@string/go_main_menu"
+            android:textSize="18sp"
+            android:fontFamily="@font/bm_jua"
+            android:textColor="@color/dialog_btn_text"
+            android:maxLines="1"
+            android:paddingHorizontal="10dp"
+            />
+
+        <Button
+            android:id="@+id/dialog_score_single_right_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_btn_bg"
+            android:text="@string/replay"
+            android:textSize="18sp"
+            android:fontFamily="@font/bm_jua"
+            android:maxLines="1"
+            android:textColor="@color/dialog_btn_text"
+            android:paddingHorizontal="10dp"
+            android:layout_marginStart="20dp"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -11,8 +11,8 @@
         android:label="start_fragment"
         tools:layout="@layout/start_fragment" >
         <action
-            android:id="@+id/action_startFragment_to_setFragment"
-            app:destination="@id/setFragment" />
+            android:id="@+id/action_startFragment_to_setSinglePlayFragment"
+            app:destination="@id/setSinglePlayFragment" />
         <action
             android:id="@+id/action_startFragment_to_setRuleFragment"
             app:destination="@id/setRuleFragment" />
@@ -21,13 +21,13 @@
             app:destination="@id/setMultiReadyFragment" />
     </fragment>
     <fragment
-        android:id="@+id/setFragment"
-        android:name="com.pnlkc.set.SetFragment"
+        android:id="@+id/setSinglePlayFragment"
+        android:name="com.pnlkc.set.SetSinglePlayFragment"
         android:label="set_fragment"
-        tools:layout="@layout/set_fragment" >
+        tools:layout="@layout/set_single_play_fragment" >
         <action
-            android:id="@+id/action_setFragment_pop"
-            app:popUpTo="@id/setFragment"
+            android:id="@+id/action_setSinglePlayFragment_pop"
+            app:popUpTo="@id/setSinglePlayFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
@@ -36,8 +36,8 @@
         android:label="setrule_fragment"
         tools:layout="@layout/setrule_fragment" >
         <action
-            android:id="@+id/action_setRuleFragment_to_setFragment"
-            app:destination="@id/setFragment"
+            android:id="@+id/action_setRuleFragment_to_setSinglePlayFragment"
+            app:destination="@id/setSinglePlayFragment"
             app:popUpTo="@id/startFragment" />
         <action
             android:id="@+id/action_setRuleFragment_pop"

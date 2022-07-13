@@ -4,13 +4,13 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:background="@color/dialog_text_bg" >
 
     <TextView
-        android:id="@+id/dialog_title_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="다이얼로그 타이틀"
+        android:text="@string/new_play_title"
         android:textSize="21sp"
         android:textColor="@color/dialog_title_text"
         android:paddingVertical="20dp"
@@ -19,18 +19,15 @@
         android:background="@color/dialog_title_bg" />
 
     <TextView
-        android:id="@+id/dialog_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="다이얼로그 내용이 들어갈 자리"
+        android:text="@string/new_game_text"
         android:textColor="@color/dialog_text"
         android:textSize="23sp"
         android:fontFamily="@font/bm_jua"
         android:lineSpacingExtra="15dp"
-        android:background="@color/dialog_text_bg"
         android:gravity="center"
         android:paddingVertical="40dp"
-        tools:text="당신은 0개를\n맞추셨습니다!"
         />
 
     <LinearLayout
@@ -39,19 +36,18 @@
         android:weightSum="2"
         android:orientation="horizontal"
         android:gravity="center_horizontal"
-        android:layout_marginHorizontal="25dp"
+        android:paddingHorizontal="25dp"
         android:paddingTop="15dp"
-        android:paddingBottom="20dp"
-        android:background="@color/dialog_text_bg">
+        android:paddingBottom="20dp">
 
         <Button
-            android:id="@+id/dialog_left_btn"
+            android:id="@+id/dialog_new_game_left_btn"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/dialog_btn_bg"
-            android:text="왼쪽버튼"
+            android:text="@string/no"
             android:textSize="18sp"
             android:fontFamily="@font/bm_jua"
             android:textColor="@color/dialog_btn_text"
@@ -60,13 +56,13 @@
             />
 
         <Button
-            android:id="@+id/dialog_right_btn"
+            android:id="@+id/dialog_new_game_right_btn"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/dialog_btn_bg"
-            android:text="오른쪽버튼"
+            android:text="@string/yes"
             android:textSize="18sp"
             android:fontFamily="@font/bm_jua"
             android:maxLines="1"

@@ -1,6 +1,5 @@
 package com.pnlkc.set
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Typeface
@@ -28,7 +27,7 @@ import com.pnlkc.set.data.DataSource.KEY_FIELD_CARD_LIST
 import com.pnlkc.set.data.DataSource.KEY_PREFS
 import com.pnlkc.set.data.DataSource.KEY_SCORE
 import com.pnlkc.set.data.DataSource.KEY_SHUFFLED_CARD_LIST
-import com.pnlkc.set.databinding.SetFragmentBinding
+import com.pnlkc.set.databinding.SetSinglePlayFragmentBinding
 import com.pnlkc.set.model.CardItem
 import com.pnlkc.set.model.SetViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -40,8 +39,8 @@ import render.animations.Bounce
 import render.animations.Render
 import render.animations.Slide
 
-class SetFragment : Fragment() {
-    private var _binding: SetFragmentBinding? = null
+class SetSinglePlayFragment : Fragment() {
+    private var _binding: SetSinglePlayFragmentBinding? = null
     private val binding get() = _binding!!
     private val sharedViewModel: SetViewModel by activityViewModels()
 
@@ -58,7 +57,7 @@ class SetFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = SetFragmentBinding.inflate(inflater, container, false)
+        _binding = SetSinglePlayFragmentBinding.inflate(inflater, container, false)
 
         // OnBackPressedCallback (익명 클래스) 객체 생성
         backPressCallback = object : OnBackPressedCallback(true) {
@@ -71,7 +70,7 @@ class SetFragment : Fragment() {
                         .show()
 
                 } else {
-                    findNavController().navigate(R.id.action_setFragment_pop)
+                    findNavController().navigate(R.id.action_setSinglePlayFragment_pop)
                 }
             }
         }
@@ -87,7 +86,7 @@ class SetFragment : Fragment() {
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = sharedViewModel
-            setFragment = this@SetFragment
+            setSinglePlayFragment = this@SetSinglePlayFragment
         }
 
         bindingCardList = listOf(
@@ -107,10 +106,7 @@ class SetFragment : Fragment() {
         when (sharedViewModel.isContinueGame) {
             true -> {
                 saveAndLoadGame("load")
-                bindingCardList.forEachIndexed { index, imageView ->
-                    imageView.setImageResource(sharedViewModel.fieldCardList[index].cardImage)
-                }
-                sharedViewModel.showLeftCardAndCombination()
+                startGame()
             }
             false -> {
                 sharedViewModel.resetAllValue()
@@ -122,13 +118,16 @@ class SetFragment : Fragment() {
 
         // 남은 카드가 있고 가능한 조합이 없을 때 자동으로 카드 셔플하기
         sharedViewModel.leftCombination.observe(viewLifecycleOwner) {
-            if (sharedViewModel.leftCard.value != 0 && it == 0) {
+            if (sharedViewModel.allCombination != 0 && it == 0) {
                 Toast.makeText(activity, "가능한 조합이 없으므로 카드를 다시 뽑습니다",
                     Toast.LENGTH_SHORT).show()
                 sharedViewModel.resetSelectedCard()
                 invisibleAllSelectedCard()
                 sharedViewModel.shuffleCard()
+                sharedViewModel.initCard()
                 startGame()
+            } else if (sharedViewModel.allCombination == 0 && it == 0) {
+                showFinalScoreDialog()
             }
         }
     }
@@ -142,16 +141,15 @@ class SetFragment : Fragment() {
 
     // 초기 12장 세팅
     private fun startGame() {
-        bindingCardList.forEachIndexed { index, imageView ->
-            if (sharedViewModel.leftCard.value != 0) imageView.visibility = View.VISIBLE
-            connectImageToCard(index)
-        }
-        sharedViewModel.showLeftCardAndCombination()
+        bindingCardList.forEachIndexed { index, _ -> connectImageToCard(index) }
+        sharedViewModel.calcLeftCardAndCombination()
+        sharedViewModel.calcAllCombination()
     }
 
     // startGame() 실행시 카드속성도 같이 연결
     private fun connectImageToCard(index: Int) {
-        if (!sharedViewModel.fieldCardList.contains(CardItem(0, 0, 0, 0, 0))) {
+        if (sharedViewModel.fieldCardList[index] != CardItem(0, 0, 0, 0, 0)) {
+            bindingCardList[index].visibility = View.VISIBLE
             bindingCardList[index].setImageResource(sharedViewModel.fieldCardList[index].cardImage)
         } else {
             bindingCardList[index].visibility = View.INVISIBLE
@@ -212,15 +210,8 @@ class SetFragment : Fragment() {
                     connectImageToCard(it)
                 }
 
-                sharedViewModel.showLeftCardAndCombination()
-
-                // 마지막 조합 정답시 처리
-                if (
-                    sharedViewModel.leftCard.value == 0
-                    && sharedViewModel.leftCombination.value == 0
-                ) {
-                    showFinalScoreDialog()
-                }
+                sharedViewModel.calcLeftCardAndCombination()
+                sharedViewModel.calcAllCombination()
             } else {
                 // 오답 애니메이션
                 sharedViewModel.selectedCardIndex.forEach { shakeCard(it!!) }
@@ -270,6 +261,7 @@ class SetFragment : Fragment() {
                 sharedViewModel.resetSelectedCard()
                 invisibleAllSelectedCard()
                 sharedViewModel.shuffleCard()
+                sharedViewModel.initCard()
                 startGame()
 
                 render.setAnimation(Slide().InLeft(binding.constraintLayout))
@@ -287,16 +279,14 @@ class SetFragment : Fragment() {
     }
 
     // 끝내기 버튼 누르면 나오는 MaterialDialog
-    @SuppressLint("SetTextI18n")
-    fun showFinalScoreDialog() {
-
+    private fun showFinalScoreDialog() {
         // 다이얼로그를 띄웠으면 게임 저장 안하도록 하는 코드
         saveIndicator = false
 
         // 커스텀 Dialog 만들기
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_one)
+        dialog.setContentView(R.layout.dialog_score_single)
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.setCancelable(false)
@@ -304,10 +294,9 @@ class SetFragment : Fragment() {
 
         // Dialog 레이아웃의 뷰를 변수와 연결하기
         // 그냥 연결이 안되서 dialog 변수를 따로 만들고 거기서 findViewById해서 찾음
-        val dialogTitleTextView = dialog.findViewById<TextView>(R.id.dialog_title_textview)
-        val dialogTextView = dialog.findViewById<TextView>(R.id.dialog_textview)
-        val dialogLeftBtn = dialog.findViewById<TextView>(R.id.dialog_left_btn)
-        val dialogRightBtn = dialog.findViewById<TextView>(R.id.dialog_right_btn)
+        val textView = dialog.findViewById<TextView>(R.id.dialog_score_single_textview)
+        val leftBtn = dialog.findViewById<TextView>(R.id.dialog_score_single_left_btn)
+        val rightBtn = dialog.findViewById<TextView>(R.id.dialog_score_single_right_btn)
 
         // Dialog 창에 스코어를 알려주는 TextView 부분만 강조해서 보여주는 코드
         val dialogText = "당신은 ${sharedViewModel.score.value}개를\n 맞추셨습니다!"
@@ -329,20 +318,16 @@ class SetFragment : Fragment() {
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         // Dialog 뷰 기능 구현
-        dialogTitleTextView.text = "대단합니다"
-        dialogTextView.text = spannableString
-        dialogLeftBtn.apply {
-            text = "나가기"
-            setOnClickListener { activity?.finish() }
+        textView.text = spannableString
+        leftBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_setSinglePlayFragment_pop)
+            dialog.dismiss()
         }
-        dialogRightBtn.apply {
-            text = "다시하기"
-            setOnClickListener {
-                sharedViewModel.resetAllValue()
-                startGame()
-                saveIndicator = true
-                dialog.dismiss()
-            }
+        rightBtn.setOnClickListener {
+            sharedViewModel.resetAllValue()
+            startGame()
+            saveIndicator = true
+            dialog.dismiss()
         }
     }
 

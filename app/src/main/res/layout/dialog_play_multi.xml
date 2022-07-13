@@ -6,10 +6,9 @@
     >
 
     <TextView
-        android:id="@+id/dialog_two_title_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="멀티플레이"
+        android:text="@string/multi_play"
         android:textSize="23sp"
         android:textColor="@color/dialog_title_text"
         android:paddingVertical="20dp"
@@ -23,15 +22,16 @@
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:paddingHorizontal="60dp"
-        android:paddingVertical="30dp"
+        android:paddingTop="40dp"
+        android:paddingBottom="50dp"
         android:background="@color/dialog_text_bg">
 
         <EditText
-            android:id="@+id/dialog_edittext1"
+            android:id="@+id/dialog_play_multi_nickname_edittext1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
-            android:hint="닉네임을 입력하세요"
+            android:hint="@string/make_nickname_hint"
             android:maxLength="10"
             android:gravity="center"
             android:background="@null"
@@ -41,12 +41,12 @@
             />
 
         <Button
-            android:id="@+id/dialog_btn1"
+            android:id="@+id/dialog_play_multi_btn1"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_bg"
-            android:text="게임 만들기"
+            android:text="@string/make_game"
             android:textSize="20sp"
             android:fontFamily="@font/bm_jua"
             android:textColor="@color/btn_text_color"
@@ -55,10 +55,11 @@
             />
 
         <EditText
-            android:id="@+id/dialog_edittext2"
+            android:id="@+id/dialog_play_multi_nickname_edittext2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="1) 닉네임을 입력하세요"
+            android:hint="@string/join_nickname_hint"
+            android:maxLines="1"
             android:maxLength="10"
             android:gravity="center"
             android:background="@null"
@@ -68,11 +69,13 @@
             />
 
         <EditText
-            android:id="@+id/room_code_edittext"
+            android:id="@+id/dialog_play_multi_room_code_edittext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:hint="2) 코드를 입력하세요"
+            android:hint="@string/join_code_hint"
+            android:maxLines="1"
+            android:maxLength="6"
             android:gravity="center"
             android:background="@null"
             android:fontFamily="@font/bm_jua"
@@ -81,13 +84,13 @@
             />
 
         <Button
-            android:id="@+id/dialog_btn2"
+            android:id="@+id/dialog_play_multi_btn2"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:background="@drawable/btn_bg"
-            android:text="게임 참가하기"
+            android:text="@string/join_game"
             android:textSize="20sp"
             android:fontFamily="@font/bm_jua"
             android:textColor="@color/btn_text_color"

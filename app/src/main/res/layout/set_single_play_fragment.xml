@@ -3,7 +3,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".SetFragment">
+    tools:context=".SetSinglePlayFragment">
 
     <data>
         <variable
@@ -11,8 +11,8 @@
             type="com.pnlkc.set.model.SetViewModel" />
 
         <variable
-            name="setFragment"
-            type="com.pnlkc.set.SetFragment" />
+            name="setSinglePlayFragment"
+            type="com.pnlkc.set.SetSinglePlayFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -329,7 +329,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="15dp"
             android:background="@drawable/btn_bg"
-            android:onClick="@{ () -> setFragment.endButton() }"
+            android:onClick="@{ () -> setSinglePlayFragment.endButton() }"
             android:padding="15dp"
             android:text="끝내기"
             android:textColor="@color/btn_text_color"
@@ -349,7 +349,7 @@
             android:layout_marginEnd="38dp"
             android:background="@drawable/btn_bg"
             android:fontFamily="@font/gmarketsansmedium"
-            android:onClick="@{ () -> setFragment.shuffleButton()}"
+            android:onClick="@{ () -> setSinglePlayFragment.shuffleButton()}"
             android:padding="15dp"
             android:text="카드섞기"
             android:textColor="@color/btn_text_color"
