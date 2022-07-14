@@ -51,8 +51,6 @@
             android:background="@drawable/btn_bg"
             />
 
-
-
         <Button
             style="@style/Widget.AppCompat.Button.Borderless"
             android:id="@+id/single_game_btn"
@@ -73,17 +71,13 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginTop="30dp"
-            android:text="\?"
+            android:text="@string/rule_btn"
             android:textColor="@color/btn_text_color"
             android:textSize="21sp"
             android:fontFamily="@font/bm_jua"
-            android:background="@drawable/rule_btn_bg"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/single_game_btn" />
+            android:background="@drawable/rule_btn_bg" />
 
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

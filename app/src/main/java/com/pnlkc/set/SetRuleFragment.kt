@@ -49,12 +49,13 @@ class SetRuleFragment : Fragment() {
         }
 
         binding.ruleOne.text = highlightString(getString(R.string.rule_one), "4가지 속성")
-        binding.ruleTwo.text = highlightString(getString(R.string.rule_two), "모양, 색상, 갯수, 음영")
+        binding.ruleTwo.text = highlightString(getString(R.string.rule_two), "모양, 색상, 개수, 음영")
         binding.ruleThree.text = highlightString(getString(R.string.rule_three), "3개의 유형")
         binding.ruleFour.text = highlightString(getString(R.string.rule_four), "12장의 카드")
         binding.ruleFive.text = highlightString(getString(R.string.rule_five), "모두 같거나 다른")
         binding.ruleSix.text = highlightString(getString(R.string.rule_six), "두장만 같으면 안됩니다")
-        binding.ruleEight.text = highlightString(getString(R.string.rule_eight), "카드섞기 버튼")
+        binding.ruleEightSinglePlay.text = highlightString(getString(R.string.rule_eight_single_play), "카드섞기 버튼")
+        binding.ruleEightMultiPlay.text = highlightString(getString(R.string.rule_eight_multi_play), "Ⓧ 버튼을 누르면")
 
     }
 
@@ -64,7 +65,6 @@ class SetRuleFragment : Fragment() {
         val spannableString = SpannableString(fullText)
         val start = fullText.indexOf(specificWord)
         val end = start + specificWord.length
-        // 색상이 하드코딩 밖에 안됨
         spannableString.setSpan(ForegroundColorSpan(ContextCompat
             .getColor(requireContext(), R.color.rule_highlight_text)),
             start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

@@ -4,4 +4,8 @@
     <dimen name="selectedCard_height">126dp</dimen>
     <dimen name="card_width">80dp</dimen>
     <dimen name="card_height">120dp</dimen>
+
+    <dimen name="rule_text_size">18sp</dimen>
+    <dimen name="rule_card_width">60dp</dimen>
+    <dimen name="rule_card_height">90dp</dimen>
 </resources>
