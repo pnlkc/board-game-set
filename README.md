@@ -38,7 +38,7 @@
 
 ***ver 2.1***
 >대기실이나 게임 중 앱을 강제종료 했을 때 대응  
->-> Service - onTaskRemoved 사용해서 처리
+>-> Service - onTaskRemoved 사용해서 처리  
 >대기실이나 게임 중 화면 이동시 알림 생성 및 클릭시 앱으로 돌아오는 기능 추가  
->-> notification과 PendingIntent 기능 사용
+>-> notification과 PendingIntent 기능 사용  
 >선택된 카드 표시해주는 색상 
