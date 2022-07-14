@@ -243,9 +243,9 @@
 
             <ImageView
                 android:id="@+id/selectedCard1"
-                android:layout_width="84dp"
-                android:layout_height="126dp"
-                android:src="@drawable/selected"
+                android:layout_width="@dimen/selectedCard_width"
+                android:layout_height="@dimen/selectedCard_height"
+                android:background="@drawable/selected"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/card1"
                 app:layout_constraintEnd_toEndOf="@id/card1"
@@ -254,9 +254,9 @@
 
             <ImageView
                 android:id="@+id/selectedCard2"
-                android:layout_width="84dp"
-                android:layout_height="126dp"
-                android:src="@drawable/selected"
+                android:layout_width="@dimen/selectedCard_width"
+                android:layout_height="@dimen/selectedCard_height"
+                android:background="@drawable/selected"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/card2"
                 app:layout_constraintEnd_toEndOf="@id/card2"
@@ -265,9 +265,9 @@
 
             <ImageView
                 android:id="@+id/selectedCard3"
-                android:layout_width="84dp"
-                android:layout_height="126dp"
-                android:src="@drawable/selected"
+                android:layout_width="@dimen/selectedCard_width"
+                android:layout_height="@dimen/selectedCard_height"
+                android:background="@drawable/selected"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/card3"
                 app:layout_constraintEnd_toEndOf="@id/card3"
@@ -276,9 +276,9 @@
 
             <ImageView
                 android:id="@+id/selectedCard4"
-                android:layout_width="84dp"
-                android:layout_height="126dp"
-                android:src="@drawable/selected"
+                android:layout_width="@dimen/selectedCard_width"
+                android:layout_height="@dimen/selectedCard_height"
+                android:background="@drawable/selected"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/card4"
                 app:layout_constraintEnd_toEndOf="@id/card4"
@@ -287,9 +287,9 @@
 
             <ImageView
                 android:id="@+id/selectedCard5"
-                android:layout_width="84dp"
-                android:layout_height="126dp"
-                android:src="@drawable/selected"
+                android:layout_width="@dimen/selectedCard_width"
+                android:layout_height="@dimen/selectedCard_height"
+                android:background="@drawable/selected"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/card5"
                 app:layout_constraintEnd_toEndOf="@id/card5"
@@ -298,9 +298,9 @@
 
             <ImageView
                 android:id="@+id/selectedCard6"
-                android:layout_width="84dp"
-                android:layout_height="126dp"
-                android:src="@drawable/selected"
+                android:layout_width="@dimen/selectedCard_width"
+                android:layout_height="@dimen/selectedCard_height"
+                android:background="@drawable/selected"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/card6"
                 app:layout_constraintEnd_toEndOf="@id/card6"
@@ -309,9 +309,9 @@
 
             <ImageView
                 android:id="@+id/selectedCard7"
-                android:layout_width="84dp"
-                android:layout_height="126dp"
-                android:src="@drawable/selected"
+                android:layout_width="@dimen/selectedCard_width"
+                android:layout_height="@dimen/selectedCard_height"
+                android:background="@drawable/selected"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/card7"
                 app:layout_constraintEnd_toEndOf="@id/card7"
@@ -320,9 +320,9 @@
 
             <ImageView
                 android:id="@+id/selectedCard8"
-                android:layout_width="84dp"
-                android:layout_height="126dp"
-                android:src="@drawable/selected"
+                android:layout_width="@dimen/selectedCard_width"
+                android:layout_height="@dimen/selectedCard_height"
+                android:background="@drawable/selected"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/card8"
                 app:layout_constraintEnd_toEndOf="@id/card8"
@@ -331,9 +331,9 @@
 
             <ImageView
                 android:id="@+id/selectedCard9"
-                android:layout_width="84dp"
-                android:layout_height="126dp"
-                android:src="@drawable/selected"
+                android:layout_width="@dimen/selectedCard_width"
+                android:layout_height="@dimen/selectedCard_height"
+                android:background="@drawable/selected"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/card9"
                 app:layout_constraintEnd_toEndOf="@id/card9"
@@ -342,9 +342,9 @@
 
             <ImageView
                 android:id="@+id/selectedCard10"
-                android:layout_width="84dp"
-                android:layout_height="126dp"
-                android:src="@drawable/selected"
+                android:layout_width="@dimen/selectedCard_width"
+                android:layout_height="@dimen/selectedCard_height"
+                android:background="@drawable/selected"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/card10"
                 app:layout_constraintEnd_toEndOf="@id/card10"
@@ -353,9 +353,9 @@
 
             <ImageView
                 android:id="@+id/selectedCard11"
-                android:layout_width="84dp"
-                android:layout_height="126dp"
-                android:src="@drawable/selected"
+                android:layout_width="@dimen/selectedCard_width"
+                android:layout_height="@dimen/selectedCard_height"
+                android:background="@drawable/selected"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/card11"
                 app:layout_constraintEnd_toEndOf="@id/card11"
@@ -364,9 +364,9 @@
 
             <ImageView
                 android:id="@+id/selectedCard12"
-                android:layout_width="84dp"
-                android:layout_height="126dp"
-                android:src="@drawable/selected"
+                android:layout_width="@dimen/selectedCard_width"
+                android:layout_height="@dimen/selectedCard_height"
+                android:background="@drawable/selected"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/card12"
                 app:layout_constraintEnd_toEndOf="@id/card12"
@@ -377,9 +377,9 @@
 
             <ImageView
                 android:id="@+id/card1"
-                android:layout_width="80dp"
-                android:layout_height="120dp"
-                android:src="@drawable/emptycard"
+                android:layout_width="@dimen/card_width"
+                android:layout_height="@dimen/card_height"
+                android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="20dp"
@@ -387,80 +387,80 @@
 
             <ImageView
                 android:id="@+id/card2"
-                android:layout_width="80dp"
-                android:layout_height="120dp"
-                android:src="@drawable/emptycard"
+                android:layout_width="@dimen/card_width"
+                android:layout_height="@dimen/card_height"
+                android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@+id/card1"
                 app:layout_constraintStart_toEndOf="@id/card1"
                 app:layout_constraintEnd_toStartOf="@id/card3" />
 
             <ImageView
                 android:id="@+id/card3"
-                android:layout_width="80dp"
-                android:layout_height="120dp"
-                android:src="@drawable/emptycard"
+                android:layout_width="@dimen/card_width"
+                android:layout_height="@dimen/card_height"
+                android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@id/card1"
                 app:layout_constraintStart_toEndOf="@id/card2"
                 app:layout_constraintEnd_toStartOf="@id/card4" />
 
             <ImageView
                 android:id="@+id/card4"
-                android:layout_width="80dp"
-                android:layout_height="120dp"
-                android:src="@drawable/emptycard"
+                android:layout_width="@dimen/card_width"
+                android:layout_height="@dimen/card_height"
+                android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@id/card1"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="15dp"/>
 
             <ImageView
                 android:id="@+id/card5"
-                android:layout_width="80dp"
-                android:layout_height="120dp"
+                android:layout_width="@dimen/card_width"
+                android:layout_height="@dimen/card_height"
                 android:layout_marginTop="20dp"
-                android:src="@drawable/emptycard"
+                android:background="@drawable/emptycard"
                 app:layout_constraintStart_toStartOf="@id/card1"
                 app:layout_constraintTop_toBottomOf="@id/card1" />
 
             <ImageView
                 android:id="@+id/card6"
-                android:layout_width="80dp"
-                android:layout_height="120dp"
-                android:src="@drawable/emptycard"
+                android:layout_width="@dimen/card_width"
+                android:layout_height="@dimen/card_height"
+                android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@id/card5"
                 app:layout_constraintStart_toEndOf="@id/card5"
                 app:layout_constraintEnd_toStartOf="@id/card7" />
 
             <ImageView
                 android:id="@+id/card7"
-                android:layout_width="80dp"
-                android:layout_height="120dp"
-                android:src="@drawable/emptycard"
+                android:layout_width="@dimen/card_width"
+                android:layout_height="@dimen/card_height"
+                android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@id/card5"
                 app:layout_constraintStart_toEndOf="@id/card6"
                 app:layout_constraintEnd_toStartOf="@id/card8" />
 
             <ImageView
                 android:id="@+id/card8"
-                android:layout_width="80dp"
-                android:layout_height="120dp"
-                android:src="@drawable/emptycard"
+                android:layout_width="@dimen/card_width"
+                android:layout_height="@dimen/card_height"
+                android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@id/card5"
                 app:layout_constraintEnd_toEndOf="@id/card4" />
 
             <ImageView
                 android:id="@+id/card9"
-                android:layout_width="80dp"
-                android:layout_height="120dp"
+                android:layout_width="@dimen/card_width"
+                android:layout_height="@dimen/card_height"
                 android:layout_marginTop="20dp"
-                android:src="@drawable/emptycard"
+                android:background="@drawable/emptycard"
                 app:layout_constraintTop_toBottomOf="@id/card5"
                 app:layout_constraintStart_toStartOf="@id/card1" />
 
             <ImageView
                 android:id="@+id/card10"
-                android:layout_width="80dp"
-                android:layout_height="120dp"
-                android:src="@drawable/emptycard"
+                android:layout_width="@dimen/card_width"
+                android:layout_height="@dimen/card_height"
+                android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@id/card9"
                 app:layout_constraintStart_toEndOf="@id/card9"
                 app:layout_constraintEnd_toStartOf="@id/card11"
@@ -468,9 +468,9 @@
 
             <ImageView
                 android:id="@+id/card11"
-                android:layout_width="80dp"
-                android:layout_height="120dp"
-                android:src="@drawable/emptycard"
+                android:layout_width="@dimen/card_width"
+                android:layout_height="@dimen/card_height"
+                android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@id/card9"
                 app:layout_constraintStart_toEndOf="@id/card10"
                 app:layout_constraintEnd_toStartOf="@id/card12"
@@ -478,9 +478,9 @@
 
             <ImageView
                 android:id="@+id/card12"
-                android:layout_width="80dp"
-                android:layout_height="120dp"
-                android:src="@drawable/emptycard"
+                android:layout_width="@dimen/card_width"
+                android:layout_height="@dimen/card_height"
+                android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@id/card9"
                 app:layout_constraintEnd_toEndOf="@id/card4"
                 app:layout_constraintBottom_toBottomOf="parent"

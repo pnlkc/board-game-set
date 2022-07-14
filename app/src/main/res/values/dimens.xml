@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="selectedCard_width">86dp</dimen>
+    <dimen name="selectedCard_height">126dp</dimen>
+    <dimen name="card_width">80dp</dimen>
+    <dimen name="card_height">120dp</dimen>
+</resources>

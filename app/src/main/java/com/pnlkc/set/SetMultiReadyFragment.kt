@@ -3,6 +3,7 @@ package com.pnlkc.set
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,7 +75,7 @@ class SetMultiReadyFragment : Fragment() {
                         .show()
 
                 } else {
-                    deletePlayer()
+                    if (userList.size > 1) deletePlayer() else deleteCollection()
                 }
             }
         }
@@ -297,6 +298,18 @@ class SetMultiReadyFragment : Fragment() {
             ).addOnSuccessListener {
                 findNavController().navigate(R.id.action_setMultiReadyFragment_pop)
             }
+        }
+    }
+
+    // 게임이 완료되면 Firestore Collection(게임방) 삭제
+    private fun deleteCollection() {
+        userSnapshotListener.remove()
+        if (cardSnapshotListener != null) cardSnapshotListener!!.remove()
+
+        collection.get().addOnSuccessListener {
+            it.forEach { snapshot -> snapshot.reference.delete() }
+        }.addOnSuccessListener {
+            findNavController().navigate(R.id.action_setMultiReadyFragment_pop)
         }
     }
 

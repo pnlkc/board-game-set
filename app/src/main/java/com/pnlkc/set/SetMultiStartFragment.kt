@@ -230,10 +230,10 @@ class SetMultiStartFragment : Fragment() {
     private fun connectImageToCard(index: Int) {
         if (sharedViewModel.fieldCardList[index] != CardItem(0, 0, 0, 0, 0)) {
             bindingCardList[index].visibility = View.VISIBLE
-            bindingCardList[index].setImageResource(sharedViewModel.fieldCardList[index].cardImage)
+            bindingCardList[index].setBackgroundResource(sharedViewModel.fieldCardList[index].cardImage)
         } else {
             bindingCardList[index].visibility = View.INVISIBLE
-            bindingCardList[index].setImageResource(R.drawable.emptycard)
+            bindingCardList[index].setBackgroundResource(R.drawable.emptycard)
         }
     }
 
