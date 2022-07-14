@@ -3,6 +3,7 @@
     package="com.pnlkc.set">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -12,6 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Set"
         android:name=".util.App">
+
+        <service android:name=".util.ForcedExitService"
+            android:stopWithTask="false" />
+
         <activity
             android:name="com.pnlkc.set.MainActivity"
             android:exported="true">

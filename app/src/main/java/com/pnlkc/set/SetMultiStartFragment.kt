@@ -2,9 +2,12 @@ package com.pnlkc.set
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,11 +28,13 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.pnlkc.set.data.GameState
 import com.pnlkc.set.data.UserMode
 import com.pnlkc.set.databinding.SetMultiStartFragmentBinding
 import com.pnlkc.set.model.CardItem
 import com.pnlkc.set.model.SetViewModel
 import com.pnlkc.set.util.App
+import com.pnlkc.set.util.ForcedExitService
 import com.pnlkc.set.util.Vibrator
 import kotlinx.coroutines.*
 import render.animations.Attention
@@ -639,6 +644,8 @@ class SetMultiStartFragment : Fragment() {
     // 게임이 끝나면 나오는 Dialog
     @SuppressLint("SetTextI18n")
     private fun showFinalScoreDialog() {
+        sharedViewModel.gameState = GameState.END
+
         // SnapshotListener remove 없이 collection 제거하면 앱 팅김
         userSnapshotListener.remove()
         answerSnapshotListener.remove()
@@ -713,6 +720,32 @@ class SetMultiStartFragment : Fragment() {
         collection.get().addOnSuccessListener {
             it.forEach { snapshot -> snapshot.reference.delete() }
         }
+    }
+
+    // 앱이 Stop 상태가 되면 강제종료 감지 서비스 실행
+    override fun onStop() {
+        super.onStop()
+        if (sharedViewModel.gameState != GameState.END) {
+            // 강제종료했는지 알기 위한 서비스 등록
+            val intent = Intent(requireContext(), ForcedExitService::class.java)
+            intent.putExtra("userList", userList.toTypedArray())
+            intent.putExtra("nickname", sharedViewModel.nickname)
+            intent.putExtra("roomCode", sharedViewModel.roomCode)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // 버전 O 부터는 백그라운드에서 서비스 실행이 안되서 startForegroundService 사용해야 됨
+                // 매니페스트에 FOREGROUND_SERVICE 권한 추가해야됨
+                requireActivity().startForegroundService(intent)
+            } else {
+                requireActivity().startService(intent)
+            }
+        }
+    }
+
+    // // 앱이 (Re)Start 상태가 되면 강제종료 감지 서비스 중지
+    override fun onStart() {
+        super.onStart()
+        requireActivity().stopService(Intent(requireContext(), ForcedExitService::class.java))
     }
 
     override fun onDestroyView() {
