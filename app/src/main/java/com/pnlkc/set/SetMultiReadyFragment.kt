@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.SyncStateContract.Helpers.update
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -58,6 +60,7 @@ class SetMultiReadyFragment : Fragment() {
     private var isCardSettingDone = false
 
     private lateinit var userSnapshotListener: ListenerRegistration
+    private lateinit var readySnapshotListener: ListenerRegistration
     private var cardSnapshotListener: ListenerRegistration? = null
 
     override fun onCreateView(
@@ -77,6 +80,7 @@ class SetMultiReadyFragment : Fragment() {
                     Toast.makeText(context, "뒤로가기 버튼을 한번 더 누르면 대기실을 나갑니다",
                         Toast.LENGTH_SHORT).show()
                 } else {
+                    sharedViewModel.gameState = GameState.EXIT
                     if (userList.size > 1) deletePlayer() else deleteCollection()
                 }
             }
@@ -158,29 +162,35 @@ class SetMultiReadyFragment : Fragment() {
                             readyLinearLayout[index].visibility = View.GONE
                         }
                     }
+                }
+            }
 
-                    // 다른 유저의 준비 상태에 맞춰 뷰 변경하는 코드
-                    val readyList = snapshot.data!!["ready"] as MutableList<Boolean>
-                    readyList.forEachIndexed { index, b ->
-                        if (b) {
-                            if (index == myIndex) binding.readyBtn.text = "취소"
-                            binding.readyBtn.setBackgroundResource(R.drawable.btn_bg)
-                            readyTextViewList[index].visibility = View.VISIBLE
-                            waitTextViewList[index].visibility = View.GONE
-                        } else {
-                            if (index == myIndex) binding.readyBtn.text = "준비 완료"
-                            binding.readyBtn.setBackgroundResource(R.drawable.btn_bg)
-                            readyTextViewList[index].visibility = View.GONE
-                            waitTextViewList[index].visibility = View.VISIBLE
-                        }
-                    }
-
-                    if (readyList.size > 1 && !readyList.contains(false)) {
-                        allReady()
-                        sharedViewModel.gameState = GameState.READY
+        readySnapshotListener = collection.document("ready")
+            .addSnapshotListener { snapshot, _ ->
+                if (snapshot == null) return@addSnapshotListener
+                val myIndex = userList.indexOf(sharedViewModel.nickname)
+                val readyList = MutableList(userList.size) { false }
+                userList.forEachIndexed { index, s ->
+                    if (snapshot.data!![s] == true) {
+                        readyList[index] = true
+                        if (index == myIndex) binding.readyBtn.text = "취소"
+                        binding.readyBtn.setBackgroundResource(R.drawable.btn_bg)
+                        readyTextViewList[index].visibility = View.VISIBLE
+                        waitTextViewList[index].visibility = View.GONE
                     } else {
-                        sharedViewModel.gameState = GameState.WAIT
+                        readyList[index] = false
+                        if (index == myIndex) binding.readyBtn.text = "준비 완료"
+                        binding.readyBtn.setBackgroundResource(R.drawable.btn_bg)
+                        readyTextViewList[index].visibility = View.GONE
+                        waitTextViewList[index].visibility = View.VISIBLE
                     }
+                }
+
+                if (readyList.size > 1 && !readyList.contains(false)) {
+                    allReady()
+                    sharedViewModel.gameState = GameState.READY
+                } else {
+                    sharedViewModel.gameState = GameState.WAIT
                 }
             }
     }
@@ -188,20 +198,15 @@ class SetMultiReadyFragment : Fragment() {
     // 준비 버튼 기능
     @Suppress("UNCHECKED_CAST")
     fun readyBtn() {
-        App.firestore.runTransaction { transaction ->
-            if (sharedViewModel.userMode == UserMode.HOST && sharedViewModel.gameState == GameState.READY) {
-                binding.readyBtn.isClickable = false
-                transaction.update(collection.document("user"), mapOf("start" to true))
-            } else {
-                binding.readyBtn.isClickable = true
-                val snapshot = transaction.get(collection.document("user"))
-                val myIndex = userList.indexOf(sharedViewModel.nickname)
-                val readyList = snapshot.data!!["ready"] as MutableList<Boolean>
-                readyList[myIndex] = !readyList[myIndex]
-                transaction.update(collection.document("user"), mapOf("ready" to readyList))
+        if (sharedViewModel.userMode == UserMode.HOST && sharedViewModel.gameState == GameState.READY) {
+            binding.readyBtn.isClickable = false
+            collection.document("user").update("start", true)
+        } else {
+            collection.document("ready").get().addOnSuccessListener { snapshot ->
+                val result = snapshot.data!![sharedViewModel.nickname] as Boolean
+                collection.document("ready").update(sharedViewModel.nickname, !result)
             }
         }
-
     }
 
     // 모두 준비가 완료 되었을 때 방장에게 게임 시작 버튼 보여주기
@@ -288,16 +293,17 @@ class SetMultiReadyFragment : Fragment() {
         val index = userList.indexOf(sharedViewModel.nickname)
         collection.document("user").get().addOnSuccessListener { snapshot ->
             val userList = snapshot.data!!["user"] as MutableList<String>
-            val readyList = snapshot.data!!["ready"] as MutableList<Boolean>
             val scoreList = snapshot.data!!["score"] as MutableList<String>
             userList.removeAt(index)
-            readyList.removeAt(index)
             scoreList.removeAt(index)
-            collection.document("user").update(
-                "user", userList,
-                "ready", readyList,
-                "score", scoreList
-            ).addOnSuccessListener {
+
+            App.firestore.runBatch { batch ->
+                batch.update(collection.document("user"), "user", userList)
+                batch.update(collection.document("user"), "score", scoreList)
+                batch.update(collection.document("ready"),
+                    sharedViewModel.nickname,
+                    FieldValue.delete())
+            }.addOnSuccessListener {
                 findNavController().navigate(R.id.action_setMultiReadyFragment_pop)
             }
         }
@@ -306,10 +312,14 @@ class SetMultiReadyFragment : Fragment() {
     // 게임이 완료되면 Firestore Collection(게임방) 삭제
     private fun deleteCollection() {
         userSnapshotListener.remove()
+        readySnapshotListener.remove()
         if (cardSnapshotListener != null) cardSnapshotListener!!.remove()
 
-        collection.get().addOnSuccessListener {
-            it.forEach { snapshot -> snapshot.reference.delete() }
+        collection.get().addOnSuccessListener { querySnapshot ->
+            // 코루틴을 써서 뷰가 destroy 되도 작업이 계속되도록 설정
+            CoroutineScope(Dispatchers.IO).launch {
+                querySnapshot.forEach { snapshot -> snapshot.reference.delete() }
+            }
             findNavController().navigate(R.id.action_setMultiReadyFragment_pop)
         }
     }
@@ -317,7 +327,7 @@ class SetMultiReadyFragment : Fragment() {
     // 앱이 Stop 상태가 되면 강제종료 감지 서비스 실행
     override fun onStop() {
         super.onStop()
-        if (sharedViewModel.gameState != GameState.START) {
+        if (sharedViewModel.gameState != GameState.START && sharedViewModel.gameState != GameState.EXIT) {
             // 강제종료했는지 알기 위한 서비스 등록
             val intent = Intent(requireContext(), ForcedExitService::class.java)
             intent.putExtra("userList", userList.toTypedArray())
@@ -341,11 +351,13 @@ class SetMultiReadyFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        Log.d("로그", "SetMultiReadyFragment - onDestroyView() 호출됨")
         super.onDestroyView()
         _binding = null
         backPressCallback.remove()
-        // snapshotListener 제거 안하면 다시 들어올 때 에러 남
+        // snapshotListener 제거 안하면 다시 들어올 때 팅기는 문제 발생
         userSnapshotListener.remove()
+        readySnapshotListener.remove()
         if (cardSnapshotListener != null) cardSnapshotListener!!.remove()
     }
 }

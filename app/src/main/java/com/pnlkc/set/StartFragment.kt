@@ -17,6 +17,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.firestore.SetOptions
 import com.pnlkc.set.data.DataSource
 import com.pnlkc.set.data.DataSource.KEY_SHUFFLED_CARD_LIST
 import com.pnlkc.set.data.UserMode
@@ -163,18 +164,17 @@ class StartFragment : Fragment() {
                                                     if (snapshot.data!!["start"] == false) {
                                                         sharedViewModel.nickname = nickname
                                                         result.add(nickname)
-                                                        val readyList =
-                                                            snapshot.data!!["ready"] as MutableList<Boolean>
-                                                        readyList.add(false)
                                                         val scoreList =
                                                             snapshot.data!!["score"] as MutableList<String>
                                                         scoreList.add("0")
                                                         collection.document("user")
                                                             .update(
                                                                 "user", result,
-                                                                "ready", readyList,
                                                                 "score", scoreList
                                                             )
+                                                        val ready = hashMapOf(nickname to false)
+                                                        collection.document("ready")
+                                                            .set(ready, SetOptions.merge())
                                                         dialog.dismiss()
                                                         findNavController().navigate(R.id.action_startFragment_to_setMultiReadyFragment)
                                                     } else {
@@ -207,7 +207,7 @@ class StartFragment : Fragment() {
         list.shuffle()
         var roomCode = ""
         repeat(6) { roomCode += list.random() }
-        App.firestore.collection("game").get()
+        App.firestore.collection(roomCode).get()
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     if (it.result.size() > 0) {
@@ -216,12 +216,15 @@ class StartFragment : Fragment() {
                         sharedViewModel.roomCode = roomCode
                         val data = hashMapOf(
                             "user" to mutableListOf(sharedViewModel.nickname),
-                            "ready" to mutableListOf(false),
                             "score" to mutableListOf("0"),
                             "start" to false
                         )
-                        App.firestore.collection(sharedViewModel.roomCode!!).document("user")
+                        App.firestore.collection(roomCode).document("user")
                             .set(data)
+
+                        val ready = hashMapOf(sharedViewModel.nickname to false)
+                        App.firestore.collection(roomCode).document("ready").set(ready)
+
                         findNavController().navigate(R.id.action_startFragment_to_setMultiReadyFragment)
                     }
                 } else {

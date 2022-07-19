@@ -9,7 +9,6 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +49,7 @@ class SetSinglePlayFragment : Fragment() {
     private lateinit var bindingCardList: List<ImageView>
     private lateinit var bindingSelectedCardList: List<ImageView>
 
-    // 게임을 저장할지 말지 알려주는 변수
+    // 게임을 저장할지 안할지 알려주는 변수
     private var saveIndicator: Boolean = true
 
     override fun onCreateView(
@@ -67,9 +66,8 @@ class SetSinglePlayFragment : Fragment() {
             override fun handleOnBackPressed() {
                 if (System.currentTimeMillis() - backWait >= 2000) {
                     backWait = System.currentTimeMillis()
-                    Toast.makeText(context, "뒤로가기 버튼을 한번 더 누르면 시작화면으로 돌아갑니다", Toast.LENGTH_SHORT)
-                        .show()
-
+                    Toast.makeText(context, "뒤로가기 버튼을 한번 더 누르면 시작화면으로 돌아갑니다",
+                        Toast.LENGTH_SHORT).show()
                 } else {
                     findNavController().navigate(R.id.action_setSinglePlayFragment_pop)
                 }
@@ -107,6 +105,7 @@ class SetSinglePlayFragment : Fragment() {
         when (sharedViewModel.isContinueGame) {
             true -> {
                 saveAndLoadGame("load")
+                sharedViewModel.resetSelectedCard()
                 startGame()
             }
             false -> {
@@ -305,7 +304,6 @@ class SetSinglePlayFragment : Fragment() {
         val word = sharedViewModel.score.value.toString() + "개"
         val start = dialogText.indexOf(word)
         val end = start + word.length
-//        spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#ae3b75")),
         spannableString.setSpan(ForegroundColorSpan(ContextCompat
             .getColor(requireContext(), R.color.dialog_score_text)),
             start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

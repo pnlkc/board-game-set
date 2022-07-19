@@ -9,7 +9,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FieldValue
 import com.pnlkc.set.MainActivity
 import com.pnlkc.set.R
 
@@ -73,17 +75,16 @@ class ForcedExitService : Service() {
         val index = userList!!.indexOf(nickname)
         collection.document("user").get().addOnSuccessListener { snapshot ->
             val userList = snapshot.data!!["user"] as MutableList<String>
-            val readyList = snapshot.data!!["ready"] as MutableList<Boolean>
             val scoreList = snapshot.data!!["score"] as MutableList<String>
             userList.removeAt(index)
-            readyList.removeAt(index)
             scoreList.removeAt(index)
-            collection.document("user").update(
-                "user", userList,
-                "ready", readyList,
-                "score", scoreList
-            ).addOnSuccessListener {
-                // 작업이 끝나면 서비스 중지
+            App.firestore.runBatch { batch ->
+                batch.update(collection.document("user"), "user", userList)
+                batch.update(collection.document("user"), "score", scoreList)
+                batch.update(collection.document("ready"),
+                    nickname!!,
+                    FieldValue.delete())
+            }.addOnSuccessListener {
                 stopSelf()
             }
         }

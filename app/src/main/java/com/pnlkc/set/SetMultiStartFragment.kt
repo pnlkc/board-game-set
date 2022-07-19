@@ -88,6 +88,7 @@ class SetMultiStartFragment : Fragment() {
                         .show()
 
                 } else {
+                    sharedViewModel.gameState = GameState.EXIT
                     deletePlayer()
                 }
             }
@@ -244,6 +245,11 @@ class SetMultiStartFragment : Fragment() {
 
     // 정답이면 카드 변경하는 코드
     private fun isCorrect() {
+        if (myJob != null) myJob!!.cancel()
+        binding.cardTouchBlocker.visibility = View.VISIBLE
+        binding.answerBtn.setBackgroundResource(R.drawable.btn_bg)
+        binding.answerBtn.text = "정답"
+
         sharedViewModel.selectedCardIndex.forEach {
             setVisibilitySelectedCard(it!!, View.INVISIBLE)
         }
@@ -255,11 +261,6 @@ class SetMultiStartFragment : Fragment() {
         )
 
         sharedViewModel.increaseScore().apply {
-            if (myJob != null) myJob!!.cancel()
-            binding.answerBtn.setBackgroundResource(R.drawable.btn_bg)
-            binding.answerBtn.text = "정답"
-            binding.cardTouchBlocker.visibility = View.VISIBLE
-
             if (this) {
                 correctAnswer()
                 // 정답 처리 및 애니메이션
@@ -361,19 +362,18 @@ class SetMultiStartFragment : Fragment() {
             if (snapshot == null) return@addSnapshotListener
             if (snapshot.exists()) {
                 val playerNickname = snapshot.data!!["nickname"] as String
-                var index = (snapshot.data!!["index"] as Long).toInt()
-                if (userList.indexOf(playerNickname) != index) {
-                    index = userList.indexOf(playerNickname)
-                }
+                val index = userList.indexOf(playerNickname)
 
-                if (userList.indexOf(sharedViewModel.nickname) != index) {
+                if (sharedViewModel.nickname != playerNickname) {
                     if (myJob != null) myJob!!.cancel()
+                    binding.cardTouchBlocker.visibility = View.VISIBLE
+                    binding.answerTouchBlocker.visibility = View.VISIBLE
                     binding.answerBtn.setBackgroundResource(R.drawable.btn_bg)
                     binding.noCombinationBtn.setBackgroundResource(R.drawable.btn_bg)
                     binding.answerBtn.text = "정답"
-                    binding.noCombinationBtn.text = "!"
-                    binding.cardTouchBlocker.visibility = View.VISIBLE
-                    binding.answerTouchBlocker.visibility = View.VISIBLE
+                    binding.noCombinationBtn.text = "X"
+                    sharedViewModel.resetSelectedCard()
+                    invisibleAllSelectedCard()
 
                     if (snapshot.data!!["result"] == null) {
                         playerLinearLayoutList[index].setBackgroundResource(R.drawable.answer_highlight_bg)
@@ -425,29 +425,28 @@ class SetMultiStartFragment : Fragment() {
                     if (snapshot.data!!["result"] == null) {
                         if (myJob != null) myJob!!.cancel()
                         when (snapshot.data!!["mode"]) {
-                            "answer" -> {
-                                binding.cardTouchBlocker.visibility = View.INVISIBLE
-                                answerCountDown()
-                            }
+                            "answer" -> answerCountDown()
                             "noCombination" -> {
-                                Vibrator().makeVibration(requireContext())
-                                binding.noCombinationBtn.setBackgroundResource(R.drawable.highlight_btn_bg)
-                                binding.noCombinationBtn.text = "!"
-                                if (sharedViewModel.leftCombination.value == 0) {
-                                    Handler(Looper.getMainLooper()).postDelayed({
+                                myJob = CoroutineScope(Dispatchers.Main).launch {
+                                    binding.noCombinationBtn.setBackgroundResource(R.drawable.highlight_btn_bg)
+                                    delay(500)
+                                    binding.noCombinationBtn.text = "..."
+                                    Vibrator().makeVibration(requireContext())
+                                    if (sharedViewModel.leftCombination.value == 0) {
                                         correctAnswer()
                                         shuffleCard()
-                                    }, 1500)
-                                } else {
-                                    Handler(Looper.getMainLooper()).postDelayed({
+                                    } else {
                                         incorrectAnswer()
-                                    }, 1500)
+                                    }
                                 }
                             }
                         }
                     } else {
+                        sharedViewModel.resetSelectedCard()
+                        invisibleAllSelectedCard()
                         binding.answerTouchBlocker.visibility = View.INVISIBLE
                         binding.noCombinationBtn.setBackgroundResource(R.drawable.btn_bg)
+                        binding.noCombinationBtn.text = "X"
                     }
                 }
             }
@@ -485,39 +484,27 @@ class SetMultiStartFragment : Fragment() {
 
     // 정답 버튼 기능
     fun answerBtn() {
-        standByAnswer()
-        App.firestore.runTransaction { transaction ->
-            val snapshot = transaction.get(collection.document("answer"))
+        binding.answerTouchBlocker.visibility = View.VISIBLE
+        collection.document("answer").get().addOnSuccessListener { snapshot ->
             val data = hashMapOf(
                 "nickname" to sharedViewModel.nickname,
-                "index" to userList.indexOf(sharedViewModel.nickname),
                 "mode" to "answer"
             )
-            if (snapshot.data == null || snapshot.data!!.size == 5) {
-                transaction.set(collection.document("answer"), data)
+            if (snapshot.data == null || snapshot.data!!.size == 4) {
+                collection.document("answer").set(data)
+            } else {
+                if (myJob != null) myJob!!.cancel()
             }
         }
     }
 
-    // 정답 버튼을 누르면 동시에 누른 사람이 있는지 확인
-    private fun standByAnswer() {
-        binding.answerTouchBlocker.visibility = View.VISIBLE
-        myJob = CoroutineScope(Dispatchers.Main).launch {
-            while (true) {
-                binding.answerBtn.text = "대기중."
-                delay(250)
-                binding.answerBtn.text = "대기중.."
-                delay(250)
-                binding.answerBtn.text = "대기중..."
-                delay(250)
-            }
-        }
-    }
-
-    // 정답 버튼을 제일 먼저 누른게 확인되면 카운트 다운 시작
+    // 정답 버튼을 누르면 카운트 다운 시작
     private fun answerCountDown() {
         myJob = CoroutineScope(Dispatchers.Main).launch {
+//            binding.answerBtn.text = "대기중"
+//            delay(750)
             Vibrator().makeVibration(requireContext())
+            binding.cardTouchBlocker.visibility = View.INVISIBLE
             binding.answerBtn.setBackgroundResource(R.drawable.highlight_btn_bg)
             binding.answerBtn.text = "5"
             delay(1000)
@@ -575,32 +562,16 @@ class SetMultiStartFragment : Fragment() {
 
     // 조합없음 버튼
     fun noCombinationBtn() {
-        standByNoCombination()
-        App.firestore.runTransaction { transaction ->
-            val snapshot = transaction.get(collection.document("answer"))
+        binding.answerTouchBlocker.visibility = View.VISIBLE
+        collection.document("answer").get().addOnSuccessListener { snapshot ->
             val data = hashMapOf(
                 "nickname" to sharedViewModel.nickname,
-                "index" to userList.indexOf(sharedViewModel.nickname),
                 "mode" to "noCombination"
             )
-
-            if (snapshot.data == null || snapshot.data!!.size == 5) {
-                transaction.set(collection.document("answer"), data)
-            }
-        }
-    }
-
-    // 정답 버튼을 누르면 동시에 누른 사람이 있는지 확인
-    private fun standByNoCombination() {
-        binding.answerTouchBlocker.visibility = View.VISIBLE
-        myJob = CoroutineScope(Dispatchers.Main).launch {
-            while (true) {
-                binding.noCombinationBtn.text = "."
-                delay(250)
-                binding.noCombinationBtn.text = ".."
-                delay(250)
-                binding.noCombinationBtn.text = "..."
-                delay(250)
+            if (snapshot.data == null || snapshot.data!!.size == 4) {
+                collection.document("answer").set(data)
+            } else {
+                if (myJob != null) myJob!!.cancel()
             }
         }
     }
@@ -696,36 +667,38 @@ class SetMultiStartFragment : Fragment() {
         }
     }
 
+    private fun deleteCollection() {
+        collection.get().addOnSuccessListener { querySnapshot ->
+            // 코루틴을 써서 뷰가 destroy 되도 작업이 계속되도록 설정
+            CoroutineScope(Dispatchers.IO).launch {
+                querySnapshot.forEach { snapshot -> snapshot.reference.delete() }
+            }
+        }
+    }
+
     // 게임 중 플레이어가 나가면 플레이어 삭제
     @Suppress("UNCHECKED_CAST")
     private fun deletePlayer() {
         val index = userList.indexOf(sharedViewModel.nickname)
         collection.document("user").get().addOnSuccessListener { snapshot ->
-            val readyList = snapshot.data!!["ready"] as MutableList<Boolean>
             userList.removeAt(index)
-            readyList.removeAt(index)
             scoreList.removeAt(index)
-            collection.document("user").update(
-                "user", userList,
-                "ready", readyList,
-                "score", scoreList
-            ).addOnSuccessListener {
+            App.firestore.runBatch { batch ->
+                batch.update(collection.document("user"), "user", userList)
+                batch.update(collection.document("user"), "score", scoreList)
+                batch.update(collection.document("ready"),
+                    sharedViewModel.nickname,
+                    FieldValue.delete())
+            }.addOnSuccessListener {
                 findNavController().navigate(R.id.action_setMultiStartFragment_pop)
             }
-        }
-    }
-
-    // 게임이 완료되면 Firestore Collection(게임방) 삭제
-    private fun deleteCollection() {
-        collection.get().addOnSuccessListener {
-            it.forEach { snapshot -> snapshot.reference.delete() }
         }
     }
 
     // 앱이 Stop 상태가 되면 강제종료 감지 서비스 실행
     override fun onStop() {
         super.onStop()
-        if (sharedViewModel.gameState != GameState.END) {
+        if (sharedViewModel.gameState != GameState.END && sharedViewModel.gameState != GameState.EXIT) {
             // 강제종료했는지 알기 위한 서비스 등록
             val intent = Intent(requireContext(), ForcedExitService::class.java)
             intent.putExtra("userList", userList.toTypedArray())
