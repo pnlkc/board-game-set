@@ -10,6 +10,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.pnlkc.set.databinding.SetRuleFragmentBinding
@@ -20,12 +21,25 @@ class SetRuleFragment : CustomFragment() {
     private var _binding: SetRuleFragmentBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var backPressCallback: OnBackPressedCallback
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         _binding = SetRuleFragmentBinding.inflate(inflater, container, false)
+
+        // OnBackPressedCallback (익명 클래스) 객체 생성
+        backPressCallback = object : OnBackPressedCallback(true) {
+            // 뒤로가기 했을 때 실행되는 기능
+            override fun handleOnBackPressed() {
+                isForcedExit = false
+                findNavController().navigate(R.id.action_setRuleFragment_pop)
+            }
+        }
+        // 액티비티의 BackPressedDispatcher에 여기서 만든 callback 객체를 등록
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backPressCallback)
 
         return binding.root
     }
@@ -63,7 +77,7 @@ class SetRuleFragment : CustomFragment() {
     }
 
 
-    fun highlightString(fullText: String, specificWord: String): SpannableString {
+    private fun highlightString(fullText: String, specificWord: String): SpannableString {
         // TextView 특정 부분 강조해서 보여주는 코드
         val spannableString = SpannableString(fullText)
         val start = fullText.indexOf(specificWord)
@@ -86,5 +100,6 @@ class SetRuleFragment : CustomFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        backPressCallback.remove()
     }
 }
