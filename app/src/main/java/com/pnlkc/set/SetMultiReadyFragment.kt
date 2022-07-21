@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.SyncStateContract.Helpers.update
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,14 +13,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.SetOptions
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pnlkc.set.data.GameState
@@ -223,6 +220,7 @@ class SetMultiReadyFragment : Fragment() {
             startGame()
             Vibrator().makeVibration(requireContext())
             binding.readyBtn.visibility = View.INVISIBLE
+            binding.roomCodeTextview.visibility = View.INVISIBLE
             binding.countdownTextview.text = "3"
             binding.countdownTextview.visibility = View.VISIBLE
             delay(750)
@@ -347,7 +345,23 @@ class SetMultiReadyFragment : Fragment() {
     // // 앱이 (Re)Start 상태가 되면 강제종료 감지 서비스 중지
     override fun onStart() {
         super.onStart()
-        requireActivity().stopService(Intent(requireContext(), ForcedExitService::class.java))
+        checkServiceRunning(0)
+    }
+
+    // 서비스가 실행중인지 확인하고 stopService() 호출하도록 하는 기능
+    // 다크모드 변경 화면 회전과 같이 onStop()과 onStart()가 연이어 실행되는 경우
+    // ForegroundServiceDidNotStartInTimeException 에러 발생 방지
+    private fun checkServiceRunning(count: Int) {
+        if (count < 5) {
+            if (App.isServiceRunning) {
+                requireActivity().stopService(Intent(requireContext(), ForcedExitService::class.java))
+            } else {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(100)
+                    checkServiceRunning(count + 1)
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {

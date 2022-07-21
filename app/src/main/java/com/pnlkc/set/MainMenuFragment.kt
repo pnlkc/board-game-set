@@ -14,20 +14,23 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.firestore.SetOptions
 import com.pnlkc.set.data.DataSource
 import com.pnlkc.set.data.DataSource.KEY_SHUFFLED_CARD_LIST
 import com.pnlkc.set.data.UserMode
-import com.pnlkc.set.databinding.StartFragmentBinding
+import com.pnlkc.set.databinding.MainMenuFragmentBinding
 import com.pnlkc.set.model.SetViewModel
 import com.pnlkc.set.util.App
+import com.pnlkc.set.util.App.Companion.isNicknameExist
+import com.pnlkc.set.util.CustomFragment
 
-class StartFragment : Fragment() {
+class MainMenuFragment : CustomFragment() {
 
-    private var _binding: StartFragmentBinding? = null
+    private var _binding: MainMenuFragmentBinding? = null
     private val binding get() = _binding!!
     private val sharedViewModel: SetViewModel by activityViewModels()
 
@@ -40,7 +43,7 @@ class StartFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = StartFragmentBinding.inflate(inflater, container, false)
+        _binding = MainMenuFragmentBinding.inflate(inflater, container, false)
 
         // OnBackPressedCallback (익명 클래스) 객체 생성
         backPressCallback = object : OnBackPressedCallback(true) {
@@ -64,21 +67,29 @@ class StartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+       if (isNicknameExist) {
+           binding.multiGameBtn.setOnClickListener { showMultiDialog() }
+       } else {
+           checkNicknameExist()
+       }
+
         sharedPreferences =
             requireActivity().getSharedPreferences(DataSource.KEY_PREFS, Context.MODE_PRIVATE)
 
         // 로티 애니메이션 재생 길이 제한
         binding.lottieAnimationView.setMaxFrame(80)
 
-        // 멀티플레이하기 버튼
-        binding.multiGameBtn.setOnClickListener { showMultiDialog() }
-
         // 싱글플레이하기 버튼
         binding.singleGameBtn.setOnClickListener { showSingleDialog() }
 
         // ?(룰) 버튼튼
         binding.ruleBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_startFragment_to_setRuleFragment)
+            isForcedExit = false
+            findNavController().navigate(R.id.action_mainMenuFragment_to_setRuleFragment)
+        }
+
+        binding.settingBtn.setOnClickListener {
+            logout()
         }
     }
 
@@ -95,51 +106,29 @@ class StartFragment : Fragment() {
 
         // Dialog 레이아웃의 뷰를 변수와 연결하기
         // 그냥 연결이 안되서 dialog 변수를 따로 만들고 거기서 findViewById해서 찾음
-        val dialogEditText1 =
-            dialog.findViewById<TextView>(R.id.dialog_play_multi_nickname_edittext1)
-        val dialogBtn1 = dialog.findViewById<TextView>(R.id.dialog_play_multi_btn1)
-        val dialogEditText2 =
-            dialog.findViewById<TextView>(R.id.dialog_play_multi_nickname_edittext2)
-        val dialogBtn2 = dialog.findViewById<TextView>(R.id.dialog_play_multi_btn2)
+        val makeRoomBtn = dialog.findViewById<TextView>(R.id.dialog_play_multi_make_room)
+        val joinRoomBtn = dialog.findViewById<TextView>(R.id.dialog_play_multi_join_room)
         val roomCodeEditText =
             dialog.findViewById<EditText>(R.id.dialog_play_multi_room_code_edittext)
 
         // 게임 만들기
-        dialogBtn1.setOnClickListener {
+        makeRoomBtn.setOnClickListener {
             sharedViewModel.userMode = UserMode.HOST
-
-            if (dialogEditText1.visibility == View.GONE) {
-                dialogEditText1.visibility = View.VISIBLE
-                dialogBtn2.visibility = View.GONE
-            } else {
-                val nickname = dialogEditText1.text.toString()
-                if (nickname.isNotBlank()) {
-                    sharedViewModel.nickname = nickname
-                    makeRoomCode()
-                    dialog.dismiss()
-                } else {
-                    Toast.makeText(activity, "닉네임을 입력하세요", Toast.LENGTH_SHORT).show()
-                }
-            }
+            makeRoomCode()
+            dialog.dismiss()
         }
 
         // 게임 참가하기
-        dialogBtn2.setOnClickListener {
+        joinRoomBtn.setOnClickListener {
             sharedViewModel.userMode = UserMode.CLIENT
 
-            if (dialogEditText2.visibility == View.GONE && roomCodeEditText.visibility == View.GONE) {
-                dialogEditText2.visibility = View.VISIBLE
+            if (roomCodeEditText.visibility == View.GONE) {
                 roomCodeEditText.visibility = View.VISIBLE
-                dialogBtn1.visibility = View.GONE
+                makeRoomBtn.visibility = View.GONE
             } else {
-                val nickname = dialogEditText2.text.toString()
                 val roomCode = roomCodeEditText.text.toString().uppercase()
 
-                if (nickname.isBlank() && roomCode.isBlank()) {
-                    Toast.makeText(activity, "닉네임과 코드를 입력하세요", Toast.LENGTH_SHORT).show()
-                } else if (nickname.isBlank()) {
-                    Toast.makeText(activity, "닉네임을 입력하세요", Toast.LENGTH_SHORT).show()
-                } else if (roomCode.isBlank()) {
+                if (roomCode.isBlank()) {
                     Toast.makeText(activity, "코드를 입력하세요", Toast.LENGTH_SHORT).show()
                 } else {
                     val collection = App.firestore.collection(roomCode)
@@ -155,33 +144,29 @@ class StartFragment : Fragment() {
                                             sharedViewModel.roomCode = roomCode
                                             val result: MutableList<String> =
                                                 snapshot.data!!["user"] as MutableList<String>
+
                                             if (result.size < 4) {
-                                                if (result.contains(nickname)) {
-                                                    Toast.makeText(activity,
-                                                        "이미 사용중인 닉네임입니다",
-                                                        Toast.LENGTH_SHORT).show()
+                                                if (snapshot.data!!["start"] == false) {
+                                                    result.add(sharedViewModel.nickname)
+                                                    val scoreList =
+                                                        snapshot.data!!["score"] as MutableList<String>
+                                                    scoreList.add("0")
+                                                    collection.document("user")
+                                                        .update(
+                                                            "user", result,
+                                                            "score", scoreList
+                                                        )
+                                                    val ready =
+                                                        hashMapOf(sharedViewModel.nickname to false)
+                                                    collection.document("ready")
+                                                        .set(ready, SetOptions.merge())
+                                                    dialog.dismiss()
+                                                    isForcedExit = false
+                                                    findNavController().navigate(R.id.action_mainMenuFragment_to_setMultiReadyFragment)
                                                 } else {
-                                                    if (snapshot.data!!["start"] == false) {
-                                                        sharedViewModel.nickname = nickname
-                                                        result.add(nickname)
-                                                        val scoreList =
-                                                            snapshot.data!!["score"] as MutableList<String>
-                                                        scoreList.add("0")
-                                                        collection.document("user")
-                                                            .update(
-                                                                "user", result,
-                                                                "score", scoreList
-                                                            )
-                                                        val ready = hashMapOf(nickname to false)
-                                                        collection.document("ready")
-                                                            .set(ready, SetOptions.merge())
-                                                        dialog.dismiss()
-                                                        findNavController().navigate(R.id.action_startFragment_to_setMultiReadyFragment)
-                                                    } else {
-                                                        Toast.makeText(activity,
-                                                            "게임이 이미 시작되어ㅜ 참가할 수 없습니다",
-                                                            Toast.LENGTH_SHORT).show()
-                                                    }
+                                                    Toast.makeText(activity,
+                                                        "게임이 이미 시작되어 참가할 수 없습니다",
+                                                        Toast.LENGTH_SHORT).show()
                                                 }
                                             } else {
                                                 Toast.makeText(activity,
@@ -225,7 +210,8 @@ class StartFragment : Fragment() {
                         val ready = hashMapOf(sharedViewModel.nickname to false)
                         App.firestore.collection(roomCode).document("ready").set(ready)
 
-                        findNavController().navigate(R.id.action_startFragment_to_setMultiReadyFragment)
+                        isForcedExit = false
+                        findNavController().navigate(R.id.action_mainMenuFragment_to_setMultiReadyFragment)
                     }
                 } else {
                     Log.d("로그", "데이터 로드 실패")
@@ -254,7 +240,8 @@ class StartFragment : Fragment() {
         }
 
         continueBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_startFragment_to_setSinglePlayFragment)
+            isForcedExit = false
+            findNavController().navigate(R.id.action_mainMenuFragment_to_setSinglePlayFragment)
             sharedViewModel.isContinueGame = true
             dialog.dismiss()
         }
@@ -263,7 +250,8 @@ class StartFragment : Fragment() {
             if (sharedPreferences.contains(KEY_SHUFFLED_CARD_LIST)) {
                 showNewGameDialog()
             } else {
-                findNavController().navigate(R.id.action_startFragment_to_setSinglePlayFragment)
+                isForcedExit = false
+                findNavController().navigate(R.id.action_mainMenuFragment_to_setSinglePlayFragment)
                 sharedViewModel.isContinueGame = false
             }
             dialog.dismiss()
@@ -291,11 +279,89 @@ class StartFragment : Fragment() {
             showSingleDialog()
 
         }
+
         rightBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_startFragment_to_setSinglePlayFragment)
+            isForcedExit = false
+            findNavController().navigate(R.id.action_mainMenuFragment_to_setSinglePlayFragment)
             sharedViewModel.isContinueGame = false
             dialog.dismiss()
         }
+    }
+
+    // 유저의 닉네임이 설정 되었는지 확인
+    private fun checkNicknameExist() {
+        App.firestore.collection("USER_LIST").document(App.auth.currentUser!!.uid).get()
+            .addOnCompleteListener { snapshot ->
+                if (snapshot.isSuccessful) {
+                    if (snapshot.result.exists()) {
+                        isNicknameExist = true
+                        sharedViewModel.nickname = snapshot.result.data!!["nickname"].toString()
+                        setOnlineStatus()
+                    } else {
+                        isNicknameExist = false
+                    }
+                    // 닉네임 유무 확인 후 멀티 버튼 활성화
+                    binding.multiGameBtn.setOnClickListener {
+                        if (isNicknameExist) showMultiDialog() else showDialogSetNickname()
+                    }
+                }
+            }
+    }
+
+    // 닉네임 설정 Dialog 보여주기
+    private fun showDialogSetNickname() {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_set_nickname)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.setCancelable(true)
+        dialog.show()
+
+        // Dialog 레이아웃의 뷰를 변수와 연결하기
+        // 그냥 연결이 안되서 dialog 변수를 따로 만들고 거기서 findViewById해서 찾음
+        val nicknameEditText = dialog.findViewById<TextView>(R.id.dialog_set_nickname_edittext)
+        val confirmBtn = dialog.findViewById<TextView>(R.id.dialog_set_nickname_confirm_btn)
+
+        confirmBtn.setOnClickListener {
+            val data = hashMapOf(
+                "nickname" to nicknameEditText.text.toString(),
+                "status" to true
+            )
+            App.firestore.collection("USER_LIST").document(App.auth.currentUser!!.uid)
+                .set(data)
+            isNicknameExist = true
+            sharedViewModel.nickname = nicknameEditText.text.toString()
+            dialog.dismiss()
+            showMultiDialog()
+        }
+    }
+
+    // 로그아웃 기능
+    private fun logout() {
+        // 구글 로그인인지 확인
+        val providerId = App.auth.currentUser!!.providerData.last().providerId
+        if (providerId.contains("google")) {
+            // 구글 계정 로그아웃
+            // 이 코드가 없으면 재로그인시 초기 로그인시 나오는 인텐트 팝업이 뜨지 않음
+            GoogleSignIn.getClient(
+                requireContext(),
+                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+            ).signOut()
+        }
+
+        // 파이어베이스 로그아아웃
+        App.auth.signOut()
+
+        isNicknameExist = false
+        isForcedExit = false
+        findNavController().navigate(R.id.action_mainMenuFragment_to_loginFragment)
+    }
+
+    // 게임 접속시 상태를 온라인으로 설정
+    private fun setOnlineStatus() {
+        App.firestore.collection("USER_LIST").document(App.auth.currentUser!!.uid)
+            .update("status", true)
     }
 
     override fun onDestroyView() {

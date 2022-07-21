@@ -35,8 +35,7 @@
     <string name="play_multi">멀티플레이하기</string>
     <string name="play_single">싱글플레이하기</string>
     <string name="make_nickname_hint">닉네임을 입력하세요</string>
-    <string name="join_nickname_hint">1) 닉네임을 입력하세요</string>
-    <string name="join_code_hint">2) 코드를 입력하세요</string>
+    <string name="join_code_hint">코드를 입력하세요</string>
     <string name="join_game">게임 참가하기</string>
     <string name="make_game">게임 만들기</string>
     <string name="left_btn">왼쪽버튼</string>

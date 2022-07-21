@@ -1,8 +1,10 @@
 package com.pnlkc.set.util
 
 import android.content.Context
+import android.util.Log
 import androidx.multidex.MultiDexApplication
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -20,29 +22,21 @@ class App : MultiDexApplication() {
             return instance.applicationContext
         }
 
+        // 서비스(ForcedExitService)가 실행중인지 확인하기 위한 변수
+        var isServiceRunning = false
+
+        // 닉네임이 설정 되었는지 확인하는 변수
+        var isNicknameExist = false
+
         // FirebaseAuth 객체와 관련된 변수를 전역으로 사용하기 위해 필요
         lateinit var auth: FirebaseAuth
         lateinit var firestore: FirebaseFirestore
 
-        // 로그인 한 사람의 email을 담을 변수
-        var email: String? = null
-
-        // 이메일 인증 여부 확인 및 유저 이메일 값 저장
+        // 현재 로그인 되어 있는지 확인인
         fun checkAuth(): Boolean {
             // 현재 유저를 정보를 나타내는 변수
             val currentUser = auth.currentUser
-
-            return currentUser?.let {
-                // email 변수에 현재 로그인된 유저의 email을 설정
-                email = currentUser.email
-
-                // 이메일 인증이 되었는지 여부에 따라 true, false 반환
-                currentUser.isEmailVerified
-            } ?: let {
-                email = null
-                // current 유저가 없으면(null) false 반환
-                false
-            }
+            return currentUser != null
         }
     }
 

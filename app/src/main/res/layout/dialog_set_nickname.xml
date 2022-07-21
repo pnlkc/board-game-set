@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/multi_play"
+        android:text="멀티플레이 닉네임 설정"
         android:textSize="23sp"
         android:textColor="@color/dialog_title_text"
         android:paddingVertical="20dp"
@@ -26,44 +26,28 @@
         android:paddingBottom="50dp"
         android:background="@color/dialog_text_bg">
 
-        <Button
-            android:id="@+id/dialog_play_multi_make_room"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/btn_bg"
-            android:text="@string/make_game"
-            android:textSize="20sp"
-            android:fontFamily="@font/bm_jua"
-            android:textColor="@color/btn_text_color"
-            android:paddingHorizontal="30dp"
-            android:paddingVertical="20dp"
-            android:visibility="visible"
-            />
-
         <EditText
-            android:id="@+id/dialog_play_multi_room_code_edittext"
+            android:id="@+id/dialog_set_nickname_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/join_code_hint"
+            android:layout_marginBottom="30dp"
+            android:hint="@string/make_nickname_hint"
             android:maxLines="1"
-            android:maxLength="6"
+            android:maxLength="10"
             android:gravity="center"
             android:background="@null"
             android:fontFamily="@font/bm_jua"
             android:textSize="24sp"
             android:paddingVertical="20dp"
-            android:visibility="gone"
             />
 
         <Button
-            android:id="@+id/dialog_play_multi_join_room"
+            android:id="@+id/dialog_set_nickname_confirm_btn"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:background="@drawable/btn_bg"
-            android:text="@string/join_game"
+            android:text="확인"
             android:textSize="20sp"
             android:fontFamily="@font/bm_jua"
             android:textColor="@color/btn_text_color"

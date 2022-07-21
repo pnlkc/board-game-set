@@ -29,4 +29,9 @@
     <color name="answer_player_highlight">#cc699b</color>
     <color name="answer_text">#000000</color>
     <color name="crown">#F6C332</color>
+    <color name="google_login_text">#292929</color>
+    <color name="google_login_btn_bg">#FFFFFF</color>
+    <color name="guest_login_text">#FFFFFF</color>
+    <color name="etc_btn_bg">#C1C1C1</color>
+    <color name="etc_btn_ripple">#8A8A8A</color>
 </resources>

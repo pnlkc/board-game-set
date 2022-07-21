@@ -8,12 +8,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
 import com.pnlkc.set.MainActivity
 import com.pnlkc.set.R
+import kotlinx.coroutines.*
 
 // 강제 종료했는지 확인하기 위한 서비스
 class ForcedExitService : Service() {
@@ -24,6 +26,9 @@ class ForcedExitService : Service() {
 
     private val notificationId = 12
     private val channelId = "set_notification_channel"
+
+    private var isDeleteDone = false
+    private var isOfflineSetDone = false
 
     override fun onBind(p0: Intent?): IBinder? = null
 
@@ -54,6 +59,7 @@ class ForcedExitService : Service() {
 
     // 서비스가 시작 되면 인텐트로 정보 받아오기
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        App.isServiceRunning = true
         userList = intent.getStringArrayExtra("userList")
         nickname = intent.getStringExtra("nickname")
         roomCode = intent.getStringExtra("roomCode")
@@ -66,6 +72,7 @@ class ForcedExitService : Service() {
         if (userList != null && nickname != null && roomCode != null) {
             collection = App.firestore.collection(roomCode!!)
             if (userList!!.size > 1) deletePlayer() else deleteCollection()
+            setOfflineStatus()
         }
     }
 
@@ -85,7 +92,8 @@ class ForcedExitService : Service() {
                     nickname!!,
                     FieldValue.delete())
             }.addOnSuccessListener {
-                stopSelf()
+                isDeleteDone = true
+                if (isDeleteDone && isOfflineSetDone) stopSelf()
             }
         }
     }
@@ -99,10 +107,24 @@ class ForcedExitService : Service() {
                     .addOnSuccessListener {
                         count++
                         // 마지막 작업까지 끝나면 서비스 중지
-                        if (count == querySnapshot.size()) stopSelf()
+                        if (count == querySnapshot.size()) {
+                            isDeleteDone = true
+                            if (isDeleteDone && isOfflineSetDone) stopSelf()
+                        }
                     }
             }
 
+        }
+    }
+
+    // 앱 종료시 상태를 오프라인으로 변경
+    private fun setOfflineStatus() {
+        if (App.checkAuth()) {
+            App.firestore.collection("USER_LIST").document(App.auth.currentUser!!.uid)
+                .update("status", false).addOnSuccessListener {
+                    isOfflineSetDone = true
+                    if (isDeleteDone && isOfflineSetDone) stopSelf()
+                }
         }
     }
 
@@ -111,7 +133,7 @@ class ForcedExitService : Service() {
         val notificationChannel = NotificationChannel(
             channelId,
             "Set Notification",
-            NotificationManager.IMPORTANCE_HIGH
+            NotificationManager.IMPORTANCE_MIN
         )
         notificationChannel.enableLights(false)
         notificationChannel.enableVibration(false)
@@ -120,5 +142,10 @@ class ForcedExitService : Service() {
         val notificationManager = applicationContext
             .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(notificationChannel)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        App.isServiceRunning = false
     }
 }

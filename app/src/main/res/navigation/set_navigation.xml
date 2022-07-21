@@ -3,22 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/set_navigation"
-    app:startDestination="@id/startFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
-        android:id="@+id/startFragment"
-        android:name="com.pnlkc.set.StartFragment"
-        android:label="start_fragment"
-        tools:layout="@layout/start_fragment" >
+        android:id="@+id/mainMenuFragment"
+        android:name="com.pnlkc.set.MainMenuFragment"
+        android:label="main_menu_fragment"
+        tools:layout="@layout/main_menu_fragment" >
         <action
-            android:id="@+id/action_startFragment_to_setSinglePlayFragment"
+            android:id="@+id/action_mainMenuFragment_to_setSinglePlayFragment"
             app:destination="@id/setSinglePlayFragment" />
         <action
-            android:id="@+id/action_startFragment_to_setRuleFragment"
+            android:id="@+id/action_mainMenuFragment_to_setRuleFragment"
             app:destination="@id/setRuleFragment" />
         <action
-            android:id="@+id/action_startFragment_to_setMultiReadyFragment"
+            android:id="@+id/action_mainMenuFragment_to_setMultiReadyFragment"
             app:destination="@id/setMultiReadyFragment" />
+        <action
+            android:id="@+id/action_mainMenuFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/setSinglePlayFragment"
@@ -34,11 +38,11 @@
         android:id="@+id/setRuleFragment"
         android:name="com.pnlkc.set.SetRuleFragment"
         android:label="setrule_fragment"
-        tools:layout="@layout/setrule_fragment" >
+        tools:layout="@layout/set_rule_fragment" >
         <action
             android:id="@+id/action_setRuleFragment_to_setSinglePlayFragment"
             app:destination="@id/setSinglePlayFragment"
-            app:popUpTo="@id/startFragment" />
+            app:popUpTo="@id/mainMenuFragment" />
         <action
             android:id="@+id/action_setRuleFragment_pop"
             app:popUpTo="@id/setRuleFragment"
@@ -52,7 +56,7 @@
         <action
             android:id="@+id/action_setMultiReadyFragment_to_setMultiStartFragment"
             app:destination="@id/setMultiStartFragment"
-            app:popUpTo="@id/startFragment" />
+            app:popUpTo="@id/mainMenuFragment" />
         <action
             android:id="@+id/action_setMultiReadyFragment_pop"
             app:popUpTo="@id/setMultiReadyFragment"
@@ -67,5 +71,15 @@
             android:id="@+id/action_setMultiStartFragment_pop"
             app:popUpTo="@id/setMultiStartFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.pnlkc.set.LoginFragment"
+        android:label="login_fragment"
+        tools:layout="@layout/login_fragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_mainMenuFragment"
+            app:destination="@id/mainMenuFragment"
+            app:popUpTo="@id/mainMenuFragment" />
     </fragment>
 </navigation>

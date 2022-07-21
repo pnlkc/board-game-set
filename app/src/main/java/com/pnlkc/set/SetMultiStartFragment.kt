@@ -5,9 +5,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -677,21 +674,18 @@ class SetMultiStartFragment : Fragment() {
     }
 
     // 게임 중 플레이어가 나가면 플레이어 삭제
-    @Suppress("UNCHECKED_CAST")
     private fun deletePlayer() {
         val index = userList.indexOf(sharedViewModel.nickname)
-        collection.document("user").get().addOnSuccessListener { snapshot ->
-            userList.removeAt(index)
-            scoreList.removeAt(index)
-            App.firestore.runBatch { batch ->
-                batch.update(collection.document("user"), "user", userList)
-                batch.update(collection.document("user"), "score", scoreList)
-                batch.update(collection.document("ready"),
-                    sharedViewModel.nickname,
-                    FieldValue.delete())
-            }.addOnSuccessListener {
-                findNavController().navigate(R.id.action_setMultiStartFragment_pop)
-            }
+        userList.removeAt(index)
+        scoreList.removeAt(index)
+        App.firestore.runBatch { batch ->
+            batch.update(collection.document("user"), "user", userList)
+            batch.update(collection.document("user"), "score", scoreList)
+            batch.update(collection.document("ready"),
+                sharedViewModel.nickname,
+                FieldValue.delete())
+        }.addOnSuccessListener {
+            findNavController().navigate(R.id.action_setMultiStartFragment_pop)
         }
     }
 
@@ -718,7 +712,23 @@ class SetMultiStartFragment : Fragment() {
     // // 앱이 (Re)Start 상태가 되면 강제종료 감지 서비스 중지
     override fun onStart() {
         super.onStart()
-        requireActivity().stopService(Intent(requireContext(), ForcedExitService::class.java))
+        checkServiceRunning(0)
+    }
+
+    // 서비스가 실행중인지 확인하고 stopService() 호출하도록 하는 기능
+    // 다크모드 변경 화면 회전과 같이 onStop()과 onStart()가 연이어 실행되는 경우
+    // ForegroundServiceDidNotStartInTimeException 에러 발생 방지
+    private fun checkServiceRunning(count: Int) {
+        if (count < 5) {
+            if (App.isServiceRunning) {
+                requireActivity().stopService(Intent(requireContext(), ForcedExitService::class.java))
+            } else {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(100)
+                    checkServiceRunning(count + 1)
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {

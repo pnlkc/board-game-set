@@ -1,8 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     dependencies {
-        // 4.3.8 로 안하고 4.3.10 으로 하면 뒤에 R.string... 할 때 에러남
-        classpath 'com.google.gms:google-services:4.3.10'
+        // 버전 4.3.10 으로 하면 뒤에 R.string... 할 때 에러남
+        classpath 'com.google.gms:google-services:4.3.13'
     }
 }
 

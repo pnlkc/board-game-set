@@ -75,6 +75,6 @@ dependencies {
 
     // Firebase Firestore
     implementation 'com.google.firebase:firebase-firestore-ktx'
-    implementation 'com.google.firebase:firebase-firestore-ktx:24.2.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.2.1'
 
 }

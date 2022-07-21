@@ -18,7 +18,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.gson.GsonBuilder
@@ -30,6 +29,7 @@ import com.pnlkc.set.data.DataSource.KEY_SHUFFLED_CARD_LIST
 import com.pnlkc.set.databinding.SetSinglePlayFragmentBinding
 import com.pnlkc.set.model.CardItem
 import com.pnlkc.set.model.SetViewModel
+import com.pnlkc.set.util.CustomFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -39,7 +39,7 @@ import render.animations.Bounce
 import render.animations.Render
 import render.animations.Slide
 
-class SetSinglePlayFragment : Fragment() {
+class SetSinglePlayFragment : CustomFragment() {
     private var _binding: SetSinglePlayFragmentBinding? = null
     private val binding get() = _binding!!
     private val sharedViewModel: SetViewModel by activityViewModels()
@@ -69,6 +69,7 @@ class SetSinglePlayFragment : Fragment() {
                     Toast.makeText(context, "뒤로가기 버튼을 한번 더 누르면 시작화면으로 돌아갑니다",
                         Toast.LENGTH_SHORT).show()
                 } else {
+                    isForcedExit = false
                     findNavController().navigate(R.id.action_setSinglePlayFragment_pop)
                 }
             }
@@ -319,6 +320,7 @@ class SetSinglePlayFragment : Fragment() {
         // Dialog 뷰 기능 구현
         textView.text = spannableString
         leftBtn.setOnClickListener {
+            isForcedExit = false
             findNavController().navigate(R.id.action_setSinglePlayFragment_pop)
             dialog.dismiss()
         }

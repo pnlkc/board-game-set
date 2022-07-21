@@ -11,13 +11,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.pnlkc.set.databinding.SetruleFragmentBinding
+import com.pnlkc.set.databinding.SetRuleFragmentBinding
+import com.pnlkc.set.util.CustomFragment
 
-class SetRuleFragment : Fragment() {
+class SetRuleFragment : CustomFragment() {
 
-    private var _binding: SetruleFragmentBinding? = null
+    private var _binding: SetRuleFragmentBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -25,7 +25,7 @@ class SetRuleFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        _binding = SetruleFragmentBinding.inflate(inflater, container, false)
+        _binding = SetRuleFragmentBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -36,15 +36,18 @@ class SetRuleFragment : Fragment() {
 
         // 뒤로가기 버튼이 눌렸을 때
         binding.backBtn.setOnClickListener {
+            isForcedExit = false
             findNavController().navigate(R.id.action_setRuleFragment_pop)
         }
 
         // 게임시작 버튼이 눌렸을 때
         binding.gameStartBtn.setOnClickListener {
+            isForcedExit = false
             findNavController().navigate(R.id.action_setRuleFragment_to_setSinglePlayFragment)
         }
 
         binding.goMainMenuBtn.setOnClickListener {
+            isForcedExit = false
             findNavController().navigate(R.id.action_setRuleFragment_pop)
         }
 
