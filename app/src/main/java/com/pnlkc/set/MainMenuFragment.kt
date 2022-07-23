@@ -1,7 +1,9 @@
 package com.pnlkc.set
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -14,10 +16,14 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.SetOptions
 import com.pnlkc.set.data.DataSource
 import com.pnlkc.set.data.DataSource.KEY_SHUFFLED_CARD_LIST
@@ -37,6 +43,12 @@ class MainMenuFragment : CustomFragment() {
     private lateinit var sharedPreferences: SharedPreferences
 
     private lateinit var backPressCallback: OnBackPressedCallback
+
+    // 아래 두 변수는 클래스 내에서 자유롭게 사용하기 위해 최상단에서 선언
+    // connectGoogleAccount()에서 사용
+    private lateinit var gsoLauncher: ActivityResultLauncher<Intent>
+    // onViewCreated() - gsoLauncher에서 Dialog의 버튼의 visibility 설정하기 위해 사용
+    private lateinit var connectGoogleAccountBtn: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,11 +79,11 @@ class MainMenuFragment : CustomFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-       if (isNicknameExist) {
-           binding.multiGameBtn.setOnClickListener { showMultiDialog() }
-       } else {
-           checkNicknameExist()
-       }
+        if (isNicknameExist) {
+            binding.multiGameBtn.setOnClickListener { showMultiDialog() }
+        } else {
+            checkNicknameExist()
+        }
 
         sharedPreferences =
             requireActivity().getSharedPreferences(DataSource.KEY_PREFS, Context.MODE_PRIVATE)
@@ -89,8 +101,36 @@ class MainMenuFragment : CustomFragment() {
         }
 
         binding.settingBtn.setOnClickListener {
-            logout()
+            showDialogSetting()
         }
+
+        // 익명 로그인 구글 계정 전환
+        gsoLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                // 구글 로그인 결과 처리
+                if (it.resultCode == Activity.RESULT_OK) {
+                    val result = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+                    try {
+                        val account = result.result
+                        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                        App.auth.currentUser!!.linkWithCredential(credential)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Toast.makeText(requireContext(),
+                                        "구글 계정 연결 성공",
+                                        Toast.LENGTH_SHORT).show()
+                                    connectGoogleAccountBtn.visibility = View.GONE
+                                } else {
+                                    Toast.makeText(requireContext(),
+                                        "구글 계정 연결 실패",
+                                        Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                    } catch (e: ApiException) {
+                        Toast.makeText(requireContext(), "구글 계정 연결 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -277,7 +317,6 @@ class MainMenuFragment : CustomFragment() {
         leftBtn.setOnClickListener {
             dialog.dismiss()
             showSingleDialog()
-
         }
 
         rightBtn.setOnClickListener {
@@ -320,8 +359,8 @@ class MainMenuFragment : CustomFragment() {
 
         // Dialog 레이아웃의 뷰를 변수와 연결하기
         // 그냥 연결이 안되서 dialog 변수를 따로 만들고 거기서 findViewById해서 찾음
-        val nicknameEditText = dialog.findViewById<TextView>(R.id.dialog_set_nickname_edittext)
-        val confirmBtn = dialog.findViewById<TextView>(R.id.dialog_set_nickname_confirm_btn)
+        val nicknameEditText = dialog.findViewById<EditText>(R.id.dialog_set_nickname_edittext)
+        val confirmBtn = dialog.findViewById<Button>(R.id.dialog_set_nickname_confirm_btn)
 
         confirmBtn.setOnClickListener {
             val data = hashMapOf(
@@ -337,8 +376,68 @@ class MainMenuFragment : CustomFragment() {
         }
     }
 
+    // 설정 다이얼로그 보여주기
+    private fun showDialogSetting() {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_setting)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.setCancelable(true)
+        dialog.show()
+
+        // Dialog 레이아웃의 뷰를 변수와 연결하기
+        // 그냥 연결이 안되서 dialog 변수를 따로 만들고 거기서 findViewById해서 찾음
+        val myProfileBtn = dialog.findViewById<Button>(R.id.dialog_setting_my_profile)
+        connectGoogleAccountBtn =
+            dialog.findViewById(R.id.dialog_setting_connect_google_account)
+        val logoutBtn = dialog.findViewById<Button>(R.id.dialog_setting_logout)
+
+        // 내 프로필 버튼
+        myProfileBtn.setOnClickListener {
+            showDialogMyProfile()
+            dialog.dismiss()
+        }
+
+        // 구글 로그인인지 확인
+        val providerId = App.auth.currentUser!!.providerData.last().providerId
+        Log.d("로그", "providerId : $providerId")
+        if (!providerId.contains("google")) {
+            connectGoogleAccountBtn.visibility = View.VISIBLE
+            connectGoogleAccountBtn.setOnClickListener {
+                connectGoogleAccount()
+            }
+        }
+
+        // 로그아웃 버튼
+        logoutBtn.setOnClickListener {
+            dialog.dismiss()
+            logout()
+        }
+    }
+
+    // 내 프로필 다이얼로그 보여주기
+    private fun showDialogMyProfile() {
+
+    }
+
+    // 익명 계정을 구글 계정으로 전환
+    private fun connectGoogleAccount() {
+        val gso = GoogleSignInOptions
+            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            //R.string.default_web_client_id 에러시 project 수준의 classpath ...google-services 버전 확인
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .build()
+        val signInIntent = GoogleSignIn.getClient(requireContext(), gso).signInIntent
+        gsoLauncher.launch(signInIntent)
+    }
+
     // 로그아웃 기능
     private fun logout() {
+        // 유저 상태를 오프라인으로 변경
+        App.firestore.collection("USER_LIST").document(App.auth.currentUser!!.uid)
+            .update("status", false)
+
         // 구글 로그인인지 확인
         val providerId = App.auth.currentUser!!.providerData.last().providerId
         if (providerId.contains("google")) {

@@ -45,4 +45,8 @@
     <string name="no">아니오</string>
     <string name="new_game_text">게임을 새로 시작하면\n저장된 데이터가 사라집니다</string>
     <string name="rule_btn">\?</string>
+    <string name="my_profile">내 프로필</string>
+    <string name="logout">로그아웃</string>
+    <string name="setting">설정</string>
+    <string name="connect_google_account">구글 계정 연동하기</string>
 </resources>
