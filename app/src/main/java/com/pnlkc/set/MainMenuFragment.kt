@@ -47,6 +47,7 @@ class MainMenuFragment : CustomFragment() {
     // 아래 두 변수는 클래스 내에서 자유롭게 사용하기 위해 최상단에서 선언
     // connectGoogleAccount()에서 사용
     private lateinit var gsoLauncher: ActivityResultLauncher<Intent>
+
     // onViewCreated() - gsoLauncher에서 Dialog의 버튼의 visibility 설정하기 위해 사용
     private lateinit var connectGoogleAccountBtn: Button
 
@@ -363,16 +364,32 @@ class MainMenuFragment : CustomFragment() {
         val confirmBtn = dialog.findViewById<Button>(R.id.dialog_set_nickname_confirm_btn)
 
         confirmBtn.setOnClickListener {
-            val data = hashMapOf(
-                "nickname" to nicknameEditText.text.toString(),
-                "status" to true
-            )
-            App.firestore.collection("USER_LIST").document(App.auth.currentUser!!.uid)
-                .set(data)
-            isNicknameExist = true
-            sharedViewModel.nickname = nicknameEditText.text.toString()
-            dialog.dismiss()
-            showMultiDialog()
+            val inputText = nicknameEditText.text.toString()
+            if (inputText.isNotBlank()) {
+                App.firestore.collection("USER_LIST").whereEqualTo("nickname", inputText)
+                    .get().addOnSuccessListener { snapshot ->
+                        if (snapshot.isEmpty) {
+                            val data = hashMapOf(
+                                "nickname" to inputText,
+                                "status" to true
+                            )
+                            App.firestore.collection("USER_LIST")
+                                .document(App.auth.currentUser!!.uid)
+                                .set(data)
+                            Toast.makeText(requireContext(), "닉네임은 설정이 완료되었습니다", Toast.LENGTH_SHORT)
+                                .show()
+                            isNicknameExist = true
+                            sharedViewModel.nickname = inputText
+                            dialog.dismiss()
+                            showMultiDialog()
+                        } else {
+                            Toast.makeText(requireContext(), "이미 사용중인 닉네임입니다", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+            } else {
+                Toast.makeText(requireContext(), "닉네임은 공백일 수 없습니다", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -401,7 +418,6 @@ class MainMenuFragment : CustomFragment() {
 
         // 구글 로그인인지 확인
         val providerId = App.auth.currentUser!!.providerData.last().providerId
-        Log.d("로그", "providerId : $providerId")
         if (!providerId.contains("google")) {
             connectGoogleAccountBtn.visibility = View.VISIBLE
             connectGoogleAccountBtn.setOnClickListener {
