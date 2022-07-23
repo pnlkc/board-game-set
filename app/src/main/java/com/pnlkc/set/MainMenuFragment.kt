@@ -28,6 +28,7 @@ import com.google.firebase.firestore.SetOptions
 import com.pnlkc.set.data.DataSource
 import com.pnlkc.set.data.DataSource.KEY_SHUFFLED_CARD_LIST
 import com.pnlkc.set.data.UserMode
+import com.pnlkc.set.databinding.DialogMyProfileBinding
 import com.pnlkc.set.databinding.MainMenuFragmentBinding
 import com.pnlkc.set.model.SetViewModel
 import com.pnlkc.set.util.App
@@ -81,7 +82,7 @@ class MainMenuFragment : CustomFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (isNicknameExist) {
-            binding.multiGameBtn.setOnClickListener { showMultiDialog() }
+            binding.multiGameBtn.setOnClickListener { showDialogPlayMulti() }
         } else {
             checkNicknameExist()
         }
@@ -93,7 +94,7 @@ class MainMenuFragment : CustomFragment() {
         binding.lottieAnimationView.setMaxFrame(80)
 
         // 싱글플레이하기 버튼
-        binding.singleGameBtn.setOnClickListener { showSingleDialog() }
+        binding.singleGameBtn.setOnClickListener { showDialogPlaySingle() }
 
         // ?(룰) 버튼튼
         binding.ruleBtn.setOnClickListener {
@@ -135,7 +136,7 @@ class MainMenuFragment : CustomFragment() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun showMultiDialog() {
+    private fun showDialogPlayMulti() {
         // 커스텀 Dialog 만들기
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -260,7 +261,7 @@ class MainMenuFragment : CustomFragment() {
             }
     }
 
-    private fun showSingleDialog() {
+    private fun showDialogPlaySingle() {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_play_single)
@@ -289,7 +290,7 @@ class MainMenuFragment : CustomFragment() {
 
         newGameBtn.setOnClickListener {
             if (sharedPreferences.contains(KEY_SHUFFLED_CARD_LIST)) {
-                showNewGameDialog()
+                showDialogNewGame()
             } else {
                 isForcedExit = false
                 findNavController().navigate(R.id.action_mainMenuFragment_to_setSinglePlayFragment)
@@ -299,7 +300,7 @@ class MainMenuFragment : CustomFragment() {
         }
     }
 
-    private fun showNewGameDialog() {
+    private fun showDialogNewGame() {
         // 커스텀 Dialog 만들기
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -317,7 +318,7 @@ class MainMenuFragment : CustomFragment() {
         // Dialog 뷰 기능 구현
         leftBtn.setOnClickListener {
             dialog.dismiss()
-            showSingleDialog()
+            showDialogPlaySingle()
         }
 
         rightBtn.setOnClickListener {
@@ -342,14 +343,14 @@ class MainMenuFragment : CustomFragment() {
                     }
                     // 닉네임 유무 확인 후 멀티 버튼 활성화
                     binding.multiGameBtn.setOnClickListener {
-                        if (isNicknameExist) showMultiDialog() else showDialogSetNickname()
+                        if (isNicknameExist) showDialogPlayMulti() else showDialogSetNickname("multi")
                     }
                 }
             }
     }
 
     // 닉네임 설정 Dialog 보여주기
-    private fun showDialogSetNickname() {
+    private fun showDialogSetNickname(mode: String) {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_set_nickname)
@@ -375,16 +376,25 @@ class MainMenuFragment : CustomFragment() {
                             )
                             App.firestore.collection("USER_LIST")
                                 .document(App.auth.currentUser!!.uid)
-                                .set(data)
-                            Toast.makeText(requireContext(), "닉네임은 설정이 완료되었습니다", Toast.LENGTH_SHORT)
+                                .set(data, SetOptions.merge())
+                            Toast.makeText(requireContext(), "닉네임 설정이 완료되었습니다", Toast.LENGTH_SHORT)
                                 .show()
                             isNicknameExist = true
                             sharedViewModel.nickname = inputText
                             dialog.dismiss()
-                            showMultiDialog()
+                            if (mode == "multi") showDialogPlayMulti() else showDialogMyProfile()
                         } else {
-                            Toast.makeText(requireContext(), "이미 사용중인 닉네임입니다", Toast.LENGTH_SHORT)
-                                .show()
+                            if (inputText == sharedViewModel.nickname) {
+                                Toast.makeText(requireContext(),
+                                    "동일한 닉네임으로는 변경할 수 없습니다",
+                                    Toast.LENGTH_SHORT)
+                                    .show()
+                            } else {
+                                Toast.makeText(requireContext(),
+                                    "이미 사용중인 닉네임입니다",
+                                    Toast.LENGTH_SHORT)
+                                    .show()
+                            }
                         }
                     }
             } else {
@@ -434,7 +444,36 @@ class MainMenuFragment : CustomFragment() {
 
     // 내 프로필 다이얼로그 보여주기
     private fun showDialogMyProfile() {
+        // 뷰바인딩 사용
+        val inflater =
+            requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val dBinding = DialogMyProfileBinding.inflate(inflater)
 
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(dBinding.root)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.setCancelable(true)
+        dialog.show()
+
+        if (sharedViewModel.nickname.isNotBlank()) {
+            dBinding.dialogMyProfileNicknameTextview.text = sharedViewModel.nickname
+            dBinding.dialogMyProfileNicknameChangeBtn.setImageResource(R.drawable.nickname_change_icon)
+        } else {
+            dBinding.dialogMyProfileNicknameTextview.hint = "닉네임을 설정하세요"
+            dBinding.dialogMyProfileNicknameChangeBtn.setImageResource(R.drawable.nickname_set_icon)
+        }
+
+        dBinding.dialogMyProfileNicknameLinearlayout.setOnClickListener {
+            dialog.dismiss()
+            showDialogSetNickname("myProfile")
+        }
+
+        dBinding.dialogMyProfileBackBtn.setOnClickListener {
+            dialog.dismiss()
+            showDialogSetting()
+        }
     }
 
     // 익명 계정을 구글 계정으로 전환

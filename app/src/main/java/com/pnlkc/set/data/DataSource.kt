@@ -104,4 +104,3 @@ object DataSource {
             CardItem(3, 3, 3, 3, R.drawable.cccc)
         )
 }
-

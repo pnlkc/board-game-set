@@ -1,0 +1,100 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/dialog_text_bg"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dialog_title_bg"
+        android:fontFamily="@font/bm_jua"
+        android:gravity="center"
+        android:paddingVertical="20dp"
+        android:text="내 프로필"
+        android:textColor="@color/dialog_title_text"
+        android:textSize="21sp" />
+
+    <LinearLayout
+        android:id="@+id/dialog_my_profile_linear_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginVertical="40dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/dialog_my_profile_nickname_linearlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:text="닉네임 | "
+                android:fontFamily="@font/bm_jua"
+                android:lineSpacingExtra="10sp"
+                android:textColor="@color/dialog_title_text"
+                android:textSize="25sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/first_textview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/dialog_my_profile_nickname_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:fontFamily="@font/bm_jua"
+                android:lineSpacingExtra="10sp"
+                android:textColor="@color/dialog_text"
+                android:textSize="21sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/first_textview"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="일이삼사오육칠팔구십" />
+
+            <ImageView
+                android:id="@+id/dialog_my_profile_nickname_change_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/nickname_change_btn_bg"
+                android:padding="4dp"
+                android:src="@drawable/nickname_change_icon" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingHorizontal="25dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="20dp">
+
+        <Button
+            android:id="@+id/dialog_my_profile_back_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dialog_btn_bg"
+            android:fontFamily="@font/bm_jua"
+            android:maxLines="1"
+            android:paddingHorizontal="10dp"
+            android:text="뒤로가기"
+            android:textColor="@color/dialog_btn_text"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</LinearLayout>

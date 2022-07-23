@@ -359,6 +359,6 @@
             app:layout_constraintTop_toTopOf="@id/backButton"
             app:layout_constraintBottom_toBottomOf="@id/backButton"/>
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

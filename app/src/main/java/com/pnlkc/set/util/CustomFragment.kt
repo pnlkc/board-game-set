@@ -1,13 +1,6 @@
 package com.pnlkc.set.util
 
-import android.app.Activity
-import android.app.ActivityManager
-import android.content.Intent
-import android.os.Build
-import android.os.Handler
-import android.util.Log
 import androidx.fragment.app.Fragment
-import kotlinx.coroutines.*
 
 // 서비스 시작(onStop), 종료(onStart) 코드 추가된 프래그먼트
 open class CustomFragment : Fragment() {

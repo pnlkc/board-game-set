@@ -58,7 +58,7 @@
                 android:id="@+id/google_login_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="구글 계정으로 로그인하기"
+                android:text="@string/google_login"
                 android:fontFamily="@font/bm_jua"
                 android:textColor="@color/google_login_text"
                 android:textSize="21sp"
@@ -91,7 +91,7 @@
                 android:id="@+id/guest_login_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="게스트로 로그인하기"
+                android:text="@string/guest_login"
                 android:fontFamily="@font/bm_jua"
                 android:textColor="@color/guest_login_text"
                 android:textSize="21sp"
@@ -104,4 +104,3 @@
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="멀티플레이 닉네임 설정"
+        android:text="@string/set_nickname"
         android:textSize="23sp"
         android:textColor="@color/dialog_title_text"
         android:paddingVertical="20dp"
@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_bg"
-            android:text="확인"
+            android:text="@string/confirm"
             android:textSize="20sp"
             android:fontFamily="@font/bm_jua"
             android:textColor="@color/btn_text_color"
@@ -56,6 +56,5 @@
             />
 
     </LinearLayout>
-
 
 </LinearLayout>

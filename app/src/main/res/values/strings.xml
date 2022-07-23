@@ -49,4 +49,8 @@
     <string name="logout">로그아웃</string>
     <string name="setting">설정</string>
     <string name="connect_google_account">구글 계정 연동하기</string>
+    <string name="guest_login">게스트로 로그인하기</string>
+    <string name="google_login">구글 계정으로 로그인하기</string>
+    <string name="confirm">확인</string>
+    <string name="set_nickname">닉네임 설정</string>
 </resources>
