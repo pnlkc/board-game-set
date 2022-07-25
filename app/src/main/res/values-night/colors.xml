@@ -34,4 +34,5 @@
     <color name="guest_login_text">#F2EFDF</color>
     <color name="etc_btn_bg">#757575</color>
     <color name="etc_btn_ripple">#C1C1C1</color>
+    <color name="friend_offline">#757575</color>
 </resources>

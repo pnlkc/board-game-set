@@ -101,6 +101,9 @@ class SetMultiReadyFragment : Fragment() {
         // 대기실에 들어오면 게임 상태를 대기 상태로 변경
         sharedViewModel.gameState = GameState.WAIT
 
+        // 유저 상태를 게임중으로 설정
+        setPlayStatus()
+
         // 파이어스토어 경로 지정 (룸코드)
         collection = App.firestore.collection(sharedViewModel.roomCode!!)
 
@@ -130,6 +133,14 @@ class SetMultiReadyFragment : Fragment() {
             binding.player1ReadyNicknameTextview, binding.player2ReadyNicknameTextview,
             binding.player3ReadyNicknameTextview, binding.player4ReadyNicknameTextview
         )
+    }
+
+    // 유저 상태를 게임중으로 설정
+    private fun setPlayStatus() {
+        if (App.checkAuth()) {
+            App.firestore.collection("USER_LIST").document(App.auth.currentUser!!.uid)
+                .update("status", "play")
+        }
     }
 
     // 게임 시작전 준비창 관련
@@ -201,7 +212,7 @@ class SetMultiReadyFragment : Fragment() {
         } else {
             collection.document("ready").get().addOnSuccessListener { snapshot ->
                 val result = snapshot.data!![sharedViewModel.nickname] as Boolean
-                collection.document("ready").update(sharedViewModel.nickname, !result)
+                collection.document("ready").update(sharedViewModel.nickname!!, !result)
             }
         }
     }
@@ -299,7 +310,7 @@ class SetMultiReadyFragment : Fragment() {
                 batch.update(collection.document("user"), "user", userList)
                 batch.update(collection.document("user"), "score", scoreList)
                 batch.update(collection.document("ready"),
-                    sharedViewModel.nickname,
+                    sharedViewModel.nickname!!,
                     FieldValue.delete())
             }.addOnSuccessListener {
                 findNavController().navigate(R.id.action_setMultiReadyFragment_pop)

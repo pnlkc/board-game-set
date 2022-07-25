@@ -121,7 +121,7 @@ class ForcedExitService : Service() {
     private fun setOfflineStatus() {
         if (App.checkAuth()) {
             App.firestore.collection("USER_LIST").document(App.auth.currentUser!!.uid)
-                .update("status", false).addOnSuccessListener {
+                .update("status", "offline").addOnSuccessListener {
                     isOfflineSetDone = true
                     if (isDeleteDone && isOfflineSetDone) stopSelf()
                 }

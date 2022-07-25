@@ -17,7 +17,7 @@ open class CustomFragment : Fragment() {
     private fun setOnlineStatus() {
         if (App.checkAuth()) {
             App.firestore.collection("USER_LIST").document(App.auth.currentUser!!.uid)
-                .update("status", true)
+                .update("status", "online")
         }
     }
 
@@ -31,7 +31,7 @@ open class CustomFragment : Fragment() {
     private fun setOfflineStatus() {
         if (App.checkAuth()) {
             App.firestore.collection("USER_LIST").document(App.auth.currentUser!!.uid)
-                .update("status", false)
+                .update("status", "offline")
         }
     }
 }

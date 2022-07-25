@@ -19,23 +19,34 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import com.pnlkc.set.data.DataSource
 import com.pnlkc.set.data.DataSource.KEY_SHUFFLED_CARD_LIST
 import com.pnlkc.set.data.UserMode
+import com.pnlkc.set.databinding.DialogFriendBinding
 import com.pnlkc.set.databinding.DialogMyProfileBinding
 import com.pnlkc.set.databinding.MainMenuFragmentBinding
+import com.pnlkc.set.model.Friend
 import com.pnlkc.set.model.SetViewModel
+import com.pnlkc.set.recyclerview_friend_list.FriendListAdaptor
+import com.pnlkc.set.recyclerview_friend_list.IFriendList
+import com.pnlkc.set.recyclerview_friend_request_list.FriendRequestListAdaptor
+import com.pnlkc.set.recyclerview_friend_request_list.IFriendRequestList
 import com.pnlkc.set.util.App
 import com.pnlkc.set.util.App.Companion.isNicknameExist
 import com.pnlkc.set.util.CustomFragment
 
-class MainMenuFragment : CustomFragment() {
+class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
 
     private var _binding: MainMenuFragmentBinding? = null
     private val binding get() = _binding!!
@@ -51,6 +62,20 @@ class MainMenuFragment : CustomFragment() {
 
     // onViewCreated() - gsoLauncher에서 Dialog의 버튼의 visibility 설정하기 위해 사용
     private lateinit var connectGoogleAccountBtn: Button
+
+    private lateinit var collection: CollectionReference
+
+    private lateinit var friendSnapshotListener: ListenerRegistration
+    private var friendStatusSnapshotListener: ListenerRegistration? = null
+
+    private var friendRequestList: List<String> = listOf()
+    private var friendList: List<String> = listOf()
+    private var resultList = mutableListOf<Friend>()
+
+    private val friendRequestListAdaptor = FriendRequestListAdaptor(this)
+    private lateinit var friendListAdaptor: FriendListAdaptor
+
+    private val friendCount = MutableLiveData(arrayOf(0, 0))
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -81,11 +106,13 @@ class MainMenuFragment : CustomFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (isNicknameExist) {
-            binding.multiGameBtn.setOnClickListener { showDialogPlayMulti() }
-        } else {
-            checkNicknameExist()
-        }
+        friendListAdaptor = FriendListAdaptor(this, requireContext())
+
+        collection = App.firestore.collection("USER_LIST")
+
+        checkNicknameExist()
+
+        observeFriendChange()
 
         sharedPreferences =
             requireActivity().getSharedPreferences(DataSource.KEY_PREFS, Context.MODE_PRIVATE)
@@ -96,12 +123,13 @@ class MainMenuFragment : CustomFragment() {
         // 싱글플레이하기 버튼
         binding.singleGameBtn.setOnClickListener { showDialogPlaySingle() }
 
-        // ?(룰) 버튼튼
+        // ?(룰) 버튼 기능
         binding.ruleBtn.setOnClickListener {
             isForcedExit = false
             findNavController().navigate(R.id.action_mainMenuFragment_to_setRuleFragment)
         }
 
+        // 설정 버튼 기능
         binding.settingBtn.setOnClickListener {
             showDialogSetting()
         }
@@ -189,7 +217,7 @@ class MainMenuFragment : CustomFragment() {
 
                                             if (result.size < 4) {
                                                 if (snapshot.data!!["start"] == false) {
-                                                    result.add(sharedViewModel.nickname)
+                                                    result.add(sharedViewModel.nickname!!)
                                                     val scoreList =
                                                         snapshot.data!!["score"] as MutableList<String>
                                                     scoreList.add("0")
@@ -331,7 +359,7 @@ class MainMenuFragment : CustomFragment() {
 
     // 유저의 닉네임이 설정 되었는지 확인
     private fun checkNicknameExist() {
-        App.firestore.collection("USER_LIST").document(App.auth.currentUser!!.uid).get()
+        collection.document(App.auth.currentUser!!.uid).get()
             .addOnCompleteListener { snapshot ->
                 if (snapshot.isSuccessful) {
                     if (snapshot.result.exists()) {
@@ -344,6 +372,11 @@ class MainMenuFragment : CustomFragment() {
                     // 닉네임 유무 확인 후 멀티 버튼 활성화
                     binding.multiGameBtn.setOnClickListener {
                         if (isNicknameExist) showDialogPlayMulti() else showDialogSetNickname("multi")
+                    }
+
+                    // 닉네임 유무 확인 후 친구창 버튼 활성화
+                    binding.friendBtn.setOnClickListener {
+                        if (isNicknameExist) showDialogFriend() else showDialogSetNickname("friend")
                     }
                 }
             }
@@ -367,22 +400,26 @@ class MainMenuFragment : CustomFragment() {
         confirmBtn.setOnClickListener {
             val inputText = nicknameEditText.text.toString()
             if (inputText.isNotBlank()) {
-                App.firestore.collection("USER_LIST").whereEqualTo("nickname", inputText)
+                collection.whereEqualTo("nickname", inputText)
                     .get().addOnSuccessListener { snapshot ->
                         if (snapshot.isEmpty) {
                             val data = hashMapOf(
                                 "nickname" to inputText,
-                                "status" to true
+                                "status" to "online"
                             )
-                            App.firestore.collection("USER_LIST")
-                                .document(App.auth.currentUser!!.uid)
+                            collection.document(App.auth.currentUser!!.uid)
                                 .set(data, SetOptions.merge())
                             Toast.makeText(requireContext(), "닉네임 설정이 완료되었습니다", Toast.LENGTH_SHORT)
                                 .show()
                             isNicknameExist = true
                             sharedViewModel.nickname = inputText
                             dialog.dismiss()
-                            if (mode == "multi") showDialogPlayMulti() else showDialogMyProfile()
+
+                            when (mode) {
+                                "multi" -> showDialogPlayMulti()
+                                "myProfile" -> showDialogMyProfile()
+                                "friend" -> showDialogFriend()
+                            }
                         } else {
                             if (inputText == sharedViewModel.nickname) {
                                 Toast.makeText(requireContext(),
@@ -457,7 +494,7 @@ class MainMenuFragment : CustomFragment() {
         dialog.setCancelable(true)
         dialog.show()
 
-        if (sharedViewModel.nickname.isNotBlank()) {
+        if (sharedViewModel.nickname != null) {
             dBinding.dialogMyProfileNicknameTextview.text = sharedViewModel.nickname
             dBinding.dialogMyProfileNicknameChangeBtn.setImageResource(R.drawable.nickname_change_icon)
         } else {
@@ -490,8 +527,8 @@ class MainMenuFragment : CustomFragment() {
     // 로그아웃 기능
     private fun logout() {
         // 유저 상태를 오프라인으로 변경
-        App.firestore.collection("USER_LIST").document(App.auth.currentUser!!.uid)
-            .update("status", false)
+        collection.document(App.auth.currentUser!!.uid)
+            .update("status", "offline")
 
         // 구글 로그인인지 확인
         val providerId = App.auth.currentUser!!.providerData.last().providerId
@@ -507,20 +544,284 @@ class MainMenuFragment : CustomFragment() {
         // 파이어베이스 로그아아웃
         App.auth.signOut()
 
+        sharedViewModel.nickname = null
         isNicknameExist = false
         isForcedExit = false
         findNavController().navigate(R.id.action_mainMenuFragment_to_loginFragment)
     }
 
+    // 친구창 다이얼로그 보여주기
+    private fun showDialogFriend() {
+        // 뷰바인딩 사용
+        val inflater =
+            requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val dBinding = DialogFriendBinding.inflate(inflater)
+
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(dBinding.root)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.setCancelable(true)
+        dialog.show()
+
+        dBinding.dialogFriendRequestListRecyclerview.adapter = friendRequestListAdaptor
+        dBinding.dialogFriendRequestListRecyclerview.layoutManager =
+            LinearLayoutManager(requireContext())
+
+        dBinding.dialogFriendListRecyclerview.adapter = friendListAdaptor
+        dBinding.dialogFriendListRecyclerview.layoutManager = LinearLayoutManager(requireContext())
+
+        dBinding.dialogFriendBackBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dBinding.dialogFriendAddFriendBtn.setOnClickListener {
+            dBinding.dialogFriendAddFriendBtn.visibility = View.GONE
+            dBinding.dialogFriendFilterLinearlayout.visibility = View.GONE
+            dBinding.dialogFriendAddFriendCancelBtn.visibility = View.VISIBLE
+            dBinding.dialogFriendSendLinearlayout.visibility = View.VISIBLE
+            dBinding.dialogFriendFilterEdittext.text?.clear()
+        }
+
+        dBinding.dialogFriendAddFriendCancelBtn.setOnClickListener {
+            dBinding.dialogFriendAddFriendBtn.visibility = View.VISIBLE
+            dBinding.dialogFriendFilterLinearlayout.visibility = View.VISIBLE
+            dBinding.dialogFriendAddFriendCancelBtn.visibility = View.GONE
+            dBinding.dialogFriendSendLinearlayout.visibility = View.GONE
+            dBinding.dialogFriendSendEdittext.text?.clear()
+        }
+
+        dBinding.dialogFriendFilterCancelBtn.setOnClickListener {
+            dBinding.dialogFriendFilterEdittext.text!!.clear()
+        }
+
+        dBinding.dialogFriendSendBtn.setOnClickListener {
+            val inputText = dBinding.dialogFriendSendEdittext.text.toString()
+            if (inputText.isNotBlank()) {
+                sendFriendRequest(inputText, dBinding.dialogFriendSendEdittext)
+            }
+        }
+
+        dBinding.dialogFriendRequestTitleLinearlayout.setOnClickListener {
+            if (dBinding.dialogFriendRequestListRecyclerview.visibility == View.VISIBLE) {
+                dBinding.dialogFriendRequestFoldImageview.setBackgroundResource(R.drawable.friend_fold_icon)
+                dBinding.dialogFriendRequestListRecyclerview.visibility = View.GONE
+            } else {
+                dBinding.dialogFriendRequestFoldImageview.setBackgroundResource(R.drawable.friend_unfold_icon)
+                dBinding.dialogFriendRequestListRecyclerview.visibility = View.VISIBLE
+            }
+        }
+
+        dBinding.dialogFriendStatusTitleLinearlayout.setOnClickListener {
+            if (dBinding.dialogFriendListRecyclerview.visibility == View.VISIBLE) {
+                dBinding.dialogFriendStatusFoldImageview.setBackgroundResource(R.drawable.friend_fold_icon)
+                dBinding.dialogFriendListRecyclerview.visibility = View.GONE
+            } else {
+                dBinding.dialogFriendStatusFoldImageview.setBackgroundResource(R.drawable.friend_unfold_icon)
+                dBinding.dialogFriendListRecyclerview.visibility = View.VISIBLE
+            }
+        }
+
+        friendCount.observe(viewLifecycleOwner) {
+            dBinding.dialogFriendStatusTextview.text = "친구 (${it[0]}/${it[1]})"
+        }
+    }
+
+    private fun sendFriendRequest(inputText: String, editText: EditText) {
+        collection.whereEqualTo("nickname", inputText)
+            .get().addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    if (inputText == sharedViewModel.nickname) {
+                        Toast.makeText(requireContext(), "자신에게 친구 신청할 수 없습니다", Toast.LENGTH_SHORT)
+                            .show()
+                        editText.text.clear()
+                    } else {
+                        val uid = documents.first().id
+                        collection.document(uid).update(
+                            "friend_request",
+                            FieldValue.arrayUnion(sharedViewModel.nickname)
+                        ).addOnSuccessListener {
+                            Toast.makeText(requireContext(), "친구 신청이 완료되었습니다", Toast.LENGTH_SHORT)
+                                .show()
+                            editText.text.clear()
+                        }
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "입력한 닉네임이 존재하지 않습니다", Toast.LENGTH_SHORT)
+                        .show()
+                    editText.text.clear()
+                }
+            }
+    }
+
+    // 친구 요청 및 추가 스냅샷 리스너
+    @Suppress("UNCHECKED_CAST")
+    private fun observeFriendChange() {
+        friendSnapshotListener = collection.document(App.auth.currentUser!!.uid)
+            .addSnapshotListener { snapshot, _ ->
+                if (snapshot == null) return@addSnapshotListener
+
+                if (snapshot.data?.get("friend_request") != null) {
+                    friendRequestList = snapshot.data!!["friend_request"] as List<String>
+                    friendRequestListAdaptor.submitList(friendRequestList.toMutableList())
+                    if (friendRequestList.isNotEmpty()) {
+                        binding.friendRequestCount.visibility = View.VISIBLE
+                        binding.friendRequestCount.text = friendRequestList.size.toString()
+                    } else {
+                        collection.document(App.auth.currentUser!!.uid).update(
+                            "friend_request", FieldValue.delete()
+                        )
+                    }
+                } else {
+                    friendRequestListAdaptor.submitList(listOf())
+                    binding.friendRequestCount.visibility = View.GONE
+                }
+
+                if (snapshot.data?.get("friend_list") != null) {
+                    friendList = snapshot.data!!["friend_list"] as List<String>
+                    if (friendList.isNotEmpty()) {
+                        observeFriendStatusChange()
+                    } else {
+                        collection.document(App.auth.currentUser!!.uid).update(
+                            "friend_list", FieldValue.delete()
+                        )
+                    }
+                } else {
+                    if (friendStatusSnapshotListener != null) friendStatusSnapshotListener!!.remove()
+                    friendList = listOf()
+                    friendListAdaptor.setData(mutableListOf())
+                    friendCount.value = arrayOf(0, 0)
+                }
+            }
+    }
+
+    private fun observeFriendStatusChange() {
+        if (friendStatusSnapshotListener != null) friendStatusSnapshotListener!!.remove()
+        friendStatusSnapshotListener =
+            collection.whereIn("nickname", friendList).addSnapshotListener { documents, _ ->
+                if (documents == null) return@addSnapshotListener
+
+                val nicknameList = mutableListOf<String>()
+                val statusList = mutableListOf<String>()
+
+                for (document in documents) {
+                    val nickname = document.data["nickname"] as String
+                    val status = document.data["status"] as String
+                    if (friendList.contains(nickname)) {
+                        nicknameList.add(nickname)
+                        statusList.add(status)
+                    }
+                }
+
+                val allFriend = statusList.count()
+                val onlineFriend = statusList.count() - statusList.count { it == "offline" }
+                friendCount.value = arrayOf(onlineFriend, allFriend)
+
+                resultList.clear()
+                for (i in nicknameList.indices) {
+                    resultList.add(Friend(nicknameList[i], statusList[i]))
+                }
+
+                resultList = resultList.sortedBy { it.status == "offline" }.toMutableList()
+                friendListAdaptor.setData(resultList)
+            }
+    }
+
+    // 친구 아이템 롱클릭시
+    override fun friendLongClicked(position: Int) {
+        val nickname = resultList[position].nickname
+        collection.whereEqualTo("nickname", nickname).get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val uid = documents.first().id
+
+                    App.firestore.runBatch { batch ->
+                        batch.update(
+                            collection.document(App.auth.currentUser!!.uid),
+                            "friend_list",
+                            FieldValue.arrayRemove(nickname)
+                        )
+
+                        batch.update(
+                            collection.document(uid),
+                            "friend_list",
+                            FieldValue.arrayRemove(sharedViewModel.nickname)
+                        )
+                    }.addOnSuccessListener {
+                        Toast.makeText(requireContext(),
+                            "\"$nickname\"님을 친구 목록에서 삭제하였습니다",
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+    }
+
+    // 초대 버튼 클릭시
+    override fun inviteBtnClicked(position: Int) {
+        Log.d("로그", "MainMenuFragment - inviteBtnClicked() 호출됨")
+    }
+
+    // 친구 요청 수락 버튼
+    override fun positiveBtnClicked(position: Int) {
+        val nickname = friendRequestList[position]
+        collection.whereEqualTo("nickname", nickname)
+            .get().addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val uid = documents.first().id
+
+                    App.firestore.runBatch { batch ->
+                        // 친구의 친구목록에 나를 추가
+                        batch.update(
+                            collection.document(uid),
+                            "friend_list",
+                            FieldValue.arrayUnion(sharedViewModel.nickname)
+                        )
+
+                        // 내 친구목록에 친구를 추가
+                        batch.update(
+                            collection.document(App.auth.currentUser!!.uid),
+                            "friend_list",
+                            FieldValue.arrayUnion(nickname)
+                        )
+
+                        // 친구 요청 목록에서 선택된 아이템을 삭제
+                        batch.update(
+                            collection.document(App.auth.currentUser!!.uid),
+                            "friend_request",
+                            FieldValue.arrayRemove(nickname)
+                        )
+                    }.addOnSuccessListener {
+                        Toast.makeText(requireContext(), "친구 요청을 수락하였습니다", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            }
+    }
+
+    // 친구 요청 거절 버튼
+    override fun negativeBtnClicked(position: Int) {
+        val nickname = friendRequestList[position]
+        collection.document(App.auth.currentUser!!.uid).update(
+            "friend_request", FieldValue.arrayRemove(nickname)
+        ).addOnSuccessListener {
+            Toast.makeText(requireContext(), "친구 요청을 거절하였습니다", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
     // 게임 접속시 상태를 온라인으로 설정
     private fun setOnlineStatus() {
-        App.firestore.collection("USER_LIST").document(App.auth.currentUser!!.uid)
-            .update("status", true)
+        collection.document(App.auth.currentUser!!.uid)
+            .update("status", "online")
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
         backPressCallback.remove()
+        friendSnapshotListener.remove()
+        if (friendStatusSnapshotListener != null) friendStatusSnapshotListener!!.remove()
     }
 }

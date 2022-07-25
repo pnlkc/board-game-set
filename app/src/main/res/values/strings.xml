@@ -53,4 +53,9 @@
     <string name="google_login">구글 계정으로 로그인하기</string>
     <string name="confirm">확인</string>
     <string name="set_nickname">닉네임 설정</string>
+    <string name="friend">친구</string>
+    <string name="friend_filter">친구 필터</string>
+    <string name="friend_request">친구 요청</string>
+    <string name="back">뒤로가기</string>
+    <string name="nickname_division">닉네임 |&#160;</string>
 </resources>

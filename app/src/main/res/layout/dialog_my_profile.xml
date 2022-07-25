@@ -14,7 +14,7 @@
         android:fontFamily="@font/bm_jua"
         android:gravity="center"
         android:paddingVertical="20dp"
-        android:text="내 프로필"
+        android:text="@string/my_profile"
         android:textColor="@color/dialog_title_text"
         android:textSize="21sp" />
 
@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:text="닉네임 | "
+                android:text="@string/nickname_division"
                 android:fontFamily="@font/bm_jua"
                 android:lineSpacingExtra="10sp"
                 android:textColor="@color/dialog_title_text"
@@ -92,7 +92,7 @@
             android:fontFamily="@font/bm_jua"
             android:maxLines="1"
             android:paddingHorizontal="10dp"
-            android:text="뒤로가기"
+            android:text="@string/back"
             android:textColor="@color/dialog_btn_text"
             android:textSize="18sp" />
     </LinearLayout>

@@ -39,7 +39,7 @@ class SetViewModel : ViewModel() {
 
     // 온라인 모드에서 유저가 방장인지 아닌지 확인하기 위한 변수
     var userMode = UserMode.CLIENT
-    var nickname = ""
+    var nickname: String? = null
     var roomCode: String? = null
     var gameState = GameState.WAIT
 

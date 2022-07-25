@@ -682,7 +682,7 @@ class SetMultiStartFragment : Fragment() {
             batch.update(collection.document("user"), "user", userList)
             batch.update(collection.document("user"), "score", scoreList)
             batch.update(collection.document("ready"),
-                sharedViewModel.nickname,
+                sharedViewModel.nickname!!,
                 FieldValue.delete())
         }.addOnSuccessListener {
             findNavController().navigate(R.id.action_setMultiStartFragment_pop)

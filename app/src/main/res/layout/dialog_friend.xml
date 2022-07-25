@@ -1,0 +1,282 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:layout_gravity="center"
+    android:background="@color/dialog_text_bg"
+    android:gravity="center"
+    android:orientation="vertical">
+
+<!--    다이얼로그 상단 타이틀 부분    -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dialog_title_bg"
+        android:fontFamily="@font/bm_jua"
+        android:gravity="center"
+        android:paddingVertical="20dp"
+        android:text="@string/friend"
+        android:textColor="@color/dialog_title_text"
+        android:textSize="21sp" />
+
+<!--    다이얼로그 중간 내용 부분    -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginHorizontal="25dp"
+        android:orientation="vertical">
+
+<!--    친구 요청 및 친구 추가    -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/dialog_friend_add_friend_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/dialog_friend_btn_bg"
+                android:padding="10dp"
+                android:src="@drawable/add_friend_icon"
+                android:visibility="visible"
+                />
+
+            <ImageView
+                android:id="@+id/dialog_friend_add_friend_cancel_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/dialog_friend_btn_bg"
+                android:padding="10dp"
+                android:src="@drawable/cancel_icon"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/dialog_friend_filter_linearlayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="1"
+                android:orientation="horizontal"
+                android:background="@drawable/dialog_friend_btn_bg"
+                android:layout_marginStart="10dp"
+                android:visibility="visible"
+                tools:visibility="visible">
+
+                <com.pnlkc.set.util.ClearFocusEditText
+                    android:id="@+id/dialog_friend_filter_edittext"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:background="@null"
+                    android:hint="@string/friend_filter"
+                    android:fontFamily="@font/bm_jua"
+                    android:textColor="@color/dialog_btn_text"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:maxLength="10"
+                    android:textSize="20sp"
+                    />
+
+                <ImageView
+                    android:id="@+id/dialog_friend_filter_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:src="@drawable/filter_friend_icon"
+                    android:visibility="visible"
+                    />
+
+                <ImageView
+                    android:id="@+id/dialog_friend_filter_cancel_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:src="@drawable/cancel_icon"
+                    android:visibility="gone"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/dialog_friend_send_linearlayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="1"
+                android:orientation="horizontal"
+                android:background="@drawable/dialog_friend_btn_bg"
+                android:layout_marginStart="10dp"
+                android:visibility="visible"
+                tools:visibility="gone">
+
+                <com.pnlkc.set.util.ClearFocusEditText
+                    android:id="@+id/dialog_friend_send_edittext"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:layout_marginStart="10dp"
+                    android:hint="@string/friend_request"
+                    android:fontFamily="@font/bm_jua"
+                    android:textColor="@color/dialog_btn_text"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:maxLength="10"
+                    android:textSize="20sp"
+                    />
+
+                <ImageView
+                    android:id="@+id/dialog_friend_send_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:src="@drawable/send_friend_icon" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:overScrollMode="never">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/dialog_friend_request_linearlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="25dp"
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/dialog_friend_request_title_linearlayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="10dp"
+                        >
+
+                        <ImageView
+                            android:id="@+id/dialog_friend_request_fold_imageview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/friend_unfold_icon" />
+
+                        <TextView
+                            android:id="@+id/dialog_friend_request_textview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="받은 요청"
+                            android:fontFamily="@font/bm_jua"
+                            android:textSize="16sp"
+                            android:textColor="@color/dialog_text"
+
+                            />
+
+                    </LinearLayout>
+
+                    <!--    친구 요청 리사이클러뷰    -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/dialog_friend_request_list_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/dialog_friend_status_linearlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="10dp"
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/dialog_friend_status_title_linearlayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="10dp"
+                        >
+
+                        <ImageView
+                            android:id="@+id/dialog_friend_status_fold_imageview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/friend_unfold_icon" />
+
+
+                        <TextView
+                            android:id="@+id/dialog_friend_status_textview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:text="친구 (7/10)"
+                            android:fontFamily="@font/bm_jua"
+                            android:textSize="16sp"
+                            android:textColor="@color/dialog_text"
+                            />
+
+                    </LinearLayout>
+
+                    <!--    친구 목록 리사이클러뷰    -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/dialog_friend_list_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+
+
+<!--    다이얼로그 하단 버튼부분    -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingHorizontal="25dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="20dp">
+
+        <Button
+            android:id="@+id/dialog_friend_back_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dialog_btn_bg"
+            android:fontFamily="@font/bm_jua"
+            android:maxLines="1"
+            android:paddingHorizontal="10dp"
+            android:text="@string/back"
+            android:textColor="@color/dialog_btn_text"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</LinearLayout>
