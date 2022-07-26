@@ -15,7 +15,6 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import com.pnlkc.set.data.UserMode
-import com.pnlkc.set.databinding.DialogConfirmDeleteFriendBinding
 import com.pnlkc.set.databinding.DialogInvitedBinding
 import com.pnlkc.set.model.SetViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -68,7 +67,10 @@ open class CustomFragment : Fragment() {
             .addSnapshotListener { snapshot, _ ->
                 if (snapshot == null) return@addSnapshotListener
 
-                if (snapshot.data!!["invite_nickname"] != null && snapshot.data!!["invite_roomCode"] != null) {
+                if (
+                    snapshot.data?.get("invite_nickname") != null
+                    && snapshot.data?.get("invite_roomCode") != null
+                ) {
                     val nickname = snapshot.data!!["invite_nickname"] as String
                     val roomCode = snapshot.data!!["invite_roomCode"] as String
                     showDialogInvited(nickname, roomCode)

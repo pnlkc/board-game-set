@@ -8,7 +8,7 @@ enum class UserMode {
 }
 
 enum class GameState {
-    EXIT, WAIT, READY, START, END
+    WAIT, READY, START
 }
 
 object DataSource {

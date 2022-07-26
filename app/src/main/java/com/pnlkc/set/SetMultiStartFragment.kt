@@ -67,6 +67,8 @@ class SetMultiStartFragment : Fragment() {
     private lateinit var answerSnapshotListener: ListenerRegistration
     private lateinit var cardSnapshotListener: ListenerRegistration
 
+    private var needStartService = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -85,7 +87,7 @@ class SetMultiStartFragment : Fragment() {
                         .show()
 
                 } else {
-                    sharedViewModel.gameState = GameState.EXIT
+                    needStartService = false
                     deletePlayer()
                 }
             }
@@ -612,7 +614,7 @@ class SetMultiStartFragment : Fragment() {
     // 게임이 끝나면 나오는 Dialog
     @SuppressLint("SetTextI18n")
     private fun showFinalScoreDialog() {
-        sharedViewModel.gameState = GameState.END
+        needStartService = false
 
         // SnapshotListener remove 없이 collection 제거하면 앱 팅김
         userSnapshotListener.remove()
@@ -692,7 +694,7 @@ class SetMultiStartFragment : Fragment() {
     // 앱이 Stop 상태가 되면 강제종료 감지 서비스 실행
     override fun onStop() {
         super.onStop()
-        if (sharedViewModel.gameState != GameState.END && sharedViewModel.gameState != GameState.EXIT) {
+        if (needStartService) {
             // 강제종료했는지 알기 위한 서비스 등록
             val intent = Intent(requireContext(), ForcedExitService::class.java)
             intent.putExtra("userList", userList.toTypedArray())

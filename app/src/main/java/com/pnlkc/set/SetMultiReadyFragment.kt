@@ -87,6 +87,8 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
 
     private val friendCount = MutableLiveData(arrayOf(0, 0))
 
+    private var needStartService = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -104,7 +106,7 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
                     Toast.makeText(context, "뒤로가기 버튼을 한번 더 누르면 대기실을 나갑니다",
                         Toast.LENGTH_SHORT).show()
                 } else {
-                    sharedViewModel.gameState = GameState.EXIT
+                    needStartService = false
                     if (userList.size > 1) deletePlayer() else deleteCollection()
                 }
             }
@@ -191,6 +193,7 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
                 sharedViewModel.userMode = if (myIndex == 0) UserMode.HOST else UserMode.CLIENT
 
                 if (snapshot.data!!["start"] == true) {
+                    needStartService = false
                     sharedViewModel.gameState = GameState.START
                     binding.readyBtn.isClickable = false
                     startCountDown()
@@ -694,7 +697,7 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
     // 앱이 Stop 상태가 되면 강제종료 감지 서비스 실행
     override fun onStop() {
         super.onStop()
-        if (sharedViewModel.gameState != GameState.START && sharedViewModel.gameState != GameState.EXIT) {
+        if (needStartService) {
             // 강제종료했는지 알기 위한 서비스 등록
             val intent = Intent(requireContext(), ForcedExitService::class.java)
             intent.putExtra("userList", userList.toTypedArray())
