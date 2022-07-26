@@ -63,7 +63,7 @@
                 android:id="@+id/dialog_score_multi_first_player_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="일이삼사오육칠팔구십\n일이삼사오육칠팔구십"
+                tools:text="SavMyLife"
                 android:textColor="@color/dialog_text"
                 android:textSize="32sp"
                 android:fontFamily="@font/bm_jua"

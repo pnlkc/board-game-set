@@ -656,7 +656,7 @@ class SetMultiStartFragment : Fragment() {
             playConstraintLayoutList[i].visibility = View.VISIBLE
             var text = ""
             mapList[mapList.keys.toList()[i]]!!.forEach { text += it + "\n" }
-            playTextViewList[i].text = text.slice(0..text.lastIndex - 2)
+            playTextViewList[i].text = text.slice(0 until text.lastIndex)
         }
 
         // Dialog 뷰 기능 구현
