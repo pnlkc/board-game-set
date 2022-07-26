@@ -18,7 +18,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -28,7 +27,6 @@ import com.pnlkc.set.data.DataSource.KEY_SCORE
 import com.pnlkc.set.data.DataSource.KEY_SHUFFLED_CARD_LIST
 import com.pnlkc.set.databinding.SetSinglePlayFragmentBinding
 import com.pnlkc.set.model.CardItem
-import com.pnlkc.set.model.SetViewModel
 import com.pnlkc.set.util.CustomFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +40,6 @@ import render.animations.Slide
 class SetSinglePlayFragment : CustomFragment() {
     private var _binding: SetSinglePlayFragmentBinding? = null
     private val binding get() = _binding!!
-    private val sharedViewModel: SetViewModel by activityViewModels()
 
     private lateinit var backPressCallback: OnBackPressedCallback
 
@@ -380,6 +377,12 @@ class SetSinglePlayFragment : CustomFragment() {
         } else {
             saveAndLoadGame("delete")
         }
+    }
+
+    // 게임 초대 수락 후 화면 이동
+    // CustomFragment()에서 이미 isForcedExit = false 처리됨
+    override fun acceptInviteMoveFragment() {
+        findNavController().navigate(R.id.action_setSinglePlayFragment_to_setMultiReadyFragment)
     }
 
     override fun onDestroyView() {

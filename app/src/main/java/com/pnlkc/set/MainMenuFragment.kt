@@ -18,7 +18,6 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,11 +32,11 @@ import com.google.firebase.firestore.SetOptions
 import com.pnlkc.set.data.DataSource
 import com.pnlkc.set.data.DataSource.KEY_SHUFFLED_CARD_LIST
 import com.pnlkc.set.data.UserMode
+import com.pnlkc.set.databinding.DialogConfirmDeleteFriendBinding
 import com.pnlkc.set.databinding.DialogFriendBinding
 import com.pnlkc.set.databinding.DialogMyProfileBinding
 import com.pnlkc.set.databinding.MainMenuFragmentBinding
 import com.pnlkc.set.model.Friend
-import com.pnlkc.set.model.SetViewModel
 import com.pnlkc.set.recyclerview_friend_list.FriendListAdaptor
 import com.pnlkc.set.recyclerview_friend_list.IFriendList
 import com.pnlkc.set.recyclerview_friend_request_list.FriendRequestListAdaptor
@@ -50,7 +49,6 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
 
     private var _binding: MainMenuFragmentBinding? = null
     private val binding get() = _binding!!
-    private val sharedViewModel: SetViewModel by activityViewModels()
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -76,6 +74,8 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
     private lateinit var friendListAdaptor: FriendListAdaptor
 
     private val friendCount = MutableLiveData(arrayOf(0, 0))
+
+    private var dialogFriend: Dialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -106,7 +106,7 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        friendListAdaptor = FriendListAdaptor(this, requireContext())
+        friendListAdaptor = FriendListAdaptor(this, requireContext(), "main_menu")
 
         collection = App.firestore.collection("USER_LIST")
 
@@ -557,13 +557,13 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
             requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val dBinding = DialogFriendBinding.inflate(inflater)
 
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(dBinding.root)
-        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+        dialogFriend = Dialog(requireContext())
+        dialogFriend!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialogFriend!!.setContentView(dBinding.root)
+        dialogFriend!!.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT)
-        dialog.setCancelable(true)
-        dialog.show()
+        dialogFriend!!.setCancelable(true)
+        dialogFriend!!.show()
 
         dBinding.dialogFriendRequestListRecyclerview.adapter = friendRequestListAdaptor
         dBinding.dialogFriendRequestListRecyclerview.layoutManager =
@@ -573,7 +573,7 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
         dBinding.dialogFriendListRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
         dBinding.dialogFriendBackBtn.setOnClickListener {
-            dialog.dismiss()
+            dialogFriend!!.dismiss()
         }
 
         dBinding.dialogFriendAddFriendBtn.setOnClickListener {
@@ -633,7 +633,7 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
             .get().addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     if (inputText == sharedViewModel.nickname) {
-                        Toast.makeText(requireContext(), "자신에게 친구 신청할 수 없습니다", Toast.LENGTH_SHORT)
+                        Toast.makeText(requireContext(), "자신에게 친구 요청할 수 없습니다", Toast.LENGTH_SHORT)
                             .show()
                         editText.text.clear()
                     } else {
@@ -728,38 +728,68 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
             }
     }
 
-    // 친구 아이템 롱클릭시
+    // 친구 목록 리사이클러뷰 아이템 롱클릭시
     override fun friendLongClicked(position: Int) {
         val nickname = resultList[position].nickname
-        collection.whereEqualTo("nickname", nickname).get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    val uid = documents.first().id
+        showDialogConfirmDeleteFriend(nickname)
+        dialogFriend?.dismiss()
+    }
 
-                    App.firestore.runBatch { batch ->
-                        batch.update(
-                            collection.document(App.auth.currentUser!!.uid),
-                            "friend_list",
-                            FieldValue.arrayRemove(nickname)
-                        )
+    // 친구 삭제 확인 다이얼로그 보여주기
+    private fun showDialogConfirmDeleteFriend(nickname: String) {
+        // 뷰바인딩 사용
+        val inflater =
+            requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val dBinding = DialogConfirmDeleteFriendBinding.inflate(inflater)
 
-                        batch.update(
-                            collection.document(uid),
-                            "friend_list",
-                            FieldValue.arrayRemove(sharedViewModel.nickname)
-                        )
-                    }.addOnSuccessListener {
-                        Toast.makeText(requireContext(),
-                            "\"$nickname\"님을 친구 목록에서 삭제하였습니다",
-                            Toast.LENGTH_SHORT).show()
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(dBinding.root)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.setCancelable(true)
+        dialog.show()
+
+        dBinding.dialogConfirmDeleteFriendTextview.text = "${nickname}님을 친구에서\n삭제하시겠습니까?"
+
+        dBinding.dialogConfirmDeleteFriendPositiveBtn.setOnClickListener {
+            collection.whereEqualTo("nickname", nickname).get()
+                .addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        val uid = documents.first().id
+
+                        App.firestore.runBatch { batch ->
+                            batch.update(
+                                collection.document(App.auth.currentUser!!.uid),
+                                "friend_list",
+                                FieldValue.arrayRemove(nickname)
+                            )
+
+                            batch.update(
+                                collection.document(uid),
+                                "friend_list",
+                                FieldValue.arrayRemove(sharedViewModel.nickname)
+                            )
+                        }.addOnSuccessListener {
+                            Toast.makeText(requireContext(),
+                                "\"$nickname\"님을 친구 목록에서 삭제하였습니다",
+                                Toast.LENGTH_SHORT).show()
+                            showDialogFriend()
+                            dialog.dismiss()
+                        }
                     }
                 }
-            }
+        }
+
+        dBinding.dialogConfirmDeleteFriendNegativeBtn.setOnClickListener {
+            showDialogFriend()
+            dialog.dismiss()
+        }
     }
 
     // 초대 버튼 클릭시
     override fun inviteBtnClicked(position: Int) {
-        Log.d("로그", "MainMenuFragment - inviteBtnClicked() 호출됨")
+        // 메인 화면에서는 초대 불가
     }
 
     // 친구 요청 수락 버튼
@@ -816,6 +846,11 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
             .update("status", "online")
     }
 
+    // 게임 초대 수락 후 화면 이동
+    // CustomFragment()에서 이미 isForcedExit = false 처리됨
+    override fun acceptInviteMoveFragment() {
+        findNavController().navigate(R.id.action_mainMenuFragment_to_setMultiReadyFragment)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

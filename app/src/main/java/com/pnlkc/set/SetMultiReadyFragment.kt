@@ -1,5 +1,7 @@
 package com.pnlkc.set
 
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,23 +11,35 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.SetOptions
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pnlkc.set.data.GameState
 import com.pnlkc.set.data.UserMode
+import com.pnlkc.set.databinding.DialogConfirmDeleteFriendBinding
+import com.pnlkc.set.databinding.DialogFriendBinding
 import com.pnlkc.set.databinding.SetMultiReadyFragmentBinding
 import com.pnlkc.set.model.CardItem
+import com.pnlkc.set.model.Friend
 import com.pnlkc.set.model.SetViewModel
+import com.pnlkc.set.recyclerview_friend_list.FriendListAdaptor
+import com.pnlkc.set.recyclerview_friend_list.IFriendList
+import com.pnlkc.set.recyclerview_friend_request_list.FriendRequestListAdaptor
+import com.pnlkc.set.recyclerview_friend_request_list.IFriendRequestList
 import com.pnlkc.set.util.App
 import com.pnlkc.set.util.ForcedExitService
 import com.pnlkc.set.util.Vibrator
@@ -34,7 +48,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SetMultiReadyFragment : Fragment() {
+class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
     private var _binding: SetMultiReadyFragmentBinding? = null
     private val binding get() = _binding!!
     private val sharedViewModel: SetViewModel by activityViewModels()
@@ -52,6 +66,7 @@ class SetMultiReadyFragment : Fragment() {
 
     // Firestore 경로 저장용 변수
     private lateinit var collection: CollectionReference
+    private lateinit var userListCollection: CollectionReference
 
     // 카드 정보를 받아왔는지 확인하는 변수
     private var isCardSettingDone = false
@@ -59,6 +74,18 @@ class SetMultiReadyFragment : Fragment() {
     private lateinit var userSnapshotListener: ListenerRegistration
     private lateinit var readySnapshotListener: ListenerRegistration
     private var cardSnapshotListener: ListenerRegistration? = null
+    private lateinit var friendSnapshotListener: ListenerRegistration
+    private var friendStatusSnapshotListener: ListenerRegistration? = null
+
+    private var dialogFriend: Dialog? = null
+    private var friendRequestList: List<String> = listOf()
+    private var friendList: List<String> = listOf()
+    private var resultList = mutableListOf<Friend>()
+
+    private val friendRequestListAdaptor = FriendRequestListAdaptor(this)
+    private lateinit var friendListAdaptor: FriendListAdaptor
+
+    private val friendCount = MutableLiveData(arrayOf(0, 0))
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -98,6 +125,8 @@ class SetMultiReadyFragment : Fragment() {
             setOnlineFragment = this@SetMultiReadyFragment
         }
 
+        friendListAdaptor = FriendListAdaptor(this, requireContext(), "multi_ready")
+
         // 대기실에 들어오면 게임 상태를 대기 상태로 변경
         sharedViewModel.gameState = GameState.WAIT
 
@@ -106,10 +135,15 @@ class SetMultiReadyFragment : Fragment() {
 
         // 파이어스토어 경로 지정 (룸코드)
         collection = App.firestore.collection(sharedViewModel.roomCode!!)
+        userListCollection = App.firestore.collection("USER_LIST")
+
+        observeFriendChange()
 
         settingViewList()
 
         controlReadySituation()
+
+        binding.friendBtn.setOnClickListener { showDialogFriend() }
     }
 
     // 뷰리스트 초기화
@@ -297,6 +331,330 @@ class SetMultiReadyFragment : Fragment() {
         }
     }
 
+    // 친구창 다이얼로그 보여주기
+    private fun showDialogFriend() {
+        // 뷰바인딩 사용
+        val inflater =
+            requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val dBinding = DialogFriendBinding.inflate(inflater)
+
+        dialogFriend = Dialog(requireContext())
+        dialogFriend!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialogFriend!!.setContentView(dBinding.root)
+        dialogFriend!!.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialogFriend!!.setCancelable(true)
+        dialogFriend!!.show()
+
+        dBinding.dialogFriendRequestListRecyclerview.adapter = friendRequestListAdaptor
+        dBinding.dialogFriendRequestListRecyclerview.layoutManager =
+            LinearLayoutManager(requireContext())
+
+        dBinding.dialogFriendListRecyclerview.adapter = friendListAdaptor
+        dBinding.dialogFriendListRecyclerview.layoutManager = LinearLayoutManager(requireContext())
+
+        dBinding.dialogFriendBackBtn.setOnClickListener {
+            dialogFriend!!.dismiss()
+        }
+
+        dBinding.dialogFriendAddFriendBtn.setOnClickListener {
+            dBinding.dialogFriendAddFriendBtn.visibility = View.GONE
+            dBinding.dialogFriendFilterLinearlayout.visibility = View.GONE
+            dBinding.dialogFriendAddFriendCancelBtn.visibility = View.VISIBLE
+            dBinding.dialogFriendSendLinearlayout.visibility = View.VISIBLE
+            dBinding.dialogFriendFilterEdittext.text?.clear()
+        }
+
+        dBinding.dialogFriendAddFriendCancelBtn.setOnClickListener {
+            dBinding.dialogFriendAddFriendBtn.visibility = View.VISIBLE
+            dBinding.dialogFriendFilterLinearlayout.visibility = View.VISIBLE
+            dBinding.dialogFriendAddFriendCancelBtn.visibility = View.GONE
+            dBinding.dialogFriendSendLinearlayout.visibility = View.GONE
+            dBinding.dialogFriendSendEdittext.text?.clear()
+        }
+
+        dBinding.dialogFriendFilterCancelBtn.setOnClickListener {
+            dBinding.dialogFriendFilterEdittext.text!!.clear()
+        }
+
+        dBinding.dialogFriendSendBtn.setOnClickListener {
+            val inputText = dBinding.dialogFriendSendEdittext.text.toString()
+            if (inputText.isNotBlank()) {
+                sendFriendRequest(inputText, dBinding.dialogFriendSendEdittext)
+            }
+        }
+
+        dBinding.dialogFriendRequestTitleLinearlayout.setOnClickListener {
+            if (dBinding.dialogFriendRequestListRecyclerview.visibility == View.VISIBLE) {
+                dBinding.dialogFriendRequestFoldImageview.setBackgroundResource(R.drawable.friend_fold_icon)
+                dBinding.dialogFriendRequestListRecyclerview.visibility = View.GONE
+            } else {
+                dBinding.dialogFriendRequestFoldImageview.setBackgroundResource(R.drawable.friend_unfold_icon)
+                dBinding.dialogFriendRequestListRecyclerview.visibility = View.VISIBLE
+            }
+        }
+
+        dBinding.dialogFriendStatusTitleLinearlayout.setOnClickListener {
+            if (dBinding.dialogFriendListRecyclerview.visibility == View.VISIBLE) {
+                dBinding.dialogFriendStatusFoldImageview.setBackgroundResource(R.drawable.friend_fold_icon)
+                dBinding.dialogFriendListRecyclerview.visibility = View.GONE
+            } else {
+                dBinding.dialogFriendStatusFoldImageview.setBackgroundResource(R.drawable.friend_unfold_icon)
+                dBinding.dialogFriendListRecyclerview.visibility = View.VISIBLE
+            }
+        }
+
+        friendCount.observe(viewLifecycleOwner) {
+            dBinding.dialogFriendStatusTextview.text = "친구 (${it[0]}/${it[1]})"
+        }
+    }
+
+    private fun sendFriendRequest(inputText: String, editText: EditText) {
+        userListCollection.whereEqualTo("nickname", inputText)
+            .get().addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    if (inputText == sharedViewModel.nickname) {
+                        Toast.makeText(requireContext(), "자신에게 친구 요청할 수 없습니다", Toast.LENGTH_SHORT)
+                            .show()
+                        editText.text.clear()
+                    } else {
+                        val uid = documents.first().id
+                        userListCollection.document(uid).update(
+                            "friend_request",
+                            FieldValue.arrayUnion(sharedViewModel.nickname)
+                        ).addOnSuccessListener {
+                            Toast.makeText(requireContext(), "친구 신청이 완료되었습니다", Toast.LENGTH_SHORT)
+                                .show()
+                            editText.text.clear()
+                        }
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "입력한 닉네임이 존재하지 않습니다", Toast.LENGTH_SHORT)
+                        .show()
+                    editText.text.clear()
+                }
+            }
+    }
+
+    // 친구 요청 및 추가 스냅샷 리스너
+    @Suppress("UNCHECKED_CAST")
+    private fun observeFriendChange() {
+        friendSnapshotListener = userListCollection.document(App.auth.currentUser!!.uid)
+            .addSnapshotListener { snapshot, _ ->
+                if (snapshot == null) return@addSnapshotListener
+
+                if (snapshot.data?.get("friend_request") != null) {
+                    friendRequestList = snapshot.data!!["friend_request"] as List<String>
+                    friendRequestListAdaptor.submitList(friendRequestList.toMutableList())
+                    if (friendRequestList.isNotEmpty()) {
+                        binding.friendRequestCount.visibility = View.VISIBLE
+                        binding.friendRequestCount.text = friendRequestList.size.toString()
+                    } else {
+                        userListCollection.document(App.auth.currentUser!!.uid).update(
+                            "friend_request", FieldValue.delete()
+                        )
+                    }
+                } else {
+                    friendRequestListAdaptor.submitList(listOf())
+                    binding.friendRequestCount.visibility = View.GONE
+                }
+
+                if (snapshot.data?.get("friend_list") != null) {
+                    friendList = snapshot.data!!["friend_list"] as List<String>
+                    if (friendList.isNotEmpty()) {
+                        observeFriendStatusChange()
+                    } else {
+                        userListCollection.document(App.auth.currentUser!!.uid).update(
+                            "friend_list", FieldValue.delete()
+                        )
+                    }
+                } else {
+                    if (friendStatusSnapshotListener != null) friendStatusSnapshotListener!!.remove()
+                    friendList = listOf()
+                    friendListAdaptor.setData(mutableListOf())
+                    friendCount.value = arrayOf(0, 0)
+                }
+
+                if (snapshot.data!!["invite_nickname"] != null
+                    && snapshot.data!!["invite_roomCode"] != null
+                ) {
+                    App.firestore.collection("USER_LIST").document(App.auth.currentUser!!.uid)
+                        .update(
+                            "invite_nickname", FieldValue.delete(),
+                            "invite_roomCode", FieldValue.delete()
+                        )
+                }
+            }
+    }
+
+    private fun observeFriendStatusChange() {
+        if (friendStatusSnapshotListener != null) friendStatusSnapshotListener!!.remove()
+        friendStatusSnapshotListener =
+            userListCollection.whereIn("nickname", friendList).addSnapshotListener { documents, _ ->
+                if (documents == null) return@addSnapshotListener
+
+                val nicknameList = mutableListOf<String>()
+                val statusList = mutableListOf<String>()
+
+                for (document in documents) {
+                    val nickname = document.data["nickname"] as String
+                    val status = document.data["status"] as String
+                    if (friendList.contains(nickname)) {
+                        nicknameList.add(nickname)
+                        statusList.add(status)
+                    }
+                }
+
+                val allFriend = statusList.count()
+                val onlineFriend = statusList.count() - statusList.count { it == "offline" }
+                friendCount.value = arrayOf(onlineFriend, allFriend)
+
+                resultList.clear()
+                for (i in nicknameList.indices) {
+                    resultList.add(Friend(nicknameList[i], statusList[i]))
+                }
+
+                resultList = resultList.sortedBy { it.status == "offline" }.toMutableList()
+                friendListAdaptor.setData(resultList)
+            }
+    }
+
+    // 친구 목록 리사이클러뷰 아이템 롱클릭시
+    override fun friendLongClicked(position: Int) {
+        val nickname = resultList[position].nickname
+        showDialogConfirmDeleteFriend(nickname)
+        dialogFriend?.dismiss()
+    }
+
+    // 친구 삭제 확인 다이얼로그 보여주기
+    private fun showDialogConfirmDeleteFriend(nickname: String) {
+        // 뷰바인딩 사용
+        val inflater =
+            requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val dBinding = DialogConfirmDeleteFriendBinding.inflate(inflater)
+
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(dBinding.root)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.setCancelable(true)
+        dialog.show()
+
+        dBinding.dialogConfirmDeleteFriendTextview.text = "${nickname}님을 친구에서\n삭제하시겠습니까?"
+
+        dBinding.dialogConfirmDeleteFriendPositiveBtn.setOnClickListener {
+            userListCollection.whereEqualTo("nickname", nickname).get()
+                .addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        val uid = documents.first().id
+
+                        App.firestore.runBatch { batch ->
+                            batch.update(
+                                userListCollection.document(App.auth.currentUser!!.uid),
+                                "friend_list",
+                                FieldValue.arrayRemove(nickname)
+                            )
+
+                            batch.update(
+                                userListCollection.document(uid),
+                                "friend_list",
+                                FieldValue.arrayRemove(sharedViewModel.nickname)
+                            )
+                        }.addOnSuccessListener {
+                            Toast.makeText(requireContext(),
+                                "\"$nickname\"님을 친구 목록에서 삭제하였습니다",
+                                Toast.LENGTH_SHORT).show()
+                            showDialogFriend()
+                            dialog.dismiss()
+                        }
+                    }
+                }
+        }
+
+        dBinding.dialogConfirmDeleteFriendNegativeBtn.setOnClickListener {
+            showDialogFriend()
+            dialog.dismiss()
+        }
+    }
+
+    // 초대 버튼 클릭시
+    override fun inviteBtnClicked(position: Int) {
+        val nickname = resultList[position].nickname
+        userListCollection.whereEqualTo("nickname", nickname)
+            .get().addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val uid = documents.first().id
+                    if (documents.first().data["invite_nickname"] == null
+                        && documents.first().data["invite_roomCode"] == null
+                    ) {
+                        val data = hashMapOf(
+                            "invite_nickname" to sharedViewModel.nickname,
+                            "invite_roomCode" to sharedViewModel.roomCode
+                        )
+                        userListCollection.document(uid).set(data, SetOptions.merge())
+                            .addOnSuccessListener {
+                                Toast.makeText(requireContext(), "초대가 완료되었습니다", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                    } else {
+                        Toast.makeText(requireContext(),
+                            "해당 플레이어가 이미 다른 게임에 초대되었습니다",
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+    }
+
+    // 친구 요청 수락 버튼
+    override fun positiveBtnClicked(position: Int) {
+        val nickname = friendRequestList[position]
+        userListCollection.whereEqualTo("nickname", nickname)
+            .get().addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val uid = documents.first().id
+
+                    App.firestore.runBatch { batch ->
+                        // 친구의 친구목록에 나를 추가
+                        batch.update(
+                            userListCollection.document(uid),
+                            "friend_list",
+                            FieldValue.arrayUnion(sharedViewModel.nickname)
+                        )
+
+                        // 내 친구목록에 친구를 추가
+                        batch.update(
+                            userListCollection.document(App.auth.currentUser!!.uid),
+                            "friend_list",
+                            FieldValue.arrayUnion(nickname)
+                        )
+
+                        // 친구 요청 목록에서 선택된 아이템을 삭제
+                        batch.update(
+                            userListCollection.document(App.auth.currentUser!!.uid),
+                            "friend_request",
+                            FieldValue.arrayRemove(nickname)
+                        )
+                    }.addOnSuccessListener {
+                        Toast.makeText(requireContext(), "친구 요청을 수락하였습니다", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            }
+    }
+
+    // 친구 요청 거절 버튼
+    override fun negativeBtnClicked(position: Int) {
+        val nickname = friendRequestList[position]
+        userListCollection.document(App.auth.currentUser!!.uid).update(
+            "friend_request", FieldValue.arrayRemove(nickname)
+        ).addOnSuccessListener {
+            Toast.makeText(requireContext(), "친구 요청을 거절하였습니다", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
+
     @Suppress("UNCHECKED_CAST")
     private fun deletePlayer() {
         val index = userList.indexOf(sharedViewModel.nickname)
@@ -365,7 +723,8 @@ class SetMultiReadyFragment : Fragment() {
     private fun checkServiceRunning(count: Int) {
         if (count < 5) {
             if (App.isServiceRunning) {
-                requireActivity().stopService(Intent(requireContext(), ForcedExitService::class.java))
+                requireActivity().stopService(Intent(requireContext(),
+                    ForcedExitService::class.java))
             } else {
                 CoroutineScope(Dispatchers.IO).launch {
                     delay(100)
@@ -376,7 +735,6 @@ class SetMultiReadyFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        Log.d("로그", "SetMultiReadyFragment - onDestroyView() 호출됨")
         super.onDestroyView()
         _binding = null
         backPressCallback.remove()
@@ -384,5 +742,8 @@ class SetMultiReadyFragment : Fragment() {
         userSnapshotListener.remove()
         readySnapshotListener.remove()
         if (cardSnapshotListener != null) cardSnapshotListener!!.remove()
+        friendSnapshotListener.remove()
+        if (friendStatusSnapshotListener != null) friendStatusSnapshotListener!!.remove()
+
     }
 }

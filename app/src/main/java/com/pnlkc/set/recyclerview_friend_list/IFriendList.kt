@@ -1,5 +1,7 @@
 package com.pnlkc.set.recyclerview_friend_list
 
+import android.app.Dialog
+
 interface IFriendList {
     // 친구 아이템 롱클릭시
     fun friendLongClicked(position: Int)

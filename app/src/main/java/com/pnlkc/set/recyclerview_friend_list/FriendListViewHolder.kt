@@ -1,5 +1,6 @@
 package com.pnlkc.set.recyclerview_friend_list
 
+import android.app.Dialog
 import android.content.Context
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -11,6 +12,7 @@ import com.pnlkc.set.model.Friend
 class FriendListViewHolder(
     binding: ItemFriendListBinding,
     private val iRecyclerView: IFriendList,
+    private val mode: String
 ) : RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
 
     private val itemLinearLayout = binding.friendListItemLinearlayout
@@ -33,7 +35,11 @@ class FriendListViewHolder(
                 val dialogTextBg = ContextCompat.getColor(context, R.color.dialog_text)
                 nicknameTextView.setTextColor(dialogBtnTextBg)
                 statusTextView.setTextColor(dialogTextBg)
-                inviteBtn.visibility = View.VISIBLE
+                if (mode == "main_menu") {
+                    inviteBtn.visibility = View.GONE
+                } else {
+                    inviteBtn.visibility = View.VISIBLE
+                }
             }
             "offline" -> {
                 statusTextView.text = "오프라인"
@@ -44,7 +50,7 @@ class FriendListViewHolder(
                 inviteBtn.visibility = View.GONE
             }
             "play" -> {
-                statusTextView.text = "게임중"
+                statusTextView.text = "멀티플레이 중"
 
                 val dialogBtnTextBg = ContextCompat.getColor(context, R.color.dialog_btn_text)
                 val dialogTextBg = ContextCompat.getColor(context, R.color.dialog_text)

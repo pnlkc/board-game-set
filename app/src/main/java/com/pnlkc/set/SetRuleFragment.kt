@@ -97,6 +97,12 @@ class SetRuleFragment : CustomFragment() {
         return spannableString
     }
 
+    // 게임 초대 수락 후 화면 이동
+    // CustomFragment()에서 이미 isForcedExit = false 처리됨
+    override fun acceptInviteMoveFragment() {
+        findNavController().navigate(R.id.action_setRuleFragment_to_setMultiReadyFragment)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

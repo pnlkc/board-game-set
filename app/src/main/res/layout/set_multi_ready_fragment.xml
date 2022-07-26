@@ -21,6 +21,38 @@
         android:background="@color/set_bg"
         android:paddingTop="20dp">
 
+        <ImageView
+            android:id="@+id/friend_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/main_menu_etc_btn_bg"
+            android:src="@drawable/friend_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="20dp"
+            android:padding="6dp"
+            android:clickable="true"
+            />
+
+        <TextView
+            android:id="@+id/friend_request_count"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            tools:text="1"
+            android:fontFamily="@font/bm_jua"
+            android:textSize="15sp"
+            android:textColor="@color/btn_text_color"
+            android:gravity="center"
+            android:background="@drawable/btn_bg"
+            app:layout_constraintTop_toTopOf="@id/friend_btn"
+            app:layout_constraintBottom_toBottomOf="@id/friend_btn"
+            app:layout_constraintStart_toStartOf="@id/friend_btn"
+            app:layout_constraintEnd_toEndOf="@id/friend_btn"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:visibility="gone"
+            />
+
 <!--    방 코드 텍스트 뷰    -->
         <TextView
             android:id="@+id/room_code_textview"
@@ -37,7 +69,8 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/friend_btn"
+            app:layout_constraintBottom_toBottomOf="@id/friend_btn"
             tools:text="방 코드 : LIO0" />
 
         <!--   준비 화면    -->

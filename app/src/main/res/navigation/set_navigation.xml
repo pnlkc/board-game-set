@@ -33,6 +33,10 @@
             android:id="@+id/action_setSinglePlayFragment_pop"
             app:popUpTo="@id/setSinglePlayFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_setSinglePlayFragment_to_setMultiReadyFragment"
+            app:destination="@id/setMultiReadyFragment"
+            app:popUpTo="@id/mainMenuFragment" />
     </fragment>
     <fragment
         android:id="@+id/setRuleFragment"
@@ -47,6 +51,10 @@
             android:id="@+id/action_setRuleFragment_pop"
             app:popUpTo="@id/setRuleFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_setRuleFragment_to_setMultiReadyFragment"
+            app:destination="@id/setMultiReadyFragment"
+            app:popUpTo="@id/mainMenuFragment" />
     </fragment>
     <fragment
         android:id="@+id/setMultiReadyFragment"

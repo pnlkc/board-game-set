@@ -1,5 +1,6 @@
 package com.pnlkc.set.recyclerview_friend_list
 
+import android.app.Dialog
 import android.content.Context
 import android.text.method.TextKeyListener.clear
 import android.util.Log
@@ -11,7 +12,11 @@ import com.pnlkc.set.databinding.ItemFriendListBinding
 import com.pnlkc.set.model.Friend
 import com.pnlkc.set.util.CustomDiffUtil
 
-class FriendListAdaptor(private var iRecyclerView: IFriendList, private var context: Context) :
+class FriendListAdaptor(
+    private var iRecyclerView: IFriendList,
+    private var context: Context,
+    private val mode: String
+) :
     RecyclerView.Adapter<FriendListViewHolder>() {
 
     private var friendList = mutableListOf<Friend>()
@@ -19,7 +24,7 @@ class FriendListAdaptor(private var iRecyclerView: IFriendList, private var cont
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendListViewHolder {
         val binding =
             ItemFriendListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return FriendListViewHolder(binding, iRecyclerView)
+        return FriendListViewHolder(binding, iRecyclerView, mode)
     }
 
     override fun onBindViewHolder(holder: FriendListViewHolder, position: Int) {
