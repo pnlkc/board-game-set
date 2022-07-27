@@ -25,7 +25,6 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.pnlkc.set.data.GameState
 import com.pnlkc.set.data.UserMode
 import com.pnlkc.set.databinding.SetMultiStartFragmentBinding
 import com.pnlkc.set.model.CardItem
@@ -233,9 +232,15 @@ class SetMultiStartFragment : Fragment() {
 
     // 뷰와 fieldCardList 연결
     private fun connectImageToCard(index: Int) {
-        if (sharedViewModel.fieldCardList[index] != CardItem(0, 0, 0, 0, 0)) {
+        if (sharedViewModel.fieldCardList[index] != CardItem(0, 0, 0, 0, "")) {
             bindingCardList[index].visibility = View.VISIBLE
-            bindingCardList[index].setBackgroundResource(sharedViewModel.fieldCardList[index].cardImage)
+            val packageName = requireActivity().packageName
+            val cardImgId = resources.getIdentifier(
+                sharedViewModel.fieldCardList[index].cardImageName,
+                "drawable",
+                packageName
+            )
+            bindingCardList[index].setBackgroundResource(cardImgId)
         } else {
             bindingCardList[index].visibility = View.INVISIBLE
             bindingCardList[index].setBackgroundResource(R.drawable.emptycard)

@@ -62,9 +62,9 @@ class SetViewModel : ViewModel() {
             fieldCardList[selectedCardIndex[2]!!] = shuffledCardList.first()
             shuffledCardList.removeFirst()
         } else {
-            fieldCardList[selectedCardIndex[0]!!] = CardItem(0, 0, 0, 0, 0)
-            fieldCardList[selectedCardIndex[1]!!] = CardItem(0, 0, 0, 0, 0)
-            fieldCardList[selectedCardIndex[2]!!] = CardItem(0, 0, 0, 0, 0)
+            fieldCardList[selectedCardIndex[0]!!] = CardItem(0, 0, 0, 0, "")
+            fieldCardList[selectedCardIndex[1]!!] = CardItem(0, 0, 0, 0, "")
+            fieldCardList[selectedCardIndex[2]!!] = CardItem(0, 0, 0, 0, "")
         }
     }
 
@@ -135,7 +135,7 @@ class SetViewModel : ViewModel() {
         var count = 0
         // .toMutableList()를 붙이지 않으면 tempList 값 변경시 fieldList 값이 같이 바뀜
         val tempList = fieldCardList.distinct().toMutableList()
-        tempList.remove(CardItem(0,0,0,0,0))
+        tempList.remove(CardItem(0,0,0,0,""))
         if (tempList.size >= 3) {
             for (i in 0..tempList.size-3) {
                 for (j in i + 1..tempList.size-2) {
@@ -161,7 +161,7 @@ class SetViewModel : ViewModel() {
         // .toMutableList()를 붙이지 않으면 tempList 값 변경시 fieldList 값이 같이 바뀜
         val tempList = mutableListOf<CardItem>()
         tempList.addAll(fieldCardList.distinct())
-        tempList.remove(CardItem(0,0,0,0,0))
+        tempList.remove(CardItem(0,0,0,0,""))
         tempList.addAll(shuffledCardList)
         if (tempList.size >= 3) {
             for (i in 0..tempList.size-3) {

@@ -146,9 +146,15 @@ class SetSinglePlayFragment : CustomFragment() {
 
     // startGame() 실행시 카드속성도 같이 연결
     private fun connectImageToCard(index: Int) {
-        if (sharedViewModel.fieldCardList[index] != CardItem(0, 0, 0, 0, 0)) {
+        if (sharedViewModel.fieldCardList[index] != CardItem(0, 0, 0, 0, "0")) {
             bindingCardList[index].visibility = View.VISIBLE
-            bindingCardList[index].setBackgroundResource(sharedViewModel.fieldCardList[index].cardImage)
+            val packageName = requireActivity().packageName
+            val cardImgId = resources.getIdentifier(
+                sharedViewModel.fieldCardList[index].cardImageName,
+                "drawable",
+                packageName
+            )
+            bindingCardList[index].setBackgroundResource(cardImgId)
         } else {
             bindingCardList[index].visibility = View.INVISIBLE
             bindingCardList[index].setBackgroundResource(R.drawable.emptycard)
