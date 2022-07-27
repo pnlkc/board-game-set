@@ -44,6 +44,13 @@ import com.pnlkc.set.recyclerview_friend_request_list.IFriendRequestList
 import com.pnlkc.set.util.App
 import com.pnlkc.set.util.App.Companion.isNicknameExist
 import com.pnlkc.set.util.CustomFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
 
@@ -76,6 +83,9 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
     private val friendCount = MutableLiveData(arrayOf(0, 0))
 
     private var dialogFriend: Dialog? = null
+
+    private var myJob = Job()
+    private var searchTerm = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -626,6 +636,44 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
         friendCount.observe(viewLifecycleOwner) {
             dBinding.dialogFriendStatusTextview.text = "친구 (${it[0]}/${it[1]})"
         }
+
+        // 친구 검색시 검색어 변경이 0.35초 동안 없을시 검색어를 searchTerm 변수에 저장
+        CoroutineScope(Dispatchers.Main + myJob).launch {
+            val editTextFlow = dBinding.dialogFriendFilterEdittext.textChangesToFlow()
+            editTextFlow
+                .debounce(350)
+                .onEach { text ->
+                    searchTerm = text?.toString() ?: ""
+                    setDataFriendListAdapter()
+                }
+                .launchIn(this)
+        }
+    }
+
+    // 친구 목록 리사이클러뷰 리스트 설정
+    private fun setDataFriendListAdapter() {
+        if (searchTerm.isNotBlank()) {
+            if (resultList.isNotEmpty()) {
+                val filteredList = resultList.filter { friend ->
+                    friend.nickname.lowercase().contains(searchTerm)
+                }
+                friendListAdaptor.setData(filteredList.toMutableList())
+                setFriendCount(filteredList)
+            } else {
+                friendListAdaptor.setData(resultList)
+                friendCount.value = arrayOf(0, 0)
+            }
+        } else {
+            friendListAdaptor.setData(resultList)
+            setFriendCount(resultList)
+        }
+    }
+
+    // 전체 친구 숫자 및 온라인 상태 친구 숫자 계산
+    private fun setFriendCount(list: List<Friend>) {
+        val allFriend = list.count()
+        val onlineFriend = allFriend - list.count { it.status == "offline" }
+        friendCount.value = arrayOf(onlineFriend, allFriend)
     }
 
     private fun sendFriendRequest(inputText: String, editText: EditText) {
@@ -690,7 +738,8 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
                 } else {
                     if (friendStatusSnapshotListener != null) friendStatusSnapshotListener!!.remove()
                     friendList = listOf()
-                    friendListAdaptor.setData(mutableListOf())
+                    resultList = mutableListOf()
+                    setDataFriendListAdapter()
                     friendCount.value = arrayOf(0, 0)
                 }
             }
@@ -713,18 +762,15 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
                         statusList.add(status)
                     }
                 }
-
-                val allFriend = statusList.count()
-                val onlineFriend = statusList.count() - statusList.count { it == "offline" }
-                friendCount.value = arrayOf(onlineFriend, allFriend)
-
                 resultList.clear()
                 for (i in nicknameList.indices) {
                     resultList.add(Friend(nicknameList[i], statusList[i]))
                 }
 
+                setFriendCount(resultList)
+
                 resultList = resultList.sortedBy { it.status == "offline" }.toMutableList()
-                friendListAdaptor.setData(resultList)
+                setDataFriendListAdapter()
             }
     }
 
@@ -858,5 +904,6 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
         backPressCallback.remove()
         friendSnapshotListener.remove()
         if (friendStatusSnapshotListener != null) friendStatusSnapshotListener!!.remove()
+        myJob.cancel()
     }
 }
