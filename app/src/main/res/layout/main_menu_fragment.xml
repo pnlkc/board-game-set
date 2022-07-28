@@ -21,7 +21,7 @@
         android:layout_margin="20dp"
         android:padding="6dp"
         android:clickable="true"
-        />
+        android:contentDescription="@string/description_friend_btn" />
 
     <TextView
         android:id="@+id/friend_request_count"
@@ -54,7 +54,7 @@
         android:layout_margin="20dp"
         android:padding="6dp"
         android:clickable="true"
-        />
+        android:contentDescription="@string/description_setting_btn" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_animation_view"

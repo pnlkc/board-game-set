@@ -250,7 +250,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/card1"
                 app:layout_constraintEnd_toEndOf="@id/card1"
                 app:layout_constraintStart_toStartOf="@id/card1"
-                app:layout_constraintTop_toTopOf="@id/card1" />
+                app:layout_constraintTop_toTopOf="@id/card1"
+                android:contentDescription="@string/description_selected_card_imageview" />
 
             <ImageView
                 android:id="@+id/selectedCard2"
@@ -261,7 +262,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/card2"
                 app:layout_constraintEnd_toEndOf="@id/card2"
                 app:layout_constraintStart_toStartOf="@id/card2"
-                app:layout_constraintTop_toTopOf="@id/card2" />
+                app:layout_constraintTop_toTopOf="@id/card2"
+                android:contentDescription="@string/description_selected_card_imageview" />
 
             <ImageView
                 android:id="@+id/selectedCard3"
@@ -272,7 +274,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/card3"
                 app:layout_constraintEnd_toEndOf="@id/card3"
                 app:layout_constraintStart_toStartOf="@id/card3"
-                app:layout_constraintTop_toTopOf="@id/card3" />
+                app:layout_constraintTop_toTopOf="@id/card3"
+                android:contentDescription="@string/description_selected_card_imageview" />
 
             <ImageView
                 android:id="@+id/selectedCard4"
@@ -283,7 +286,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/card4"
                 app:layout_constraintEnd_toEndOf="@id/card4"
                 app:layout_constraintStart_toStartOf="@id/card4"
-                app:layout_constraintTop_toTopOf="@id/card4" />
+                app:layout_constraintTop_toTopOf="@id/card4"
+                android:contentDescription="@string/description_selected_card_imageview" />
 
             <ImageView
                 android:id="@+id/selectedCard5"
@@ -294,7 +298,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/card5"
                 app:layout_constraintEnd_toEndOf="@id/card5"
                 app:layout_constraintStart_toStartOf="@id/card5"
-                app:layout_constraintTop_toTopOf="@id/card5" />
+                app:layout_constraintTop_toTopOf="@id/card5"
+                android:contentDescription="@string/description_selected_card_imageview" />
 
             <ImageView
                 android:id="@+id/selectedCard6"
@@ -305,7 +310,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/card6"
                 app:layout_constraintEnd_toEndOf="@id/card6"
                 app:layout_constraintStart_toStartOf="@id/card6"
-                app:layout_constraintTop_toTopOf="@id/card6" />
+                app:layout_constraintTop_toTopOf="@id/card6"
+                android:contentDescription="@string/description_selected_card_imageview" />
 
             <ImageView
                 android:id="@+id/selectedCard7"
@@ -316,7 +322,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/card7"
                 app:layout_constraintEnd_toEndOf="@id/card7"
                 app:layout_constraintStart_toStartOf="@id/card7"
-                app:layout_constraintTop_toTopOf="@id/card7" />
+                app:layout_constraintTop_toTopOf="@id/card7"
+                android:contentDescription="@string/description_selected_card_imageview" />
 
             <ImageView
                 android:id="@+id/selectedCard8"
@@ -327,7 +334,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/card8"
                 app:layout_constraintEnd_toEndOf="@id/card8"
                 app:layout_constraintStart_toStartOf="@id/card8"
-                app:layout_constraintTop_toTopOf="@id/card8" />
+                app:layout_constraintTop_toTopOf="@id/card8"
+                android:contentDescription="@string/description_selected_card_imageview" />
 
             <ImageView
                 android:id="@+id/selectedCard9"
@@ -338,7 +346,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/card9"
                 app:layout_constraintEnd_toEndOf="@id/card9"
                 app:layout_constraintStart_toStartOf="@id/card9"
-                app:layout_constraintTop_toTopOf="@id/card9" />
+                app:layout_constraintTop_toTopOf="@id/card9"
+                android:contentDescription="@string/description_selected_card_imageview" />
 
             <ImageView
                 android:id="@+id/selectedCard10"
@@ -349,7 +358,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/card10"
                 app:layout_constraintEnd_toEndOf="@id/card10"
                 app:layout_constraintStart_toStartOf="@id/card10"
-                app:layout_constraintTop_toTopOf="@id/card10" />
+                app:layout_constraintTop_toTopOf="@id/card10"
+                android:contentDescription="@string/description_selected_card_imageview" />
 
             <ImageView
                 android:id="@+id/selectedCard11"
@@ -360,7 +370,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/card11"
                 app:layout_constraintEnd_toEndOf="@id/card11"
                 app:layout_constraintStart_toStartOf="@id/card11"
-                app:layout_constraintTop_toTopOf="@id/card11" />
+                app:layout_constraintTop_toTopOf="@id/card11"
+                android:contentDescription="@string/description_selected_card_imageview" />
 
             <ImageView
                 android:id="@+id/selectedCard12"
@@ -371,7 +382,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/card12"
                 app:layout_constraintEnd_toEndOf="@id/card12"
                 app:layout_constraintStart_toStartOf="@id/card12"
-                app:layout_constraintTop_toTopOf="@id/card12" />
+                app:layout_constraintTop_toTopOf="@id/card12"
+                android:contentDescription="@string/description_selected_card_imageview" />
 
 <!--  여기서부터 실제 카드  -->
 
@@ -383,7 +395,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="20dp"
-                android:layout_marginStart="15dp"/>
+                android:layout_marginStart="15dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:id="@+id/card2"
@@ -392,7 +405,8 @@
                 android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@+id/card1"
                 app:layout_constraintStart_toEndOf="@id/card1"
-                app:layout_constraintEnd_toStartOf="@id/card3" />
+                app:layout_constraintEnd_toStartOf="@id/card3"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:id="@+id/card3"
@@ -401,7 +415,8 @@
                 android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@id/card1"
                 app:layout_constraintStart_toEndOf="@id/card2"
-                app:layout_constraintEnd_toStartOf="@id/card4" />
+                app:layout_constraintEnd_toStartOf="@id/card4"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:id="@+id/card4"
@@ -410,7 +425,8 @@
                 android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@id/card1"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="15dp"/>
+                android:layout_marginEnd="15dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:id="@+id/card5"
@@ -419,7 +435,8 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/emptycard"
                 app:layout_constraintStart_toStartOf="@id/card1"
-                app:layout_constraintTop_toBottomOf="@id/card1" />
+                app:layout_constraintTop_toBottomOf="@id/card1"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:id="@+id/card6"
@@ -428,7 +445,8 @@
                 android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@id/card5"
                 app:layout_constraintStart_toEndOf="@id/card5"
-                app:layout_constraintEnd_toStartOf="@id/card7" />
+                app:layout_constraintEnd_toStartOf="@id/card7"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:id="@+id/card7"
@@ -437,7 +455,8 @@
                 android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@id/card5"
                 app:layout_constraintStart_toEndOf="@id/card6"
-                app:layout_constraintEnd_toStartOf="@id/card8" />
+                app:layout_constraintEnd_toStartOf="@id/card8"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:id="@+id/card8"
@@ -445,7 +464,8 @@
                 android:layout_height="@dimen/card_height"
                 android:background="@drawable/emptycard"
                 app:layout_constraintTop_toTopOf="@id/card5"
-                app:layout_constraintEnd_toEndOf="@id/card4" />
+                app:layout_constraintEnd_toEndOf="@id/card4"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:id="@+id/card9"
@@ -454,7 +474,8 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/emptycard"
                 app:layout_constraintTop_toBottomOf="@id/card5"
-                app:layout_constraintStart_toStartOf="@id/card1" />
+                app:layout_constraintStart_toStartOf="@id/card1"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:id="@+id/card10"
@@ -464,7 +485,7 @@
                 app:layout_constraintTop_toTopOf="@id/card9"
                 app:layout_constraintStart_toEndOf="@id/card9"
                 app:layout_constraintEnd_toStartOf="@id/card11"
-                />
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:id="@+id/card11"
@@ -474,7 +495,7 @@
                 app:layout_constraintTop_toTopOf="@id/card9"
                 app:layout_constraintStart_toEndOf="@id/card10"
                 app:layout_constraintEnd_toStartOf="@id/card12"
-                />
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:id="@+id/card12"
@@ -485,7 +506,7 @@
                 app:layout_constraintEnd_toEndOf="@id/card4"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginBottom="20dp"
-                />
+                android:contentDescription="@string/description_card_imageview" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -68,7 +68,8 @@
                 android:layout_marginStart="15dp"
                 android:background="@drawable/nickname_change_btn_bg"
                 android:padding="4dp"
-                android:src="@drawable/nickname_change_icon" />
+                android:src="@drawable/nickname_change_icon"
+                android:contentDescription="@string/description_nickname_change_btn" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

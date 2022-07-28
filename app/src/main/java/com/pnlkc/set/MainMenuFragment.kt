@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_IS_NOT_ENABLED")
+
 package com.pnlkc.set
 
 import android.app.Activity
@@ -6,6 +8,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +29,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.SetOptions
 import com.pnlkc.set.data.DataSource
 import com.pnlkc.set.data.DataSource.KEY_SHUFFLED_CARD_LIST
 import com.pnlkc.set.data.UserMode
@@ -41,13 +48,10 @@ import com.pnlkc.set.recyclerview_friend_request_list.IFriendRequestList
 import com.pnlkc.set.util.App
 import com.pnlkc.set.util.App.Companion.isNicknameExist
 import com.pnlkc.set.util.CustomFragment
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
 
@@ -424,6 +428,7 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
                 collection.whereEqualTo("nickname", inputText)
                     .get().addOnSuccessListener { snapshot ->
                         if (snapshot.isEmpty) {
+                            val oldNickname = sharedViewModel.nickname ?: ""
                             val data = hashMapOf(
                                 "nickname" to inputText,
                                 "status" to "online"
@@ -435,6 +440,30 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
                             isNicknameExist = true
                             sharedViewModel.nickname = inputText
                             dialog.dismiss()
+
+                            if (mode == "myProfile" && oldNickname.isNotEmpty()) {
+                                collection.whereArrayContains("friend_list", oldNickname).get()
+                                    .addOnCompleteListener { documents ->
+                                        if (!(documents.result.isEmpty)) {
+                                            App.firestore.runBatch { batch ->
+                                                for (document in documents.result) {
+                                                    val uid = document.id
+                                                    batch.update(
+                                                        collection.document(uid),
+                                                        "friend_list",
+                                                        FieldValue.arrayRemove(oldNickname)
+                                                    )
+
+                                                    batch.update(
+                                                        collection.document(uid),
+                                                        "friend_list",
+                                                        FieldValue.arrayUnion(sharedViewModel.nickname)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                            }
 
                             when (mode) {
                                 "multi" -> showDialogPlayMulti()
@@ -644,6 +673,10 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
             }
         }
 
+        dBinding.dialogFriendFilterCancelBtn.setOnClickListener {
+            dBinding.dialogFriendFilterEdittext.text!!.clear()
+        }
+
         friendCount.observe(viewLifecycleOwner) {
             dBinding.dialogFriendStatusTextview.text = "친구 (${it[0]}/${it[1]})"
         }
@@ -652,6 +685,15 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
         CoroutineScope(Dispatchers.Main + myJob).launch {
             val editTextFlow = dBinding.dialogFriendFilterEdittext.textChangesToFlow()
             editTextFlow
+                .onEach { text ->
+                    if (text!!.isNotEmpty()) {
+                        dBinding.dialogFriendFilterCancelBtn.visibility = View.VISIBLE
+                        dBinding.dialogFriendFilterBtn.visibility = View.GONE
+                    } else {
+                        dBinding.dialogFriendFilterCancelBtn.visibility = View.GONE
+                        dBinding.dialogFriendFilterBtn.visibility = View.VISIBLE
+                    }
+                }
                 .debounce(350)
                 .onEach { text ->
                     searchTerm = text?.toString() ?: ""
@@ -773,6 +815,7 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
                         statusList.add(status)
                     }
                 }
+
                 resultList.clear()
                 for (i in nicknameList.indices) {
                     resultList.add(Friend(nicknameList[i], statusList[i]))

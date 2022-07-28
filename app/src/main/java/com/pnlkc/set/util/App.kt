@@ -1,13 +1,10 @@
 package com.pnlkc.set.util
 
 import android.content.Context
-import android.util.Log
 import androidx.multidex.MultiDexApplication
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 // 사용하려면 AndroidManifest 파일 <application>에 android:name=".App" 을 추가해야됨

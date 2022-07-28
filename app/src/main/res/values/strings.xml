@@ -63,4 +63,34 @@
     <string name="accept">수락하기</string>
     <string name="decline">거절하기</string>
     <string name="invite">초대</string>
+    <string name="description_add_friend_btn">add_friend_btn</string>
+    <string name="description_add_friend_cancel_btn">add_friend_cancel_btn</string>
+    <string name="description_filter_btn">filter_btn</string>
+    <string name="description_filter_cancel_btn">filter_cancel_btn</string>
+    <string name="description_send_btn">send_btn</string>
+    <string name="requested">받은 요청</string>
+    <string name="description_request_fold_imageview">request_fold_imageview</string>
+    <string name="description_nickname_change_btn">nickname_change_btn</string>
+    <string name="description_crown_imageview">crown_imageview</string>
+    <string name="description_positive_btn">positive_btn</string>
+    <string name="description_">negative_btn</string>
+    <string name="description_google_login_logo_image_view">google_login_logo_image_view</string>
+    <string name="description_guest_login_image_view">guest_login_image_view</string>
+    <string name="description_friend_btn">friend_btn</string>
+    <string name="description_setting_btn">setting_btn</string>
+    <string name="description_selected_card_imageview">selected_card_imageview</string>
+    <string name="description_card_imageview">card_imageview</string>
+    <string name="description_dash_line">dash_line</string>
+    <string name="rule_shape">모양 = 원, 삼각형, 사각형</string>
+    <string name="rule_color">색상 = 빨강, 녹색, 파랑</string>
+    <string name="rule_number">개수 = 1개, 2개, 3개</string>
+    <string name="rule_shade">음영 = 빈 무늬, 줄 무늬, 꽉찬 무늬</string>
+    <string name="description_correct_case_one">1가지 속성만 다른 경우 (색상)</string>
+    <string name="description_correct_case_two">2가지 속성이 다른 경우 (모양, 색상)</string>
+    <string name="description_correct_case_three">3가지 속성이 다른 경우 (색상, 개수, 음영)</string>
+    <string name="description_correct_case_four">4가지 속성이 모두 다른 경우</string>
+    <string name="description_incorrect_case_one">꽉찬 무늬의 음영이 두개만 일치 X</string>
+    <string name="description_incorrect_case_two">파란 색상이 두개만 일치 X</string>
+    <string name="finish">끝내기</string>
+    <string name="shuffle">카드섞기</string>
 </resources>

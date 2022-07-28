@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -47,7 +46,7 @@
                 android:padding="10dp"
                 android:src="@drawable/add_friend_icon"
                 android:visibility="visible"
-                />
+                android:contentDescription="@string/description_add_friend_btn" />
 
             <ImageView
                 android:id="@+id/dialog_friend_add_friend_cancel_btn"
@@ -56,7 +55,8 @@
                 android:background="@drawable/dialog_friend_btn_bg"
                 android:padding="10dp"
                 android:src="@drawable/cancel_icon"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:contentDescription="@string/description_add_friend_cancel_btn" />
 
             <LinearLayout
                 android:id="@+id/dialog_friend_filter_linearlayout"
@@ -92,7 +92,7 @@
                     android:padding="10dp"
                     android:src="@drawable/filter_friend_icon"
                     android:visibility="visible"
-                    />
+                    android:contentDescription="@string/description_filter_btn" />
 
                 <ImageView
                     android:id="@+id/dialog_friend_filter_cancel_btn"
@@ -101,7 +101,7 @@
                     android:padding="10dp"
                     android:src="@drawable/cancel_icon"
                     android:visibility="gone"
-                    />
+                    android:contentDescription="@string/description_filter_cancel_btn" />
 
             </LinearLayout>
 
@@ -137,7 +137,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:src="@drawable/send_friend_icon" />
+                    android:src="@drawable/send_friend_icon"
+                    android:contentDescription="@string/description_send_btn" />
 
             </LinearLayout>
 
@@ -169,23 +170,23 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:paddingBottom="10dp"
-                        >
+                        tools:ignore="UseCompoundDrawables">
 
                         <ImageView
                             android:id="@+id/dialog_friend_request_fold_imageview"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/friend_unfold_icon" />
+                            android:background="@drawable/friend_unfold_icon"
+                            android:contentDescription="@string/description_request_fold_imageview" />
 
                         <TextView
                             android:id="@+id/dialog_friend_request_textview"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="받은 요청"
+                            android:text="@string/requested"
                             android:fontFamily="@font/bm_jua"
                             android:textSize="16sp"
                             android:textColor="@color/dialog_text"
-
                             />
 
                     </LinearLayout>
@@ -216,14 +217,14 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:paddingBottom="10dp"
-                        >
+                        tools:ignore="UseCompoundDrawables">
 
                         <ImageView
                             android:id="@+id/dialog_friend_status_fold_imageview"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/friend_unfold_icon" />
-
+                            android:background="@drawable/friend_unfold_icon"
+                            android:contentDescription="@string/description_request_fold_imageview" />
 
                         <TextView
                             android:id="@+id/dialog_friend_status_textview"

@@ -39,6 +39,8 @@
             android:fontFamily="@font/bm_jua"
             android:textSize="24sp"
             android:paddingVertical="20dp"
+            android:inputType="text"
+            android:importantForAutofill="no"
             />
 
         <Button

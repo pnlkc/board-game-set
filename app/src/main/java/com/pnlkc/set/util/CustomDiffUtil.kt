@@ -1,8 +1,6 @@
 package com.pnlkc.set.util
 
-import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
-import com.pnlkc.set.model.Friend
 
 object CustomDiffUtil {
     class FriendDiffUtilCallback(

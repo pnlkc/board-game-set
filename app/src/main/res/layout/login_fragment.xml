@@ -52,7 +52,7 @@
                 android:layout_height="28dp"
                 android:padding="4dp"
                 android:src="@drawable/google_icon"
-                />
+                android:contentDescription="@string/description_google_login_logo_image_view" />
 
             <TextView
                 android:id="@+id/google_login_text_view"
@@ -85,7 +85,7 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/guest_icon"
-                />
+                android:contentDescription="@string/description_guest_login_image_view" />
 
             <TextView
                 android:id="@+id/guest_login_text_view"

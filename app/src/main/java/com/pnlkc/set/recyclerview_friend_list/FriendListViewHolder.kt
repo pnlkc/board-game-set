@@ -1,6 +1,5 @@
 package com.pnlkc.set.recyclerview_friend_list
 
-import android.app.Dialog
 import android.content.Context
 import android.view.View
 import androidx.core.content.ContextCompat

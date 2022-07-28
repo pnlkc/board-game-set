@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/friend_list_item_linearlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -16,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:fontFamily="@font/bm_jua"
-        android:text="SavMyLife"
+        tools:text="SavMyLife"
         android:textColor="@color/dialog_btn_text"
         android:textSize="20sp" />
 
@@ -27,7 +28,8 @@
         android:layout_height="28dp"
         android:background="@drawable/dialog_btn_bg"
         android:padding="4dp"
-        android:src="@drawable/positive_icon" />
+        android:src="@drawable/positive_icon"
+        android:contentDescription="@string/description_positive_btn" />
 
     <ImageView
         android:id="@+id/friend_request_list_item_negative_btn"
@@ -36,6 +38,7 @@
         android:background="@drawable/dialog_btn_bg"
         android:padding="4dp"
         android:layout_marginStart="15dp"
-        android:src="@drawable/cancel_icon" />
+        android:src="@drawable/cancel_icon"
+        android:contentDescription="@string/description_" />
 
 </LinearLayout>

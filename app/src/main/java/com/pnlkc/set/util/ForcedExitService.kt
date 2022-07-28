@@ -8,21 +8,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.navigation.fragment.findNavController
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
 import com.pnlkc.set.MainActivity
 import com.pnlkc.set.R
-import kotlinx.coroutines.*
 
 // 강제 종료했는지 확인하기 위한 서비스
 class ForcedExitService : Service() {
     private var userList: Array<String>? = null
     private var nickname: String? = null
     private var roomCode: String? = null
-    lateinit var collection: CollectionReference
+    private lateinit var collection: CollectionReference
 
     private val notificationId = 12
     private val channelId = "set_notification_channel"

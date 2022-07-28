@@ -44,7 +44,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/first_textview"
                 app:layout_constraintBottom_toBottomOf="@id/first_textview"
-                />
+                android:contentDescription="@string/description_crown_imageview" />
 
             <TextView
                 android:id="@+id/first_textview"

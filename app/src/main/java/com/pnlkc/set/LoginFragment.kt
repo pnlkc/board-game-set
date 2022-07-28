@@ -1,26 +1,20 @@
 package com.pnlkc.set
 
 import android.app.Activity
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.pnlkc.set.databinding.LoginFragmentBinding
-import com.pnlkc.set.model.SetViewModel
 import com.pnlkc.set.util.App
 
 class LoginFragment : Fragment() {

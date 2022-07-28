@@ -54,7 +54,8 @@
             android:textSize="24sp"
             android:paddingVertical="20dp"
             android:visibility="gone"
-            />
+            android:inputType="text"
+            android:importantForAutofill="no" />
 
         <Button
             android:id="@+id/dialog_play_multi_join_room"

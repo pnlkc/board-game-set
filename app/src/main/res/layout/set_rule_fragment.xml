@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -42,7 +41,8 @@
             android:layout_width="match_parent"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp" />
+            android:layout_height="3dp"
+            android:contentDescription="@string/description_dash_line" />
 
         <TextView
             android:id="@+id/rule_two"
@@ -62,7 +62,8 @@
             android:layout_width="match_parent"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp" />
+            android:layout_height="3dp"
+            android:contentDescription="@string/description_dash_line" />
 
         <TextView
             android:id="@+id/rule_three"
@@ -88,18 +89,21 @@
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/abac"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/bbac"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/cbac" />
+                android:src="@drawable/cbac"
+                android:contentDescription="@string/description_card_imageview" />
 
         </LinearLayout>
 
@@ -112,7 +116,7 @@
             android:textColor="@color/text_color"
             android:fontFamily="@font/gmarketsansmedium"
             android:lineSpacingExtra="10dp"
-            android:text="모양 = 원,  삼각형,  사각형" />
+            android:text="@string/rule_shape" />
 
 
         <LinearLayout
@@ -126,18 +130,21 @@
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/aaac"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/abac"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/acac" />
+                android:src="@drawable/acac"
+                android:contentDescription="@string/description_card_imageview" />
 
         </LinearLayout>
 
@@ -150,7 +157,7 @@
             android:textColor="@color/text_color"
             android:fontFamily="@font/gmarketsansmedium"
             android:lineSpacingExtra="10dp"
-            android:text="색상 = 빨강,  녹색,  파랑" />
+            android:text="@string/rule_color" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -163,18 +170,21 @@
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/abac"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/abbc"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/abcc" />
+                android:src="@drawable/abcc"
+                android:contentDescription="@string/description_card_imageview" />
 
         </LinearLayout>
 
@@ -187,7 +197,7 @@
             android:textColor="@color/text_color"
             android:fontFamily="@font/gmarketsansmedium"
             android:lineSpacingExtra="10dp"
-            android:text="개수 = 1개,  2개,  3개" />
+            android:text="@string/rule_number" />
 
 
 
@@ -202,18 +212,21 @@
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/abaa"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/abab"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/abac" />
+                android:src="@drawable/abac"
+                android:contentDescription="@string/description_card_imageview" />
 
         </LinearLayout>
 
@@ -225,7 +238,7 @@
             android:textColor="@color/text_color"
             android:fontFamily="@font/gmarketsansmedium"
             android:lineSpacingExtra="10dp"
-            android:text="음영 = 빈 무늬,  줄 무늬,  꽉찬 무늬" />
+            android:text="@string/rule_shade" />
 
         <ImageView
             android:src="@drawable/dash_line"
@@ -234,7 +247,8 @@
             android:layout_width="match_parent"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp" />
+            android:layout_height="3dp"
+            android:contentDescription="@string/description_dash_line" />
 
         <TextView
             android:id="@+id/rule_four"
@@ -254,7 +268,8 @@
             android:layout_width="match_parent"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp" />
+            android:layout_height="3dp"
+            android:contentDescription="@string/description_dash_line" />
 
         <TextView
             android:id="@+id/rule_five"
@@ -279,18 +294,21 @@
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/bacc"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/bbcc"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/bccc" />
+                android:src="@drawable/bccc"
+                android:contentDescription="@string/description_card_imageview" />
 
         </LinearLayout>
 
@@ -303,7 +321,7 @@
             android:textColor="@color/text_color"
             android:fontFamily="@font/gmarketsansmedium"
             android:lineSpacingExtra="10dp"
-            android:text="1가지 속성만 다른 경우 (색상)" />
+            android:text="@string/description_correct_case_one" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -316,18 +334,21 @@
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/aabc"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/bcbc"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/cbbc" />
+                android:src="@drawable/cbbc"
+                android:contentDescription="@string/description_card_imageview" />
 
         </LinearLayout>
 
@@ -340,7 +361,7 @@
             android:textColor="@color/text_color"
             android:fontFamily="@font/gmarketsansmedium"
             android:lineSpacingExtra="10dp"
-            android:text="2가지 속성이 다른 경우 (모양, 색상)" />
+            android:text="@string/description_correct_case_two" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -353,18 +374,21 @@
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/cbaa"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/cabb"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/cccc" />
+                android:src="@drawable/cccc"
+                android:contentDescription="@string/description_card_imageview" />
 
         </LinearLayout>
 
@@ -377,7 +401,7 @@
             android:textColor="@color/text_color"
             android:fontFamily="@font/gmarketsansmedium"
             android:lineSpacingExtra="10dp"
-            android:text="3가지 속성이 다른 경우 (색상, 개수, 음영)" />
+            android:text="@string/description_correct_case_three" />
 
 
         <LinearLayout
@@ -391,18 +415,21 @@
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/aaac"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/bbbb"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/ccca" />
+                android:src="@drawable/ccca"
+                android:contentDescription="@string/description_card_imageview" />
 
         </LinearLayout>
 
@@ -414,7 +441,7 @@
             android:textColor="@color/text_color"
             android:fontFamily="@font/gmarketsansmedium"
             android:lineSpacingExtra="10dp"
-            android:text="4가지 속성이 모두 다른 경우" />
+            android:text="@string/description_correct_case_four" />
 
 
         <ImageView
@@ -424,7 +451,8 @@
             android:layout_width="match_parent"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp" />
+            android:layout_height="3dp"
+            android:contentDescription="@string/description_dash_line" />
 
         <TextView
             android:id="@+id/rule_six"
@@ -449,18 +477,21 @@
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/aabc"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/bcbc"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/cbbb" />
+                android:src="@drawable/cbbb"
+                android:contentDescription="@string/description_card_imageview" />
 
         </LinearLayout>
 
@@ -473,7 +504,7 @@
             android:textColor="@color/text_color"
             android:fontFamily="@font/gmarketsansmedium"
             android:lineSpacingExtra="10dp"
-            android:text="꽉찬 무늬의 음영이 두개만 일치 X" />
+            android:text="@string/description_incorrect_case_one" />
 
 
         <LinearLayout
@@ -487,18 +518,21 @@
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/bcca"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
                 android:src="@drawable/bccb"
-                android:layout_marginEnd="30dp"/>
+                android:layout_marginEnd="30dp"
+                android:contentDescription="@string/description_card_imageview" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/bbcc" />
+                android:src="@drawable/bbcc"
+                android:contentDescription="@string/description_card_imageview" />
 
         </LinearLayout>
 
@@ -510,7 +544,7 @@
             android:textColor="@color/text_color"
             android:fontFamily="@font/gmarketsansmedium"
             android:lineSpacingExtra="10dp"
-            android:text="파란 색상이 두개만 일치 X" />
+            android:text="@string/description_incorrect_case_two" />
 
         <ImageView
             android:src="@drawable/dash_line"
@@ -519,7 +553,8 @@
             android:layout_width="match_parent"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp" />
+            android:layout_height="3dp"
+            android:contentDescription="@string/description_dash_line" />
 
         <TextView
             android:id="@+id/rule_seven"
@@ -539,7 +574,8 @@
             android:layout_width="match_parent"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp" />
+            android:layout_height="3dp"
+            android:contentDescription="@string/description_dash_line" />
 
         <TextView
             android:id="@+id/rule_eight_single_play"
@@ -570,7 +606,8 @@
             android:layout_width="match_parent"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp" />
+            android:layout_height="3dp"
+            android:contentDescription="@string/description_dash_line" />
 
         <TextView
             android:id="@+id/rule_nine"
