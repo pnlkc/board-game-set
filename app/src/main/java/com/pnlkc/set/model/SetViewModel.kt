@@ -43,6 +43,9 @@ class SetViewModel : ViewModel() {
     var roomCode: String? = null
     var gameState = GameState.WAIT
 
+    // 메인 화면에서 친구 초대 후 이동된 프래그먼트에서 친구창 열기 위해 필요한 변수
+    var needDialogFriendOpen = false
+
     // 초기 카드 목록 세팅
     fun initCard() {
         fieldCardList.clear()

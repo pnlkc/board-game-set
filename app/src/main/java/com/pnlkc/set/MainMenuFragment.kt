@@ -25,10 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.*
 import com.pnlkc.set.data.DataSource
 import com.pnlkc.set.data.DataSource.KEY_SHUFFLED_CARD_LIST
 import com.pnlkc.set.data.UserMode
@@ -87,6 +84,8 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
     private var myJob = Job()
     private var searchTerm = ""
 
+    private var invitedNickname: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -116,7 +115,7 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        friendListAdaptor = FriendListAdaptor(this, requireContext(), "main_menu")
+        friendListAdaptor = FriendListAdaptor(this, requireContext())
 
         collection = App.firestore.collection("USER_LIST")
 
@@ -194,7 +193,7 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
         // 게임 만들기
         makeRoomBtn.setOnClickListener {
             sharedViewModel.userMode = UserMode.HOST
-            makeRoomCode()
+            makeRoomCode("makeRoomBtn")
             dialog.dismiss()
         }
 
@@ -265,7 +264,7 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
         }
     }
 
-    private fun makeRoomCode() {
+    private fun makeRoomCode(mode: String) {
         val list = mutableListOf<Char>()
         list.addAll(('0'..'9').map { it })
         list.addAll(('A'..'Z').map { it })
@@ -276,22 +275,34 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     if (it.result.size() > 0) {
-                        makeRoomCode()
+                        makeRoomCode(mode)
                     } else {
                         sharedViewModel.roomCode = roomCode
-                        val data = hashMapOf(
-                            "user" to mutableListOf(sharedViewModel.nickname),
-                            "score" to mutableListOf("0"),
-                            "start" to false
-                        )
-                        App.firestore.collection(roomCode).document("user")
-                            .set(data)
 
-                        val ready = hashMapOf(sharedViewModel.nickname to false)
-                        App.firestore.collection(roomCode).document("ready").set(ready)
+                        App.firestore.runBatch { batch ->
+                            val data = hashMapOf(
+                                "user" to mutableListOf(sharedViewModel.nickname),
+                                "score" to mutableListOf("0"),
+                                "start" to false
+                            )
 
-                        isForcedExit = false
-                        findNavController().navigate(R.id.action_mainMenuFragment_to_setMultiReadyFragment)
+                            batch.set(
+                                App.firestore.collection(roomCode).document("user"),
+                                data
+                            )
+
+                            val ready = hashMapOf(sharedViewModel.nickname to false)
+
+                            batch.set(
+                                App.firestore.collection(roomCode).document("ready"),
+                                ready
+                            )
+                        }.addOnSuccessListener {
+                            isForcedExit = false
+                            if (mode == "invite") inviteFriendAction()
+                            findNavController().navigate(R.id.action_mainMenuFragment_to_setMultiReadyFragment)
+                            dialogFriend?.dismiss()
+                        }
                     }
                 } else {
                     Log.d("로그", "데이터 로드 실패")
@@ -835,7 +846,45 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
 
     // 초대 버튼 클릭시
     override fun inviteBtnClicked(position: Int) {
-        // 메인 화면에서는 초대 불가
+        invitedNickname = resultList[position].nickname
+        sharedViewModel.needDialogFriendOpen = true
+        makeRoomCode("invite")
+    }
+
+    private fun inviteFriendAction() {
+        if (invitedNickname != null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                collection.whereEqualTo("nickname", invitedNickname)
+                    .get().addOnSuccessListener { documents ->
+                        if (!documents.isEmpty) {
+                            val uid = documents.first().id
+                            if (documents.first().data["invite_nickname"] == null
+                                && documents.first().data["invite_roomCode"] == null
+                            ) {
+                                val data = hashMapOf(
+                                    "invite_nickname" to sharedViewModel.nickname,
+                                    "invite_roomCode" to sharedViewModel.roomCode
+                                )
+                                collection.document(uid).set(data, SetOptions.merge())
+                                    .addOnSuccessListener {
+                                        Toast.makeText(requireContext(), "초대가 완료되었습니다", Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                            } else {
+                                if (documents.first().data["invite_nickname"] == sharedViewModel.nickname) {
+                                    Toast.makeText(requireContext(),
+                                        "해당 플레이어를 이미 초대하였습니다",
+                                        Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(requireContext(),
+                                        "해당 플레이어가 이미 다른 게임에 초대되었습니다",
+                                        Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    }
+            }
+        }
     }
 
     // 친구 요청 수락 버튼

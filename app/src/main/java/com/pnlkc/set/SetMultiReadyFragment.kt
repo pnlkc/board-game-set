@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -127,7 +126,7 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
             setOnlineFragment = this@SetMultiReadyFragment
         }
 
-        friendListAdaptor = FriendListAdaptor(this, requireContext(), "multi_ready")
+        friendListAdaptor = FriendListAdaptor(this, requireContext())
 
         // 대기실에 들어오면 게임 상태를 대기 상태로 변경
         sharedViewModel.gameState = GameState.WAIT
@@ -146,6 +145,11 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
         controlReadySituation()
 
         binding.friendBtn.setOnClickListener { showDialogFriend() }
+
+        if (sharedViewModel.needDialogFriendOpen) {
+            showDialogFriend()
+            sharedViewModel.needDialogFriendOpen = false
+        }
     }
 
     // 뷰리스트 초기화
@@ -601,9 +605,15 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
                                     .show()
                             }
                     } else {
-                        Toast.makeText(requireContext(),
-                            "해당 플레이어가 이미 다른 게임에 초대되었습니다",
-                            Toast.LENGTH_SHORT).show()
+                        if (documents.first().data["invite_nickname"] == sharedViewModel.nickname) {
+                            Toast.makeText(requireContext(),
+                                "해당 플레이어를 이미 초대하였습니다",
+                                Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(requireContext(),
+                                "해당 플레이어가 이미 다른 게임에 초대되었습니다",
+                                Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }

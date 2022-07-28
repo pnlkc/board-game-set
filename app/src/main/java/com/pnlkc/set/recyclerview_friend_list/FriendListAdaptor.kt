@@ -14,8 +14,7 @@ import com.pnlkc.set.util.CustomDiffUtil
 
 class FriendListAdaptor(
     private var iRecyclerView: IFriendList,
-    private var context: Context,
-    private val mode: String
+    private var context: Context
 ) :
     RecyclerView.Adapter<FriendListViewHolder>() {
 
@@ -24,7 +23,7 @@ class FriendListAdaptor(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendListViewHolder {
         val binding =
             ItemFriendListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return FriendListViewHolder(binding, iRecyclerView, mode)
+        return FriendListViewHolder(binding, iRecyclerView)
     }
 
     override fun onBindViewHolder(holder: FriendListViewHolder, position: Int) {

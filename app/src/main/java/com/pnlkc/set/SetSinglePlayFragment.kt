@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
