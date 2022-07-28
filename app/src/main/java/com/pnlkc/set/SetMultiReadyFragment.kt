@@ -54,8 +54,8 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
 
     private lateinit var backPressCallback: OnBackPressedCallback
 
-    // 유저 리스트 저장용 변수
-    private lateinit var userList: MutableList<String>
+    // 플레이어 리스트 저장용 변수
+    private lateinit var playerList: MutableList<String>
 
     // 뷰 리스트
     private lateinit var readyTextViewList: List<TextView>
@@ -106,7 +106,7 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
                         Toast.LENGTH_SHORT).show()
                 } else {
                     needStartService = false
-                    if (userList.size > 1) deletePlayer() else deleteCollection()
+                    if (playerList.size > 1) deletePlayer() else deleteCollection()
                 }
             }
         }
@@ -190,8 +190,8 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
             .addSnapshotListener { snapshot, _ ->
                 if (snapshot == null) return@addSnapshotListener
 
-                userList = snapshot.data!!["user"] as MutableList<String>
-                val myIndex = userList.indexOf(sharedViewModel.nickname)
+                playerList = snapshot.data!!["user"] as MutableList<String>
+                val myIndex = playerList.indexOf(sharedViewModel.nickname)
 
                 // 플레이어 리스트 1번째에 있는 사람이 방장이 되는 코드 (방장이 나가는 경우 고려)
                 sharedViewModel.userMode = if (myIndex == 0) UserMode.HOST else UserMode.CLIENT
@@ -204,8 +204,8 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
                 } else {
                     // 플레이어 숫자에 맞춰서 뷰 변경
                     (0..3).forEach { index ->
-                        if (index < userList.size) {
-                            readyNicknameTextview[index].text = userList[index]
+                        if (index < playerList.size) {
+                            readyNicknameTextview[index].text = playerList[index]
                             readyLinearLayout[index].visibility = View.VISIBLE
                         } else {
                             readyLinearLayout[index].visibility = View.GONE
@@ -217,9 +217,9 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
         readySnapshotListener = collection.document("ready")
             .addSnapshotListener { snapshot, _ ->
                 if (snapshot == null) return@addSnapshotListener
-                val myIndex = userList.indexOf(sharedViewModel.nickname)
-                val readyList = MutableList(userList.size) { false }
-                userList.forEachIndexed { index, s ->
+                val myIndex = playerList.indexOf(sharedViewModel.nickname)
+                val readyList = MutableList(playerList.size) { false }
+                playerList.forEachIndexed { index, s ->
                     if (snapshot.data!![s] == true) {
                         readyList[index] = true
                         if (index == myIndex) binding.readyBtn.text = "취소"
@@ -587,36 +587,43 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
 
     // 초대 버튼 클릭시
     override fun inviteBtnClicked(position: Int) {
-        val nickname = resultList[position].nickname
-        userListCollection.whereEqualTo("nickname", nickname)
-            .get().addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    val uid = documents.first().id
-                    if (documents.first().data["invite_nickname"] == null
-                        && documents.first().data["invite_roomCode"] == null
-                    ) {
-                        val data = hashMapOf(
-                            "invite_nickname" to sharedViewModel.nickname,
-                            "invite_roomCode" to sharedViewModel.roomCode
-                        )
-                        userListCollection.document(uid).set(data, SetOptions.merge())
-                            .addOnSuccessListener {
-                                Toast.makeText(requireContext(), "초대가 완료되었습니다", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                    } else {
-                        if (documents.first().data["invite_nickname"] == sharedViewModel.nickname) {
-                            Toast.makeText(requireContext(),
-                                "해당 플레이어를 이미 초대하였습니다",
-                                Toast.LENGTH_SHORT).show()
+        if (playerList.size == 4) {
+            Toast.makeText(requireContext(), "최대인원을 초과하여 초대할 수 없습니다",
+                Toast.LENGTH_SHORT).show()
+        } else {
+            val nickname = resultList[position].nickname
+            userListCollection.whereEqualTo("nickname", nickname)
+                .get().addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        val uid = documents.first().id
+                        if (documents.first().data["invite_nickname"] == null
+                            && documents.first().data["invite_roomCode"] == null
+                        ) {
+                            val data = hashMapOf(
+                                "invite_nickname" to sharedViewModel.nickname,
+                                "invite_roomCode" to sharedViewModel.roomCode
+                            )
+                            userListCollection.document(uid).set(data, SetOptions.merge())
+                                .addOnSuccessListener {
+                                    Toast.makeText(requireContext(),
+                                        "초대가 완료되었습니다",
+                                        Toast.LENGTH_SHORT)
+                                        .show()
+                                }
                         } else {
-                            Toast.makeText(requireContext(),
-                                "해당 플레이어가 이미 다른 게임에 초대되었습니다",
-                                Toast.LENGTH_SHORT).show()
+                            if (documents.first().data["invite_nickname"] == sharedViewModel.nickname) {
+                                Toast.makeText(requireContext(),
+                                    "해당 플레이어를 이미 초대하였습니다",
+                                    Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(requireContext(),
+                                    "해당 플레이어가 이미 다른 게임에 초대되었습니다",
+                                    Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 }
-            }
+        }
     }
 
     // 친구 요청 수락 버튼
@@ -670,7 +677,7 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
 
     @Suppress("UNCHECKED_CAST")
     private fun deletePlayer() {
-        val index = userList.indexOf(sharedViewModel.nickname)
+        val index = playerList.indexOf(sharedViewModel.nickname)
         collection.document("user").get().addOnSuccessListener { snapshot ->
             val userList = snapshot.data!!["user"] as MutableList<String>
             val scoreList = snapshot.data!!["score"] as MutableList<String>
@@ -710,7 +717,7 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
         if (needStartService) {
             // 강제종료했는지 알기 위한 서비스 등록
             val intent = Intent(requireContext(), ForcedExitService::class.java)
-            intent.putExtra("userList", userList.toTypedArray())
+            intent.putExtra("userList", playerList.toTypedArray())
             intent.putExtra("nickname", sharedViewModel.nickname)
             intent.putExtra("roomCode", sharedViewModel.roomCode)
 
@@ -757,6 +764,5 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
         if (cardSnapshotListener != null) cardSnapshotListener!!.remove()
         friendSnapshotListener.remove()
         if (friendStatusSnapshotListener != null) friendStatusSnapshotListener!!.remove()
-
     }
 }

@@ -48,7 +48,7 @@ class SetMultiStartFragment : Fragment() {
     private lateinit var bindingCardList: List<ImageView>
     private lateinit var bindingSelectedCardList: List<ImageView>
 
-    private lateinit var userList: MutableList<String>
+    private lateinit var playerList: MutableList<String>
     private lateinit var scoreList: MutableList<String>
 
     // 뷰 리스트
@@ -156,8 +156,8 @@ class SetMultiStartFragment : Fragment() {
             .addSnapshotListener { snapshot, _ ->
                 if (snapshot == null) return@addSnapshotListener
 
-                userList = snapshot.data!!["user"] as MutableList<String>
-                val myIndex = userList.indexOf(sharedViewModel.nickname)
+                playerList = snapshot.data!!["user"] as MutableList<String>
+                val myIndex = playerList.indexOf(sharedViewModel.nickname)
                 scoreList = snapshot.data!!["score"] as MutableList<String>
 
                 // 플레이어 리스트 1번째에 있는 사람이 방장이 되는 코드 (방장이 나가는 경우 고려)
@@ -165,8 +165,8 @@ class SetMultiStartFragment : Fragment() {
 
                 // 플레이어 숫자에 맞춰서 뷰 변경
                 (0..3).forEach { index ->
-                    if (index < userList.size) {
-                        nicknameTextViewList[index].text = userList[index]
+                    if (index < playerList.size) {
+                        nicknameTextViewList[index].text = playerList[index]
                         playerLinearLayoutList[index].visibility = View.VISIBLE
                         scoreTextViewList[index].text = scoreList[index]
                     } else {
@@ -175,7 +175,7 @@ class SetMultiStartFragment : Fragment() {
                 }
 
                 // 플레이어가 1명만 남았을 때 게임 종료 처리
-                if (userList.size == 1 && userList.contains(sharedViewModel.nickname)) {
+                if (playerList.size == 1 && playerList.contains(sharedViewModel.nickname)) {
                     Toast.makeText(context, "남은 플레이어가 없어 게임을 플레이 할 수 없습니다",
                         Toast.LENGTH_SHORT).show()
                     showFinalScoreDialog()
@@ -325,7 +325,7 @@ class SetMultiStartFragment : Fragment() {
 
                 if (snapshot.data!!["complete"] != null) {
                     val complete = snapshot.data!!["complete"] as MutableList<String>
-                    if (complete.size != userList.size) {
+                    if (complete.size != playerList.size) {
                         if (!complete.contains(sharedViewModel.nickname)) {
                             sharedViewModel.shuffledCardList =
                                 gson.fromJson(snapshot.data!!["cardList"].toString(),
@@ -338,7 +338,7 @@ class SetMultiStartFragment : Fragment() {
                     } else {
                         // 플레이들이 모두 카드를 받았으면 카드 문서를 초기화
                         if (sharedViewModel.userMode == UserMode.HOST) {
-                            if (complete.size == userList.size) {
+                            if (complete.size == playerList.size) {
                                 val data = hashMapOf<String, Any>(
                                     "cardList" to FieldValue.delete(),
                                     "complete" to FieldValue.delete()
@@ -366,7 +366,7 @@ class SetMultiStartFragment : Fragment() {
             if (snapshot == null) return@addSnapshotListener
             if (snapshot.exists()) {
                 val playerNickname = snapshot.data!!["nickname"] as String
-                val index = userList.indexOf(playerNickname)
+                val index = playerList.indexOf(playerNickname)
 
                 if (sharedViewModel.nickname != playerNickname) {
                     if (myJob != null) myJob!!.cancel()
@@ -541,7 +541,7 @@ class SetMultiStartFragment : Fragment() {
             "selectedCardIndex" to selectedCardIndexJson
         )
         collection.document("answer").set(data, SetOptions.merge())
-        val index = userList.indexOf(sharedViewModel.nickname)
+        val index = playerList.indexOf(sharedViewModel.nickname)
         scoreList[index] = (scoreList[index].toInt() + 1).toString()
         collection.document("user").update("score", scoreList)
     }
@@ -559,7 +559,7 @@ class SetMultiStartFragment : Fragment() {
             "selectedCardIndex" to selectedCardIndexJson
         )
         collection.document("answer").set(data, SetOptions.merge())
-        val index = userList.indexOf(sharedViewModel.nickname)
+        val index = playerList.indexOf(sharedViewModel.nickname)
         scoreList[index] = (scoreList[index].toInt() - 1).toString()
         collection.document("user").update("score", scoreList)
     }
@@ -638,7 +638,7 @@ class SetMultiStartFragment : Fragment() {
         dialog.show()
 
         // 점수에 따라 플레이어 정렬
-        val mapList = userList.mapIndexed { i, s -> s to scoreList[i].toInt() }
+        val mapList = playerList.mapIndexed { i, s -> s to scoreList[i].toInt() }
             .groupBy({ it.second }, { it.first }).toList().sortedByDescending { it.first }.toMap()
 
         // Dialog 레이아웃의 뷰를 변수와 연결하기
@@ -682,11 +682,11 @@ class SetMultiStartFragment : Fragment() {
 
     // 게임 중 플레이어가 나가면 플레이어 삭제
     private fun deletePlayer() {
-        val index = userList.indexOf(sharedViewModel.nickname)
-        userList.removeAt(index)
+        val index = playerList.indexOf(sharedViewModel.nickname)
+        playerList.removeAt(index)
         scoreList.removeAt(index)
         App.firestore.runBatch { batch ->
-            batch.update(collection.document("user"), "user", userList)
+            batch.update(collection.document("user"), "user", playerList)
             batch.update(collection.document("user"), "score", scoreList)
             batch.update(collection.document("ready"),
                 sharedViewModel.nickname!!,
@@ -702,7 +702,7 @@ class SetMultiStartFragment : Fragment() {
         if (needStartService) {
             // 강제종료했는지 알기 위한 서비스 등록
             val intent = Intent(requireContext(), ForcedExitService::class.java)
-            intent.putExtra("userList", userList.toTypedArray())
+            intent.putExtra("userList", playerList.toTypedArray())
             intent.putExtra("nickname", sharedViewModel.nickname)
             intent.putExtra("roomCode", sharedViewModel.roomCode)
 

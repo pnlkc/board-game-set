@@ -22,7 +22,7 @@
         android:paddingTop="25dp">
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/left_combination_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/bm_jua"
@@ -34,19 +34,17 @@
             android:layout_marginStart="30dp"
             tools:text="가능한 조합 : 3" />
 
-        <TextView
-            android:id="@+id/textView2"
+        <Chronometer
+            android:id="@+id/time_score"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="30dp"
             android:fontFamily="@font/bm_jua"
             android:gravity="end"
-            android:text="@{@string/score(viewModel.score)}"
             android:textColor="@color/text_color"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textView1"
-            tools:text="맞춘 수 : 0" />
+            app:layout_constraintTop_toTopOf="@id/left_combination_textview" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_layout"
@@ -54,7 +52,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView1"
+            app:layout_constraintTop_toBottomOf="@id/left_combination_textview"
             app:layout_constraintBottom_toTopOf="@id/backButton"
             android:layout_marginBottom="50dp"
             >

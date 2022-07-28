@@ -17,6 +17,7 @@ object DataSource {
     const val KEY_SHUFFLED_CARD_LIST = "shuffled_card_list"
     const val KEY_FIELD_CARD_LIST = "field_card_list"
     const val KEY_SCORE = "score"
+    const val KEY_PAUSE_TIME = "pause_time"
 
     // 카드 81장 정보
     val allCardList: List<CardItem> =

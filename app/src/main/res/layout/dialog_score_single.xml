@@ -28,7 +28,7 @@
         android:lineSpacingExtra="15dp"
         android:gravity="center"
         android:paddingVertical="40dp"
-        tools:text="당신은 0개를\n맞추셨습니다!"
+        tools:text="00시간 00분 00초 동안\n0개를 맞추셨습니다!"
         />
 
     <LinearLayout

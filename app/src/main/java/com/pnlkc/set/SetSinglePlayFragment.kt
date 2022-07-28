@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Chronometer.OnChronometerTickListener
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -23,6 +24,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.pnlkc.set.data.DataSource.KEY_FIELD_CARD_LIST
+import com.pnlkc.set.data.DataSource.KEY_PAUSE_TIME
 import com.pnlkc.set.data.DataSource.KEY_PREFS
 import com.pnlkc.set.data.DataSource.KEY_SCORE
 import com.pnlkc.set.data.DataSource.KEY_SHUFFLED_CARD_LIST
@@ -38,6 +40,7 @@ import render.animations.Bounce
 import render.animations.Render
 import render.animations.Slide
 
+
 class SetSinglePlayFragment : CustomFragment() {
     private var _binding: SetSinglePlayFragmentBinding? = null
     private val binding get() = _binding!!
@@ -49,6 +52,9 @@ class SetSinglePlayFragment : CustomFragment() {
 
     // 게임을 저장할지 안할지 알려주는 변수
     private var saveIndicator: Boolean = true
+
+    // onStop 상태가 되었을 때 타이머 시간 정지용
+    private var pauseTime = 0L
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -100,6 +106,21 @@ class SetSinglePlayFragment : CustomFragment() {
             binding.selectedCard10, binding.selectedCard11, binding.selectedCard12
         )
 
+        // 시간점수용 Chronometer 시간 포맷 설정
+        binding.timeScore.onChronometerTickListener = OnChronometerTickListener { timeScore ->
+            val time = SystemClock.elapsedRealtime() - timeScore.base
+            val h = (time / 3600000).toInt()
+            val hText = if (h < 10) "0$h" else h
+            val m = (time - h * 3600000).toInt() / 60000
+            val mText = if (m < 10) "0$m" else m
+            val s = (time - h * 3600000 - m * 60000).toInt() / 1000
+            val sText = if (s < 10) "0$s" else s
+            timeScore.text = when (h) {
+                0 -> "$mText:$sText"
+                else -> "$hText:$mText:$sText"
+            }
+        }
+
         // 저장된 게임을 불러오는지 아닌지 확인
         when (sharedViewModel.isContinueGame) {
             true -> {
@@ -109,6 +130,8 @@ class SetSinglePlayFragment : CustomFragment() {
             }
             false -> {
                 sharedViewModel.resetAllValue()
+                binding.timeScore.base = SystemClock.elapsedRealtime() + pauseTime
+                binding.timeScore.start()
                 startGame()
             }
         }
@@ -303,23 +326,43 @@ class SetSinglePlayFragment : CustomFragment() {
         val leftBtn = dialog.findViewById<TextView>(R.id.dialog_score_single_left_btn)
         val rightBtn = dialog.findViewById<TextView>(R.id.dialog_score_single_right_btn)
 
+        binding.timeScore.stop()
+        val time = SystemClock.elapsedRealtime() - binding.timeScore.base
+        val h = (time / 3600000).toInt()
+        val m = (time - h * 3600000).toInt() / 60000
+        val s = (time - h * 3600000 - m * 60000).toInt() / 1000
+        val timeScoreText = when {
+            h == 0 && m == 0 -> "${s}초"
+            h == 0 -> "${m}분 ${s}초"
+            else -> "${h}시간 ${m}분 ${s}초"
+        }
+
         // Dialog 창에 스코어를 알려주는 TextView 부분만 강조해서 보여주는 코드
-        val dialogText = "당신은 ${sharedViewModel.score.value}개를\n 맞추셨습니다!"
+        val dialogText = "$timeScoreText 동안\n${sharedViewModel.score.value}개를 맞추셨습니다!"
         val spannableString = SpannableString(dialogText)
-        val word = sharedViewModel.score.value.toString() + "개"
-        val start = dialogText.indexOf(word)
-        val end = start + word.length
+
+        // 시간 점수 텍스트 강조
+        val startOne = dialogText.indexOf(timeScoreText)
+        val endOne = startOne + timeScoreText.length
         spannableString.setSpan(ForegroundColorSpan(ContextCompat
             .getColor(requireContext(), R.color.dialog_score_text)),
-            start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            startOne, endOne, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(StyleSpan(Typeface.BOLD),
-            start,
-            end,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            startOne, endOne, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(RelativeSizeSpan(1.3f),
-            start,
-            end,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            startOne, endOne, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        // 맞춘 개수 텍스트 강조
+        val wordTwo = sharedViewModel.score.value.toString() + "개"
+        val startTwo = dialogText.indexOf(wordTwo)
+        val endTwo = startTwo + wordTwo.length
+        spannableString.setSpan(ForegroundColorSpan(ContextCompat
+            .getColor(requireContext(), R.color.dialog_score_text)),
+            startTwo, endTwo, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(StyleSpan(Typeface.BOLD),
+            startTwo, endTwo, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(RelativeSizeSpan(1.3f),
+            startTwo, endTwo, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         // Dialog 뷰 기능 구현
         textView.text = spannableString
@@ -332,6 +375,9 @@ class SetSinglePlayFragment : CustomFragment() {
             sharedViewModel.resetAllValue()
             startGame()
             saveIndicator = true
+            pauseTime = 0L
+            binding.timeScore.base = SystemClock.elapsedRealtime() + pauseTime
+            binding.timeScore.start()
             dialog.dismiss()
         }
     }
@@ -357,6 +403,7 @@ class SetSinglePlayFragment : CustomFragment() {
                 editor.putString(KEY_SHUFFLED_CARD_LIST, jsonShuffledCardList)
                 editor.putString(KEY_FIELD_CARD_LIST, jsonFieldCardList)
                 editor.putInt(KEY_SCORE, sharedViewModel.score.value!!)
+                editor.putLong(KEY_PAUSE_TIME, binding.timeScore.base - SystemClock.elapsedRealtime())
                 editor.apply()
             }
             "load" -> {
@@ -368,6 +415,9 @@ class SetSinglePlayFragment : CustomFragment() {
                 sharedViewModel.fieldCardList =
                     gson.fromJson(jsonFieldCardList, typeCardList.type)
                 sharedViewModel.score.value = sharedPreferences.getInt(KEY_SCORE, 0)
+                pauseTime = sharedPreferences.getLong(KEY_PAUSE_TIME, 0L)
+                binding.timeScore.base = SystemClock.elapsedRealtime() + pauseTime
+                binding.timeScore.start()
             }
             "delete" -> {
                 editor.clear()
@@ -384,6 +434,17 @@ class SetSinglePlayFragment : CustomFragment() {
         } else {
             saveAndLoadGame("delete")
         }
+
+        // 시간점수 정지
+        pauseTime = binding.timeScore.base - SystemClock.elapsedRealtime()
+        binding.timeScore.stop()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // 시간점수 재개
+        binding.timeScore.base = SystemClock.elapsedRealtime() + pauseTime
+        binding.timeScore.start()
     }
 
     // 게임 초대 수락 후 화면 이동
