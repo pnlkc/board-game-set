@@ -7,7 +7,8 @@
 >멀티플레이 중 동시 클릭 방지 기능은 FireStroe - Transaction 사용 -> 클릭 반응 지연 문제로 사용 중지  
 >멀티플레이 중 강제 종료 대응은 Service(버전별 대응) - onTaskRemoved 사용  
 >멀티플레이 중 다른화면 이동 대응은 NotificationChannel, NotificationCompat.Builder, PendingIntent(버전별 대응) 사용  
->진동 피드백은 (버전별 대응) VibratorManager, Vibrator 사용
+>진동 피드백은 (버전별 대응) VibratorManager, Vibrator 사용  
+>싱글플레이 시간 기록 기능은 Chronometer / SystemClock.elapsedRealtime() 
 
 시작 화면 이미지 lottie animation 출처 : https://lottiefiles.com/91317-card-game  
 사용된 폰트 : Gmarket Sans / 배민 주아체
@@ -75,4 +76,5 @@
 >-> 변경 후 : 카드 사진의 파일 이름을 가지고 resources.getIdentifier()를 사용해 이미지 연결
 
 ***ver 2.0.6***
->메인 화면에서 초대하는 기능 추가
+>메인 화면에서 초대하는 기능 추가  
+>싱글플레이 시간 기록 기능 추가
