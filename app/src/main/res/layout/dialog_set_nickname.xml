@@ -55,6 +55,7 @@
             android:textColor="@color/btn_text_color"
             android:paddingHorizontal="30dp"
             android:paddingVertical="20dp"
+            android:textAllCaps="false"
             />
 
     </LinearLayout>

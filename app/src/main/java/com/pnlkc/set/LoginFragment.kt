@@ -37,7 +37,9 @@ class LoginFragment : Fragment() {
             override fun handleOnBackPressed() {
                 if (System.currentTimeMillis() - backWait >= 2000) {
                     backWait = System.currentTimeMillis()
-                    Toast.makeText(context, "뒤로가기 버튼을 한번 더 누르면 종료됩니다", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        resources.getString(R.string.back_btn_twice),
+                        Toast.LENGTH_SHORT).show()
                 } else {
                     activity?.finish()
                 }
@@ -73,12 +75,14 @@ class LoginFragment : Fragment() {
                                 } else {
                                     // 구글 로그인 실패
                                     Toast.makeText(requireContext(),
-                                        "구글 로그인 실패",
+                                        resources.getString(R.string.login_failed),
                                         Toast.LENGTH_SHORT).show()
                                 }
                             }
                     } catch (e: ApiException) {
-                        Toast.makeText(requireContext(), "구글 로그인 실패", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            resources.getString(R.string.login_failed),
+                            Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -100,7 +104,9 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful) {
                     moveMainMenuFragment()
                 } else {
-                    Toast.makeText(requireContext(), "게스트 로그인 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        resources.getString(R.string.login_failed),
+                        Toast.LENGTH_SHORT).show()
                 }
             }
         }

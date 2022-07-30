@@ -70,7 +70,7 @@ class SetSinglePlayFragment : CustomFragment() {
             override fun handleOnBackPressed() {
                 if (System.currentTimeMillis() - backWait >= 2000) {
                     backWait = System.currentTimeMillis()
-                    Toast.makeText(context, "뒤로가기 버튼을 한번 더 누르면 시작화면으로 돌아갑니다",
+                    Toast.makeText(context, getText(R.string.back_btn_twice_main_menu),
                         Toast.LENGTH_SHORT).show()
                 } else {
                     isForcedExit = false
@@ -141,7 +141,7 @@ class SetSinglePlayFragment : CustomFragment() {
         // 남은 카드가 있고 가능한 조합이 없을 때 자동으로 카드 셔플하기
         sharedViewModel.leftCombination.observe(viewLifecycleOwner) {
             if (sharedViewModel.allCombination != 0 && it == 0) {
-                Toast.makeText(activity, "가능한 조합이 없으므로 카드를 다시 뽑습니다",
+                Toast.makeText(activity, getString(R.string.no_combination),
                     Toast.LENGTH_SHORT).show()
                 sharedViewModel.resetSelectedCard()
                 invisibleAllSelectedCard()
@@ -297,7 +297,7 @@ class SetSinglePlayFragment : CustomFragment() {
                 render.start()
             }
         } else {
-            Toast.makeText(activity, "남은카드가 없습니다", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, getString(R.string.no_card), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -332,13 +332,18 @@ class SetSinglePlayFragment : CustomFragment() {
         val m = (time - h * 3600000).toInt() / 60000
         val s = (time - h * 3600000 - m * 60000).toInt() / 1000
         val timeScoreText = when {
-            h == 0 && m == 0 -> "${s}초"
-            h == 0 -> "${m}분 ${s}초"
-            else -> "${h}시간 ${m}분 ${s}초"
+            h == 0 && m == 0 -> "$s" + getString(R.string.time_second)
+            h == 0 -> "$m" + getString(R.string.time_minute) + " $s" + getString(R.string.time_second)
+            else -> {
+                "$h" + getString(R.string.time_hour) + " $m" + getString(R.string.time_minute) + " $s" + getString(
+                    R.string.time_second)
+            }
         }
 
         // Dialog 창에 스코어를 알려주는 TextView 부분만 강조해서 보여주는 코드
-        val dialogText = "$timeScoreText 동안\n${sharedViewModel.score.value}개를 맞추셨습니다!"
+        val dialogText = getString(R.string.singleplay_result,
+            sharedViewModel.score.value.toString(),
+            timeScoreText)
         val spannableString = SpannableString(dialogText)
 
         // 시간 점수 텍스트 강조
@@ -353,7 +358,7 @@ class SetSinglePlayFragment : CustomFragment() {
             startOne, endOne, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         // 맞춘 개수 텍스트 강조
-        val wordTwo = sharedViewModel.score.value.toString() + "개"
+        val wordTwo = sharedViewModel.score.value.toString()
         val startTwo = dialogText.indexOf(wordTwo)
         val endTwo = startTwo + wordTwo.length
         spannableString.setSpan(ForegroundColorSpan(ContextCompat
@@ -403,7 +408,8 @@ class SetSinglePlayFragment : CustomFragment() {
                 editor.putString(KEY_SHUFFLED_CARD_LIST, jsonShuffledCardList)
                 editor.putString(KEY_FIELD_CARD_LIST, jsonFieldCardList)
                 editor.putInt(KEY_SCORE, sharedViewModel.score.value!!)
-                editor.putLong(KEY_PAUSE_TIME, binding.timeScore.base - SystemClock.elapsedRealtime())
+                editor.putLong(KEY_PAUSE_TIME,
+                    binding.timeScore.base - SystemClock.elapsedRealtime())
                 editor.apply()
             }
             "load" -> {

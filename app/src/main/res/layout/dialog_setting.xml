@@ -39,6 +39,7 @@
             android:paddingHorizontal="30dp"
             android:paddingVertical="20dp"
             android:visibility="visible"
+            android:textAllCaps="false"
             />
 
         <Button
@@ -56,6 +57,8 @@
             android:paddingVertical="20dp"
             android:visibility="gone"
             tools:visibility="visible"
+            android:textAllCaps="false"
+            android:lineSpacingExtra="7dp"
             />
 
         <Button
@@ -71,6 +74,7 @@
             android:textColor="@color/btn_text_color"
             android:paddingHorizontal="30dp"
             android:paddingVertical="20dp"
+            android:textAllCaps="false"
             />
 
     </LinearLayout>

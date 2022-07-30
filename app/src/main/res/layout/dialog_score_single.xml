@@ -48,13 +48,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/dialog_btn_bg"
-            android:text="@string/go_main_menu"
-            android:textSize="18sp"
             android:fontFamily="@font/bm_jua"
-            android:textColor="@color/dialog_btn_text"
             android:maxLines="1"
             android:paddingHorizontal="10dp"
-            />
+            android:text="@string/go_main_menu"
+            android:textAllCaps="false"
+            android:textColor="@color/dialog_btn_text"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/dialog_score_single_right_btn"
@@ -70,6 +70,7 @@
             android:textColor="@color/dialog_btn_text"
             android:paddingHorizontal="10dp"
             android:layout_marginStart="20dp"
+            android:textAllCaps="false"
             />
 
     </LinearLayout>

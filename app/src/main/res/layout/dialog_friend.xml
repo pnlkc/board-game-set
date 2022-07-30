@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/dialog_friend_btn_bg"
-                android:padding="10dp"
+                android:padding="11dp"
                 android:src="@drawable/add_friend_icon"
                 android:visibility="visible"
                 android:contentDescription="@string/description_add_friend_btn" />
@@ -77,6 +77,7 @@
                     android:layout_marginStart="10dp"
                     android:background="@null"
                     android:hint="@string/friend_filter"
+                    android:textColorHint="@color/hint_text"
                     android:fontFamily="@font/bm_jua"
                     android:textColor="@color/dialog_btn_text"
                     android:inputType="text"
@@ -89,7 +90,7 @@
                     android:id="@+id/dialog_friend_filter_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
+                    android:padding="11dp"
                     android:src="@drawable/filter_friend_icon"
                     android:visibility="visible"
                     android:contentDescription="@string/description_filter_btn" />
@@ -98,7 +99,7 @@
                     android:id="@+id/dialog_friend_filter_cancel_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
+                    android:padding="11dp"
                     android:src="@drawable/cancel_icon"
                     android:visibility="gone"
                     android:contentDescription="@string/description_filter_cancel_btn" />
@@ -124,6 +125,7 @@
                     android:background="@null"
                     android:layout_marginStart="10dp"
                     android:hint="@string/friend_request"
+                    android:textColorHint="@color/hint_text"
                     android:fontFamily="@font/bm_jua"
                     android:textColor="@color/dialog_btn_text"
                     android:inputType="text"
@@ -169,7 +171,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:paddingBottom="10dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="16dp"
                         tools:ignore="UseCompoundDrawables">
 
                         <ImageView
@@ -185,7 +188,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/requested"
                             android:fontFamily="@font/bm_jua"
-                            android:textSize="16sp"
+                            android:textSize="18sp"
                             android:textColor="@color/dialog_text"
                             />
 
@@ -216,7 +219,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:paddingBottom="10dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="16dp"
                         tools:ignore="UseCompoundDrawables">
 
                         <ImageView
@@ -232,7 +236,7 @@
                             android:layout_height="wrap_content"
                             tools:text="친구 (7/10)"
                             android:fontFamily="@font/bm_jua"
-                            android:textSize="16sp"
+                            android:textSize="18sp"
                             android:textColor="@color/dialog_text"
                             />
 
@@ -277,7 +281,9 @@
             android:paddingHorizontal="10dp"
             android:text="@string/back"
             android:textColor="@color/dialog_btn_text"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textAllCaps="false" />
+
     </LinearLayout>
 
 </LinearLayout>

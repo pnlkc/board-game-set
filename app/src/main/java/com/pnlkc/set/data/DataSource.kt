@@ -1,5 +1,6 @@
 package com.pnlkc.set.data
 
+import com.google.firebase.firestore.FirebaseFirestore
 import com.pnlkc.set.R
 import com.pnlkc.set.model.CardItem
 

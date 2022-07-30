@@ -1,5 +1,6 @@
 package com.pnlkc.set
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -107,7 +108,7 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
             override fun handleOnBackPressed() {
                 if (System.currentTimeMillis() - backWait >= 2000) {
                     backWait = System.currentTimeMillis()
-                    Toast.makeText(context, "뒤로가기 버튼을 한번 더 누르면 대기실을 나갑니다",
+                    Toast.makeText(context, getString(R.string.back_btn_twice_room),
                         Toast.LENGTH_SHORT).show()
                 } else {
                     needStartService = false
@@ -227,13 +228,14 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
                 playerList.forEachIndexed { index, s ->
                     if (snapshot.data!![s] == true) {
                         readyList[index] = true
-                        if (index == myIndex) binding.readyBtn.text = "취소"
+                        if (index == myIndex) binding.readyBtn.text = getString(R.string.cancel)
                         binding.readyBtn.setBackgroundResource(R.drawable.btn_bg)
                         readyTextViewList[index].visibility = View.VISIBLE
                         waitTextViewList[index].visibility = View.GONE
                     } else {
                         readyList[index] = false
-                        if (index == myIndex) binding.readyBtn.text = "준비 완료"
+                        if (index == myIndex) binding.readyBtn.text =
+                            getString(R.string.ready_btn_text)
                         binding.readyBtn.setBackgroundResource(R.drawable.btn_bg)
                         readyTextViewList[index].visibility = View.GONE
                         waitTextViewList[index].visibility = View.VISIBLE
@@ -267,11 +269,12 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
     private fun allReady() {
         if (sharedViewModel.userMode == UserMode.HOST) {
             binding.readyBtn.setBackgroundResource(R.drawable.highlight_btn_bg)
-            binding.readyBtn.text = "게임 시작"
+            binding.readyBtn.text = getString(R.string.game_start)
         }
     }
 
     // 방장이 게임 시작 버튼을 누르면 카운트다운 실행
+    @SuppressLint("SetTextI18n")
     private fun startCountDown() {
         CoroutineScope(Dispatchers.Main).launch {
             startGame()
@@ -285,7 +288,7 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
             delay(750)
             binding.countdownTextview.text = "1"
             delay(750)
-            binding.countdownTextview.text = "게임 시작!"
+            binding.countdownTextview.text = getString(R.string.game_start) + "!"
             delay(750)
 
             moveSetMultiStartFragment()
@@ -344,6 +347,7 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
     }
 
     // 친구창 다이얼로그 보여주기
+    @SuppressLint("SetTextI18n")
     private fun showDialogFriend() {
         // 뷰바인딩 사용
         val inflater =
@@ -421,7 +425,8 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
         }
 
         friendCount.observe(viewLifecycleOwner) {
-            dBinding.dialogFriendStatusTextview.text = "친구 (${it[0]}/${it[1]})"
+            dBinding.dialogFriendStatusTextview.text =
+                getString(R.string.friend_status) + it[0] + "/" + it[1] + ")"
         }
 
         // 친구 검색시 검색어 변경이 0.35초 동안 없을시 검색어를 searchTerm 변수에 저장
@@ -478,8 +483,9 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
             .get().addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     if (inputText == sharedViewModel.nickname) {
-                        Toast.makeText(requireContext(), "자신에게 친구 요청할 수 없습니다", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.friend_request_self),
+                            Toast.LENGTH_SHORT).show()
                         editText.text.clear()
                     } else {
                         val uid = documents.first().id
@@ -487,14 +493,16 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
                             "friend_request",
                             FieldValue.arrayUnion(sharedViewModel.nickname)
                         ).addOnSuccessListener {
-                            Toast.makeText(requireContext(), "친구 신청이 완료되었습니다", Toast.LENGTH_SHORT)
-                                .show()
+                            Toast.makeText(requireContext(),
+                                getString(R.string.friend_request_complete),
+                                Toast.LENGTH_SHORT).show()
                             editText.text.clear()
                         }
                     }
                 } else {
-                    Toast.makeText(requireContext(), "입력한 닉네임이 존재하지 않습니다", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.friend_request_null),
+                        Toast.LENGTH_SHORT).show()
                     editText.text.clear()
                 }
             }
@@ -604,7 +612,8 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
         dialog.setCancelable(true)
         dialog.show()
 
-        dBinding.dialogConfirmDeleteFriendTextview.text = "${nickname}님을 친구에서\n삭제하시겠습니까?"
+        dBinding.dialogConfirmDeleteFriendTextview.text =
+            getString(R.string.delete_friend_confirm, nickname)
 
         dBinding.dialogConfirmDeleteFriendPositiveBtn.setOnClickListener {
             userListCollection.whereEqualTo("nickname", nickname).get()
@@ -626,7 +635,7 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
                             )
                         }.addOnSuccessListener {
                             Toast.makeText(requireContext(),
-                                "\"$nickname\"님을 친구 목록에서 삭제하였습니다",
+                                getString(R.string.delete_friend_complete, nickname),
                                 Toast.LENGTH_SHORT).show()
                             showDialogFriend()
                             dialog.dismiss()
@@ -644,7 +653,7 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
     // 초대 버튼 클릭시
     override fun inviteBtnClicked(position: Int) {
         if (playerList.size == 4) {
-            Toast.makeText(requireContext(), "최대인원을 초과하여 초대할 수 없습니다",
+            Toast.makeText(requireContext(), getString(R.string.invitation_maximum),
                 Toast.LENGTH_SHORT).show()
         } else {
             val nickname = resultList[position].nickname
@@ -662,18 +671,18 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
                             userListCollection.document(uid).set(data, SetOptions.merge())
                                 .addOnSuccessListener {
                                     Toast.makeText(requireContext(),
-                                        "초대가 완료되었습니다",
+                                        getString(R.string.invitation_complete),
                                         Toast.LENGTH_SHORT)
                                         .show()
                                 }
                         } else {
                             if (documents.first().data["invite_nickname"] == sharedViewModel.nickname) {
                                 Toast.makeText(requireContext(),
-                                    "해당 플레이어를 이미 초대하였습니다",
+                                    getString(R.string.invitation_already),
                                     Toast.LENGTH_SHORT).show()
                             } else {
                                 Toast.makeText(requireContext(),
-                                    "해당 플레이어가 이미 다른 게임에 초대되었습니다",
+                                    getString(R.string.invitation_another),
                                     Toast.LENGTH_SHORT).show()
                             }
                         }
@@ -712,8 +721,9 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
                             FieldValue.arrayRemove(nickname)
                         )
                     }.addOnSuccessListener {
-                        Toast.makeText(requireContext(), "친구 요청을 수락하였습니다", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.friend_request_accepted),
+                            Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -725,8 +735,9 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
         userListCollection.document(App.auth.currentUser!!.uid).update(
             "friend_request", FieldValue.arrayRemove(nickname)
         ).addOnSuccessListener {
-            Toast.makeText(requireContext(), "친구 요청을 거절하였습니다", Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(requireContext(),
+                getString(R.string.friend_request_declined),
+                Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -777,13 +788,9 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
             intent.putExtra("nickname", sharedViewModel.nickname)
             intent.putExtra("roomCode", sharedViewModel.roomCode)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                // 버전 O 부터는 백그라운드에서 서비스 실행이 안되서 startForegroundService 사용해야 됨
-                // 매니페스트에 FOREGROUND_SERVICE 권한 추가해야됨
-                requireActivity().startForegroundService(intent)
-            } else {
-                requireActivity().startService(intent)
-            }
+            // 버전 O 부터는 백그라운드에서 서비스 실행이 안되서 startForegroundService 사용해야 됨
+            // 매니페스트에 FOREGROUND_SERVICE 권한 추가해야됨
+            requireActivity().startForegroundService(intent)
         }
     }
 

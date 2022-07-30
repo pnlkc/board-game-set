@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginVertical="40dp"
+        android:paddingVertical="10dp"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -55,11 +56,12 @@
                 android:fontFamily="@font/bm_jua"
                 android:lineSpacingExtra="10sp"
                 android:textColor="@color/dialog_text"
+                android:textColorHint="@color/hint_text"
                 android:textSize="21sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/first_textview"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="일이삼사오육칠팔구십" />
+                tools:hint="일이삼사오육칠팔구십" />
 
             <ImageView
                 android:id="@+id/dialog_my_profile_nickname_change_btn"
@@ -95,7 +97,8 @@
             android:paddingHorizontal="10dp"
             android:text="@string/back"
             android:textColor="@color/dialog_btn_text"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textAllCaps="false" />
     </LinearLayout>
 
 </LinearLayout>

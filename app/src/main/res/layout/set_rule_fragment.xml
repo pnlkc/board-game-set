@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,9 +9,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/set_bg"
         android:orientation="vertical"
-        android:padding="20dp"
-        android:background="@color/set_bg">
+        android:padding="20dp">
 
         <Button
             android:id="@+id/back_btn"
@@ -20,637 +19,615 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/back_btn_icon"
+            android:contentDescription="@string/description_back_btn"
             />
 
 
         <TextView
             android:id="@+id/rule_one"
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/rule_one"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/rule_one" />
+            android:textSize="@dimen/rule_text_size" />
 
         <ImageView
-            android:src="@drawable/dash_line"
-            android:layerType="software"
-            android:layout_marginHorizontal="20dp"
             android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp"
-            android:contentDescription="@string/description_dash_line" />
+            android:contentDescription="@string/description_dash_line"
+            android:layerType="software"
+            android:src="@drawable/dash_line" />
 
         <TextView
             android:id="@+id/rule_two"
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/rule_two"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/rule_two" />
+            android:textSize="@dimen/rule_text_size" />
 
         <ImageView
-            android:src="@drawable/dash_line"
-            android:layerType="software"
-            android:layout_marginHorizontal="20dp"
             android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp"
-            android:contentDescription="@string/description_dash_line" />
+            android:contentDescription="@string/description_dash_line"
+            android:layerType="software"
+            android:src="@drawable/dash_line" />
 
         <TextView
             android:id="@+id/rule_three"
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
+            android:text="@string/rule_three"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/rule_three" />
+            android:textSize="@dimen/rule_text_size" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="10dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/abac"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/abac" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/bbac"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/bbac" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/cbac"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/cbac" />
 
         </LinearLayout>
 
         <TextView
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
+            android:text="@string/rule_shape"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/rule_shape" />
+            android:textSize="@dimen/rule_text_size" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="10dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/aaac"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/aaac" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/abac"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/abac" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/acac"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/acac" />
 
         </LinearLayout>
 
         <TextView
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
+            android:text="@string/rule_color"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/rule_color" />
+            android:textSize="@dimen/rule_text_size" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="10dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/abac"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/abac" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/abbc"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/abbc" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/abcc"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/abcc" />
 
         </LinearLayout>
 
         <TextView
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
+            android:text="@string/rule_number"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/rule_number" />
-
+            android:textSize="@dimen/rule_text_size" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="10dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/abaa"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/abaa" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/abab"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/abab" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/abac"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/abac" />
 
         </LinearLayout>
 
         <TextView
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/rule_shade"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/rule_shade" />
+            android:textSize="@dimen/rule_text_size" />
 
         <ImageView
-            android:src="@drawable/dash_line"
-            android:layerType="software"
-            android:layout_marginHorizontal="20dp"
             android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp"
-            android:contentDescription="@string/description_dash_line" />
+            android:contentDescription="@string/description_dash_line"
+            android:layerType="software"
+            android:src="@drawable/dash_line" />
 
         <TextView
             android:id="@+id/rule_four"
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/rule_four"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/rule_four" />
+            android:textSize="@dimen/rule_text_size" />
 
         <ImageView
-            android:src="@drawable/dash_line"
-            android:layerType="software"
-            android:layout_marginHorizontal="20dp"
             android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp"
-            android:contentDescription="@string/description_dash_line" />
+            android:contentDescription="@string/description_dash_line"
+            android:layerType="software"
+            android:src="@drawable/dash_line" />
 
         <TextView
             android:id="@+id/rule_five"
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
+            android:text="@string/rule_five"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/rule_five" />
+            android:textSize="@dimen/rule_text_size" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="10dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/bacc"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/bacc" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/bbcc"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/bbcc" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/bccc"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/bccc" />
 
         </LinearLayout>
 
         <TextView
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
+            android:text="@string/description_correct_case_one"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/description_correct_case_one" />
+            android:textSize="@dimen/rule_text_size" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="10dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/aabc"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/aabc" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/bcbc"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/bcbc" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/cbbc"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/cbbc" />
 
         </LinearLayout>
 
         <TextView
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
+            android:text="@string/description_correct_case_two"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/description_correct_case_two" />
+            android:textSize="@dimen/rule_text_size" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="10dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/cbaa"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/cbaa" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/cabb"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/cabb" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/cccc"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/cccc" />
 
         </LinearLayout>
 
         <TextView
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
+            android:text="@string/description_correct_case_three"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/description_correct_case_three" />
+            android:textSize="@dimen/rule_text_size" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="10dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/aaac"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/aaac" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/bbbb"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/bbbb" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/ccca"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/ccca" />
 
         </LinearLayout>
 
         <TextView
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/description_correct_case_four"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/description_correct_case_four" />
+            android:textSize="@dimen/rule_text_size" />
 
 
         <ImageView
-            android:src="@drawable/dash_line"
-            android:layerType="software"
-            android:layout_marginHorizontal="20dp"
             android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp"
-            android:contentDescription="@string/description_dash_line" />
+            android:contentDescription="@string/description_dash_line"
+            android:layerType="software"
+            android:src="@drawable/dash_line" />
 
         <TextView
             android:id="@+id/rule_six"
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
+            android:text="@string/rule_six"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/rule_six" />
+            android:textSize="@dimen/rule_text_size" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="10dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/aabc"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/aabc" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/bcbc"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/bcbc" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/cbbb"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/cbbb" />
 
         </LinearLayout>
 
         <TextView
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
             android:layout_marginBottom="30dp"
-            android:textSize="@dimen/rule_text_size"
+            android:text="@string/description_incorrect_case_one"
+            android:textAlignment="center"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/description_incorrect_case_one" />
+            android:textSize="@dimen/rule_text_size" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="10dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/bcca"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/bcca" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/bccb"
                 android:layout_marginEnd="30dp"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/bccb" />
 
             <ImageView
                 android:layout_width="@dimen/rule_card_width"
                 android:layout_height="@dimen/rule_card_height"
-                android:src="@drawable/bbcc"
-                android:contentDescription="@string/description_card_imageview" />
+                android:contentDescription="@string/description_card_imageview"
+                android:src="@drawable/bbcc" />
 
         </LinearLayout>
 
         <TextView
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/description_incorrect_case_two"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/description_incorrect_case_two" />
+            android:textSize="@dimen/rule_text_size" />
 
         <ImageView
-            android:src="@drawable/dash_line"
-            android:layerType="software"
-            android:layout_marginHorizontal="20dp"
             android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp"
-            android:contentDescription="@string/description_dash_line" />
+            android:contentDescription="@string/description_dash_line"
+            android:layerType="software"
+            android:src="@drawable/dash_line" />
 
         <TextView
             android:id="@+id/rule_seven"
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/rule_seven"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/rule_seven" />
+            android:textSize="@dimen/rule_text_size" />
 
         <ImageView
-            android:src="@drawable/dash_line"
-            android:layerType="software"
-            android:layout_marginHorizontal="20dp"
             android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp"
-            android:contentDescription="@string/description_dash_line" />
+            android:contentDescription="@string/description_dash_line"
+            android:layerType="software"
+            android:src="@drawable/dash_line" />
 
         <TextView
             android:id="@+id/rule_eight_single_play"
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/rule_eight_single_play"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/rule_eight_single_play"/>
+            android:textSize="@dimen/rule_text_size" />
 
         <TextView
             android:id="@+id/rule_eight_multi_play"
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/rule_eight_multi_play"
             android:textAlignment="center"
-            android:textSize="@dimen/rule_text_size"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/rule_eight_multi_play"/>
+            android:textSize="@dimen/rule_text_size" />
 
         <ImageView
-            android:src="@drawable/dash_line"
-            android:layerType="software"
-            android:layout_marginHorizontal="20dp"
             android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_height="3dp"
-            android:contentDescription="@string/description_dash_line" />
+            android:contentDescription="@string/description_dash_line"
+            android:layerType="software"
+            android:src="@drawable/dash_line" />
 
         <TextView
             android:id="@+id/rule_nine"
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
             android:layout_marginBottom="50dp"
-            android:textSize="@dimen/rule_text_size"
+            android:text="@string/rule_nine"
+            android:textAlignment="center"
             android:textColor="@color/text_color"
-            android:fontFamily="@font/gmarketsansmedium"
-            android:lineSpacingExtra="10dp"
-            android:text="@string/rule_nine" />
+            android:textSize="@dimen/rule_text_size" />
 
 
         <Button
             android:id="@+id/game_start_btn"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            style="@style/SubFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_bg"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="15dp"
-            android:text="@string/play_single"
-            android:textColor="@color/btn_text_color"
-            android:textSize="17sp"
-            android:fontFamily="@font/gmarketsansmedium"
+            android:background="@drawable/btn_bg"
             android:paddingHorizontal="25dp"
-            />
+            android:text="@string/play_single"
+            android:textAllCaps="false"
+            android:textColor="@color/btn_text_color"
+            android:textSize="17sp" />
 
         <Button
             android:id="@+id/go_main_menu_btn"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            style="@style/SubFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_bg"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="30dp"
-            android:text="@string/go_main_menu"
-            android:textColor="@color/btn_text_color"
-            android:textSize="17sp"
-            android:fontFamily="@font/gmarketsansmedium"
+            android:background="@drawable/btn_bg"
             android:paddingHorizontal="25dp"
-            />
+            android:text="@string/go_main_menu"
+            android:textAllCaps="false"
+            android:textColor="@color/btn_text_color"
+            android:textSize="17sp" />
 
     </LinearLayout>
 

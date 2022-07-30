@@ -82,7 +82,7 @@ class SetMultiStartFragment : Fragment() {
             override fun handleOnBackPressed() {
                 if (System.currentTimeMillis() - backWait >= 2000) {
                     backWait = System.currentTimeMillis()
-                    Toast.makeText(context, "게임 중 나갈시 패배처리 됩니다", Toast.LENGTH_SHORT)
+                    Toast.makeText(context, getString(R.string.game_leave_lose), Toast.LENGTH_SHORT)
                         .show()
 
                 } else {
@@ -176,7 +176,7 @@ class SetMultiStartFragment : Fragment() {
 
                 // 플레이어가 1명만 남았을 때 게임 종료 처리
                 if (playerList.size == 1 && playerList.contains(sharedViewModel.nickname)) {
-                    Toast.makeText(context, "남은 플레이어가 없어 게임을 플레이 할 수 없습니다",
+                    Toast.makeText(context, getString(R.string.no_player),
                         Toast.LENGTH_SHORT).show()
                     showFinalScoreDialog()
                 }
@@ -252,7 +252,8 @@ class SetMultiStartFragment : Fragment() {
         if (myJob != null) myJob!!.cancel()
         binding.cardTouchBlocker.visibility = View.VISIBLE
         binding.answerBtn.setBackgroundResource(R.drawable.btn_bg)
-        binding.answerBtn.text = "정답"
+        binding.answerBtn.text = getString(R.string.answer_btn_text)
+
 
         sharedViewModel.selectedCardIndex.forEach {
             setVisibilitySelectedCard(it!!, View.INVISIBLE)
@@ -374,7 +375,7 @@ class SetMultiStartFragment : Fragment() {
                     binding.answerTouchBlocker.visibility = View.VISIBLE
                     binding.answerBtn.setBackgroundResource(R.drawable.btn_bg)
                     binding.noCombinationBtn.setBackgroundResource(R.drawable.btn_bg)
-                    binding.answerBtn.text = "정답"
+                    binding.answerBtn.text = getString(R.string.answer_btn_text)
                     binding.noCombinationBtn.text = "X"
                     sharedViewModel.resetSelectedCard()
                     invisibleAllSelectedCard()
@@ -522,7 +523,7 @@ class SetMultiStartFragment : Fragment() {
             delay(1000)
             invisibleAllSelectedCard()
             binding.answerBtn.setBackgroundResource(R.drawable.btn_bg)
-            binding.answerBtn.text = "정답"
+            binding.answerBtn.text = getString(R.string.answer_btn_text)
             binding.cardTouchBlocker.visibility = View.VISIBLE
             incorrectAnswer()
         }
@@ -706,13 +707,9 @@ class SetMultiStartFragment : Fragment() {
             intent.putExtra("nickname", sharedViewModel.nickname)
             intent.putExtra("roomCode", sharedViewModel.roomCode)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                // 버전 O 부터는 백그라운드에서 서비스 실행이 안되서 startForegroundService 사용해야 됨
-                // 매니페스트에 FOREGROUND_SERVICE 권한 추가해야됨
-                requireActivity().startForegroundService(intent)
-            } else {
-                requireActivity().startService(intent)
-            }
+            // 버전 O 부터는 백그라운드에서 서비스 실행이 안되서 startForegroundService 사용해야 됨
+            // 매니페스트에 FOREGROUND_SERVICE 권한 추가해야됨
+            requireActivity().startForegroundService(intent)
         }
     }
 
@@ -728,7 +725,8 @@ class SetMultiStartFragment : Fragment() {
     private fun checkServiceRunning(count: Int) {
         if (count < 5) {
             if (App.isServiceRunning) {
-                requireActivity().stopService(Intent(requireContext(), ForcedExitService::class.java))
+                requireActivity().stopService(Intent(requireContext(),
+                    ForcedExitService::class.java))
             } else {
                 CoroutineScope(Dispatchers.IO).launch {
                     delay(100)

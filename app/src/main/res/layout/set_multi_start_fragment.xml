@@ -540,15 +540,14 @@
 
 <!--    정답 버튼    -->
         <Button
+            style="@style/SubFont"
             android:id="@+id/answer_btn"
-            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="85dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/btn_bg"
-            android:fontFamily="@font/gmarketsansmedium"
             android:onClick="@{ () -> setOnlineFragment.answerBtn() }"
             android:padding="15dp"
             android:text="@string/answer_btn_text"
@@ -557,18 +556,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:textAllCaps="false"
             />
 
 <!--    조합 없음 버튼    -->
         <Button
+            style="@style/SubFont"
             android:id="@+id/no_combination_btn"
-            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/btn_bg"
-            android:fontFamily="@font/gmarketsansmedium"
             android:onClick="@{ () -> setOnlineFragment.noCombinationBtn()}"
             android:padding="15dp"
             android:text="@string/no_combination_btn_text"

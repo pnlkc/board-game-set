@@ -4,7 +4,7 @@
 
     <item android:id="@android:id/background">
         <shape android:shape="oval">
-            <solid android:color="@color/etc_btn_bg" />
+            <solid android:color="@color/hint_text" />
         </shape>
     </item>
 

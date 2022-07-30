@@ -216,6 +216,7 @@
             android:textColor="@color/dialog_btn_text"
             android:maxLines="1"
             android:paddingHorizontal="10dp"
+            android:textAllCaps="false"
             />
     </LinearLayout>
 

@@ -2,14 +2,13 @@
 
 package com.pnlkc.set
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -48,10 +47,13 @@ import com.pnlkc.set.recyclerview_friend_request_list.IFriendRequestList
 import com.pnlkc.set.util.App
 import com.pnlkc.set.util.App.Companion.isNicknameExist
 import com.pnlkc.set.util.CustomFragment
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
 
@@ -104,7 +106,9 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
             override fun handleOnBackPressed() {
                 if (System.currentTimeMillis() - backWait >= 2000) {
                     backWait = System.currentTimeMillis()
-                    Toast.makeText(context, "뒤로가기 버튼을 한번 더 누르면 종료됩니다", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        getString(R.string.back_btn_twice),
+                        Toast.LENGTH_SHORT).show()
                 } else {
                     activity?.finish()
                 }
@@ -160,17 +164,19 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     Toast.makeText(requireContext(),
-                                        "구글 계정 연결 성공",
+                                        getString(R.string.connection_successful),
                                         Toast.LENGTH_SHORT).show()
                                     connectGoogleAccountBtn.visibility = View.GONE
                                 } else {
                                     Toast.makeText(requireContext(),
-                                        "구글 계정 연결 실패",
+                                        getString(R.string.connection_failure),
                                         Toast.LENGTH_SHORT).show()
                                 }
                             }
                     } catch (e: ApiException) {
-                        Toast.makeText(requireContext(), "구글 계정 연결 실패", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.connection_failure),
+                            Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -212,14 +218,18 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
                 val roomCode = roomCodeEditText.text.toString().uppercase()
 
                 if (roomCode.isBlank()) {
-                    Toast.makeText(activity, "코드를 입력하세요", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity,
+                        getString(R.string.enter_code),
+                        Toast.LENGTH_SHORT).show()
                 } else {
                     val collection = App.firestore.collection(roomCode)
                     collection.get()
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 if (task.result.size() == 0) {
-                                    Toast.makeText(activity, "코드를 확인해 주십시오", Toast.LENGTH_SHORT)
+                                    Toast.makeText(activity,
+                                        getString(R.string.check_code),
+                                        Toast.LENGTH_SHORT)
                                         .show()
                                 } else {
                                     collection.document("user").get()
@@ -248,12 +258,12 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
                                                     findNavController().navigate(R.id.action_mainMenuFragment_to_setMultiReadyFragment)
                                                 } else {
                                                     Toast.makeText(activity,
-                                                        "게임이 이미 시작되어 참가할 수 없습니다",
+                                                        getString(R.string.already_start),
                                                         Toast.LENGTH_SHORT).show()
                                                 }
                                             } else {
                                                 Toast.makeText(activity,
-                                                    "최대인원을 초과하여 참가할 수 없습니다",
+                                                    getString(R.string.full_room),
                                                     Toast.LENGTH_SHORT).show()
                                             }
                                         }
@@ -328,10 +338,10 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
 
         if (sharedPreferences.contains(KEY_SHUFFLED_CARD_LIST)) {
             continueBtn.visibility = View.VISIBLE
-            newGameBtn.text = "새로 시작하기"
+            newGameBtn.text = getString(R.string.new_game)
         } else {
             continueBtn.visibility = View.GONE
-            newGameBtn.text = "세트 플레이하기"
+            newGameBtn.text = getString(R.string.play_set)
         }
 
         continueBtn.setOnClickListener {
@@ -435,7 +445,9 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
                             )
                             collection.document(App.auth.currentUser!!.uid)
                                 .set(data, SetOptions.merge())
-                            Toast.makeText(requireContext(), "닉네임 설정이 완료되었습니다", Toast.LENGTH_SHORT)
+                            Toast.makeText(requireContext(),
+                                getString(R.string.set_nickname_finish),
+                                Toast.LENGTH_SHORT)
                                 .show()
                             isNicknameExist = true
                             sharedViewModel.nickname = inputText
@@ -473,19 +485,21 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
                         } else {
                             if (inputText == sharedViewModel.nickname) {
                                 Toast.makeText(requireContext(),
-                                    "동일한 닉네임으로는 변경할 수 없습니다",
+                                    getString(R.string.set_nickname_different),
                                     Toast.LENGTH_SHORT)
                                     .show()
                             } else {
                                 Toast.makeText(requireContext(),
-                                    "이미 사용중인 닉네임입니다",
+                                    getString(R.string.set_nickname_used),
                                     Toast.LENGTH_SHORT)
                                     .show()
                             }
                         }
                     }
             } else {
-                Toast.makeText(requireContext(), "닉네임은 공백일 수 없습니다", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.set_nickname_blank),
+                    Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -548,7 +562,8 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
             dBinding.dialogMyProfileNicknameTextview.text = sharedViewModel.nickname
             dBinding.dialogMyProfileNicknameChangeBtn.setImageResource(R.drawable.nickname_change_icon)
         } else {
-            dBinding.dialogMyProfileNicknameTextview.hint = "닉네임을 설정하세요"
+            dBinding.dialogMyProfileNicknameTextview.hint =
+                getString(R.string.empty_nickname)
             dBinding.dialogMyProfileNicknameChangeBtn.setImageResource(R.drawable.nickname_set_icon)
         }
 
@@ -601,6 +616,7 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
     }
 
     // 친구창 다이얼로그 보여주기
+    @SuppressLint("SetTextI18n")
     private fun showDialogFriend() {
         // 뷰바인딩 사용
         val inflater =
@@ -678,7 +694,8 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
         }
 
         friendCount.observe(viewLifecycleOwner) {
-            dBinding.dialogFriendStatusTextview.text = "친구 (${it[0]}/${it[1]})"
+            dBinding.dialogFriendStatusTextview.text =
+                getString(R.string.friend_status) + it[0] + "/" + it[1] + ")"
         }
 
         // 친구 검색시 검색어 변경이 0.35초 동안 없을시 검색어를 searchTerm 변수에 저장
@@ -734,7 +751,9 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
             .get().addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     if (inputText == sharedViewModel.nickname) {
-                        Toast.makeText(requireContext(), "자신에게 친구 요청할 수 없습니다", Toast.LENGTH_SHORT)
+                        Toast.makeText(requireContext(),
+                            getString(R.string.friend_request_self),
+                            Toast.LENGTH_SHORT)
                             .show()
                         editText.text.clear()
                     } else {
@@ -743,13 +762,17 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
                             "friend_request",
                             FieldValue.arrayUnion(sharedViewModel.nickname)
                         ).addOnSuccessListener {
-                            Toast.makeText(requireContext(), "친구 신청이 완료되었습니다", Toast.LENGTH_SHORT)
+                            Toast.makeText(requireContext(),
+                                getString(R.string.friend_request_complete),
+                                Toast.LENGTH_SHORT)
                                 .show()
                             editText.text.clear()
                         }
                     }
                 } else {
-                    Toast.makeText(requireContext(), "입력한 닉네임이 존재하지 않습니다", Toast.LENGTH_SHORT)
+                    Toast.makeText(requireContext(),
+                        getString(R.string.friend_request_null),
+                        Toast.LENGTH_SHORT)
                         .show()
                     editText.text.clear()
                 }
@@ -850,7 +873,8 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
         dialog.setCancelable(true)
         dialog.show()
 
-        dBinding.dialogConfirmDeleteFriendTextview.text = "${nickname}님을 친구에서\n삭제하시겠습니까?"
+        dBinding.dialogConfirmDeleteFriendTextview.text =
+            getString(R.string.delete_friend_confirm, nickname)
 
         dBinding.dialogConfirmDeleteFriendPositiveBtn.setOnClickListener {
             collection.whereEqualTo("nickname", nickname).get()
@@ -872,7 +896,7 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
                             )
                         }.addOnSuccessListener {
                             Toast.makeText(requireContext(),
-                                "\"$nickname\"님을 친구 목록에서 삭제하였습니다",
+                                getString(R.string.delete_friend_complete, nickname),
                                 Toast.LENGTH_SHORT).show()
                             showDialogFriend()
                             dialog.dismiss()
@@ -910,17 +934,19 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
                                 )
                                 collection.document(uid).set(data, SetOptions.merge())
                                     .addOnSuccessListener {
-                                        Toast.makeText(requireContext(), "초대가 완료되었습니다", Toast.LENGTH_SHORT)
+                                        Toast.makeText(requireContext(),
+                                            getString(R.string.invitation_complete),
+                                            Toast.LENGTH_SHORT)
                                             .show()
                                     }
                             } else {
                                 if (documents.first().data["invite_nickname"] == sharedViewModel.nickname) {
                                     Toast.makeText(requireContext(),
-                                        "해당 플레이어를 이미 초대하였습니다",
+                                        getString(R.string.invitation_already),
                                         Toast.LENGTH_SHORT).show()
                                 } else {
                                     Toast.makeText(requireContext(),
-                                        "해당 플레이어가 이미 다른 게임에 초대되었습니다",
+                                        getString(R.string.invitation_another),
                                         Toast.LENGTH_SHORT).show()
                                 }
                             }
@@ -960,8 +986,9 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
                             FieldValue.arrayRemove(nickname)
                         )
                     }.addOnSuccessListener {
-                        Toast.makeText(requireContext(), "친구 요청을 수락하였습니다", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.friend_request_accepted),
+                            Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -973,8 +1000,9 @@ class MainMenuFragment : CustomFragment(), IFriendList, IFriendRequestList {
         collection.document(App.auth.currentUser!!.uid).update(
             "friend_request", FieldValue.arrayRemove(nickname)
         ).addOnSuccessListener {
-            Toast.makeText(requireContext(), "친구 요청을 거절하였습니다", Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(requireContext(),
+                getString(R.string.friend_request_declined),
+                Toast.LENGTH_SHORT).show()
         }
     }
 

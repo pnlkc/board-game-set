@@ -1,5 +1,6 @@
 package com.pnlkc.set.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.multidex.MultiDexApplication
 import com.google.firebase.auth.FirebaseAuth
@@ -27,6 +28,8 @@ class App : MultiDexApplication() {
 
         // FirebaseAuth 객체와 관련된 변수를 전역으로 사용하기 위해 필요
         lateinit var auth: FirebaseAuth
+
+        @SuppressLint("StaticFieldLeak")
         lateinit var firestore: FirebaseFirestore
 
         // 현재 로그인 되어 있는지 확인인

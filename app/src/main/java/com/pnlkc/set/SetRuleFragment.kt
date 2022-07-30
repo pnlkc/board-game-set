@@ -65,14 +65,16 @@ class SetRuleFragment : CustomFragment() {
             findNavController().navigate(R.id.action_setRuleFragment_pop)
         }
 
-        binding.ruleOne.text = highlightString(getString(R.string.rule_one), "4가지 속성")
-        binding.ruleTwo.text = highlightString(getString(R.string.rule_two), "모양, 색상, 개수, 음영")
-        binding.ruleThree.text = highlightString(getString(R.string.rule_three), "3개의 유형")
-        binding.ruleFour.text = highlightString(getString(R.string.rule_four), "12장의 카드")
-        binding.ruleFive.text = highlightString(getString(R.string.rule_five), "모두 같거나 다른")
-        binding.ruleSix.text = highlightString(getString(R.string.rule_six), "두장만 같으면 안됩니다")
-        binding.ruleEightSinglePlay.text = highlightString(getString(R.string.rule_eight_single_play), "카드섞기 버튼")
-        binding.ruleEightMultiPlay.text = highlightString(getString(R.string.rule_eight_multi_play), "Ⓧ 버튼을 누르면")
+        binding.ruleOne.text = highlightString(getString(R.string.rule_one), getString(R.string.rule_one_highlight))
+        binding.ruleTwo.text = highlightString(getString(R.string.rule_two), getString(R.string.rule_two_highlight))
+        binding.ruleThree.text = highlightString(getString(R.string.rule_three), getString(R.string.rule_three_highlight))
+        binding.ruleFour.text = highlightString(getString(R.string.rule_four), getString(R.string.rule_four_highlight))
+        binding.ruleFive.text = highlightString(getString(R.string.rule_five), getString(R.string.rule_five_highlight))
+        binding.ruleSix.text = highlightString(getString(R.string.rule_six), getString(R.string.rule_six_highlight))
+        binding.ruleEightSinglePlay.text =
+            highlightString(getString(R.string.rule_eight_single_play), getString(R.string.rule_eight_single_play_highlight))
+        binding.ruleEightMultiPlay.text =
+            highlightString(getString(R.string.rule_eight_multi_play), getString(R.string.rule_eight_multi_play_highlight))
 
     }
 

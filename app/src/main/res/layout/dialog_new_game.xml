@@ -52,6 +52,7 @@
             android:textColor="@color/dialog_btn_text"
             android:maxLines="1"
             android:paddingHorizontal="10dp"
+            android:textAllCaps="false"
             />
 
         <Button
@@ -68,6 +69,7 @@
             android:textColor="@color/dialog_btn_text"
             android:paddingHorizontal="10dp"
             android:layout_marginStart="20dp"
+            android:textAllCaps="false"
             />
 
     </LinearLayout>

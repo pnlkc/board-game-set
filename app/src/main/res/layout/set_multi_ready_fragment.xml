@@ -6,6 +6,7 @@
     tools:context=".SetMultiReadyFragment">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.pnlkc.set.model.SetViewModel" />
@@ -25,52 +26,51 @@
             android:id="@+id/friend_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
             android:background="@drawable/main_menu_etc_btn_bg"
+            android:clickable="true"
+            android:contentDescription="@string/description_friend_btn"
+            android:padding="6dp"
             android:src="@drawable/friend_icon"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="20dp"
-            android:padding="6dp"
-            android:clickable="true"
-            android:contentDescription="@string/description_friend_btn" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/friend_request_count"
             android:layout_width="22dp"
             android:layout_height="22dp"
-            tools:text="1"
-            android:fontFamily="@font/bm_jua"
-            android:textSize="15sp"
-            android:textColor="@color/btn_text_color"
-            android:gravity="center"
-            android:background="@drawable/btn_bg"
-            app:layout_constraintTop_toTopOf="@id/friend_btn"
-            app:layout_constraintBottom_toBottomOf="@id/friend_btn"
-            app:layout_constraintStart_toStartOf="@id/friend_btn"
-            app:layout_constraintEnd_toEndOf="@id/friend_btn"
             android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
+            android:background="@drawable/btn_bg"
+            android:fontFamily="@font/bm_jua"
+            android:gravity="center"
+            android:textColor="@color/btn_text_color"
+            android:textSize="15sp"
             android:visibility="gone"
-            />
+            app:layout_constraintBottom_toBottomOf="@id/friend_btn"
+            app:layout_constraintEnd_toEndOf="@id/friend_btn"
+            app:layout_constraintStart_toStartOf="@id/friend_btn"
+            app:layout_constraintTop_toTopOf="@id/friend_btn"
+            tools:text="1" />
 
-<!--    방 코드 텍스트 뷰    -->
+        <!--    방 코드 텍스트 뷰    -->
         <TextView
             android:id="@+id/room_code_textview"
+            style="@style/SubFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_weight="1"
-            android:fontFamily="@font/gmarketsansmedium"
             android:gravity="center"
             android:includeFontPadding="false"
             android:text="@{@string/room_code(viewModel.roomCode)}"
             android:textColor="@color/text_color"
             android:textSize="19sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/friend_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/friend_btn"
-            app:layout_constraintBottom_toBottomOf="@id/friend_btn"
             tools:text="방 코드 : LIO0" />
 
         <!--   준비 화면    -->
@@ -78,16 +78,15 @@
             android:id="@+id/ready_constraint_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
             android:gravity="center"
             android:orientation="vertical"
             android:paddingHorizontal="50dp"
             android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@id/ready_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/room_code_textview"
-            app:layout_constraintBottom_toTopOf="@id/ready_btn"
-            android:layout_marginBottom="50dp"
-            >
+            app:layout_constraintTop_toBottomOf="@id/room_code_textview">
 
             <LinearLayout
                 android:id="@+id/player1_ready_linear_layout"
@@ -110,9 +109,9 @@
                     android:layout_marginEnd="20dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/bm_jua"
-                    tools:text="최대열글자테스트중임"
                     android:textColor="@color/text_color"
-                    android:textSize="25sp" />
+                    android:textSize="25sp"
+                    tools:text="최대열글자테스트중임" />
 
                 <TextView
                     android:id="@+id/player1_wait_textview"
@@ -157,9 +156,9 @@
                     android:layout_marginEnd="20dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/bm_jua"
-                    tools:text="player2 닉네임"
                     android:textColor="@color/text_color"
-                    android:textSize="25sp" />
+                    android:textSize="25sp"
+                    tools:text="ABCDEFGHIJ" />
 
                 <TextView
                     android:id="@+id/player2_wait_textview"
@@ -204,9 +203,9 @@
                     android:layout_marginEnd="20dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/bm_jua"
-                    tools:text="player3 닉네임"
                     android:textColor="@color/text_color"
-                    android:textSize="25sp" />
+                    android:textSize="25sp"
+                    tools:text="player3 닉네임" />
 
                 <TextView
                     android:id="@+id/player3_wait_textview"
@@ -251,10 +250,10 @@
                     android:layout_marginEnd="20dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/bm_jua"
-                    tools:text="player4 닉네임"
                     android:textColor="@color/text_color"
                     android:textSize="25sp"
-                    tools:ignore="NestedWeights" />
+                    tools:ignore="NestedWeights"
+                    tools:text="player4 닉네임" />
 
                 <TextView
                     android:id="@+id/player4_wait_textview"
@@ -270,8 +269,8 @@
                     android:id="@+id/player4_ready_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/ready"
                     android:fontFamily="@font/bm_jua"
+                    android:text="@string/ready"
                     android:textColor="#4CAF50"
                     android:textSize="25sp"
                     android:visibility="gone" />
@@ -290,26 +289,25 @@
             android:textColor="@color/text_color"
             android:textSize="30sp"
             android:textStyle="italic"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@id/ready_constraint_layout"
             app:layout_constraintEnd_toEndOf="@id/ready_constraint_layout"
             app:layout_constraintStart_toStartOf="@id/ready_constraint_layout"
             app:layout_constraintTop_toTopOf="@id/ready_constraint_layout"
-            tools:text="GAME START!"
-            android:visibility="invisible"
-            />
+            tools:text="GAME START!" />
 
         <Button
             android:id="@+id/ready_btn"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            style="@style/SubFont"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/btn_bg"
-            android:fontFamily="@font/gmarketsansmedium"
             android:onClick="@{ () -> setOnlineFragment.readyBtn() }"
             android:padding="15dp"
             android:text="@string/ready_btn_text"
+            android:textAllCaps="false"
             android:textColor="@color/btn_text_color"
             android:textSize="17sp"
             app:layout_constraintBottom_toBottomOf="parent"

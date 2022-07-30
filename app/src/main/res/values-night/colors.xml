@@ -8,7 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 <!--  커스텀 색상  -->
-    <color name="btn_bg">#BD5B8C</color>
+    <color name="btn_bg">#AE5480</color>
     <color name="btn_stroke_color">#43383E</color>
     <color name="btn_ripple_color">#ece0eb</color>
     <color name="btn_text_color">#FFFFFF</color>
@@ -32,7 +32,8 @@
     <color name="google_login_text">#252525</color>
     <color name="google_login_btn_bg">#F2EFDF</color>
     <color name="guest_login_text">#F2EFDF</color>
-    <color name="etc_btn_bg">#757575</color>
+    <color name="etc_btn_bg">#7C7C7C</color>
     <color name="etc_btn_ripple">#C1C1C1</color>
-    <color name="friend_offline">#757575</color>
+    <color name="friend_offline">#9E9E9E</color>
+    <color name="hint_text">#9E9E9E</color>
 </resources>

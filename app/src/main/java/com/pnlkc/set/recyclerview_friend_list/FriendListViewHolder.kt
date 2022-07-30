@@ -27,7 +27,7 @@ class FriendListViewHolder(
         nicknameTextView.text = friend.nickname
         when (friend.status) {
             "online" -> {
-                statusTextView.text = "온라인"
+                statusTextView.text = context.getString(R.string.online)
 
                 val dialogBtnTextBg = ContextCompat.getColor(context, R.color.dialog_btn_text)
                 val dialogTextBg = ContextCompat.getColor(context, R.color.dialog_text)
@@ -36,7 +36,7 @@ class FriendListViewHolder(
                 inviteBtn.visibility = View.VISIBLE
             }
             "offline" -> {
-                statusTextView.text = "오프라인"
+                statusTextView.text = context.getString(R.string.offline)
 
                 val offlineColor = ContextCompat.getColor(context, R.color.friend_offline)
                 nicknameTextView.setTextColor(offlineColor)
@@ -44,7 +44,7 @@ class FriendListViewHolder(
                 inviteBtn.visibility = View.GONE
             }
             "play" -> {
-                statusTextView.text = "멀티플레이 중"
+                statusTextView.text = context.getString(R.string.playing)
 
                 val dialogBtnTextBg = ContextCompat.getColor(context, R.color.dialog_btn_text)
                 val dialogTextBg = ContextCompat.getColor(context, R.color.dialog_text)

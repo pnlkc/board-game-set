@@ -39,6 +39,7 @@
             android:paddingHorizontal="30dp"
             android:paddingVertical="20dp"
             android:visibility="visible"
+            android:textAllCaps="false"
             />
 
         <EditText
@@ -46,6 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/join_code_hint"
+            android:textColorHint="@color/hint_text"
             android:maxLines="1"
             android:maxLength="6"
             android:gravity="center"
@@ -70,6 +72,7 @@
             android:textColor="@color/btn_text_color"
             android:paddingHorizontal="30dp"
             android:paddingVertical="20dp"
+            android:textAllCaps="false"
             />
 
     </LinearLayout>

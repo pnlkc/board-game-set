@@ -48,13 +48,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/dialog_btn_bg"
-            android:text="@string/decline"
-            android:textSize="18sp"
             android:fontFamily="@font/bm_jua"
-            android:textColor="@color/dialog_btn_text"
             android:maxLines="1"
             android:paddingHorizontal="10dp"
-            />
+            android:text="@string/decline"
+            android:textColor="@color/dialog_btn_text"
+            android:textSize="18sp"
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/dialog_invited_positive_btn"
@@ -70,7 +70,7 @@
             android:textColor="@color/dialog_btn_text"
             android:paddingHorizontal="10dp"
             android:layout_marginStart="20dp"
-            />
+            android:textAllCaps="false" />
 
     </LinearLayout>
 </LinearLayout>
