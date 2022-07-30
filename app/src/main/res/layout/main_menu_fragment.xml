@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_margin="20dp"
-        android:padding="8dp"
+        android:padding="6dp"
         android:clickable="true"
         android:contentDescription="@string/description_friend_btn" />
 
@@ -37,8 +37,8 @@
         app:layout_constraintBottom_toBottomOf="@id/friend_btn"
         app:layout_constraintStart_toStartOf="@id/friend_btn"
         app:layout_constraintEnd_toEndOf="@id/friend_btn"
-        android:layout_marginStart="34dp"
-        android:layout_marginTop="34dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
         android:visibility="gone"
         tools:visibility="visible"
         />
@@ -53,7 +53,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_margin="20dp"
-        android:padding="8dp"
+        android:padding="6dp"
         android:clickable="true"
         android:contentDescription="@string/description_setting_btn" />
 
