@@ -11,7 +11,7 @@
 >싱글플레이 시간 기록 기능은 Chronometer / SystemClock.elapsedRealtime() 
 
 시작 화면 이미지 lottie animation 출처 : https://lottiefiles.com/91317-card-game  
-사용된 폰트 : Gmarket Sans / 배민 주아체
+사용된 폰트 : Gmarket Sans / 배민 주아체 / noto sans kr
 <br>
 <br>
 ### changelog 
@@ -78,3 +78,6 @@
 ***ver 2.0.6***
 >메인 화면에서 초대하는 기능 추가  
 >싱글플레이 시간 기록 기능 추가
+
+***ver 2.1.0***
+>기기 언어가 한글이 아니면 영어 한글이면 한글이 보이도록 
