@@ -279,6 +279,8 @@ class SetMultiReadyFragment : Fragment(), IFriendList, IFriendRequestList {
         CoroutineScope(Dispatchers.Main).launch {
             startGame()
             Vibrator().makeVibration(requireContext())
+            if (dialogFriend != null) dialogFriend!!.dismiss()
+            binding.friendBtn.visibility = View.INVISIBLE
             binding.readyBtn.visibility = View.INVISIBLE
             binding.roomCodeTextview.visibility = View.INVISIBLE
             binding.countdownTextview.text = "3"

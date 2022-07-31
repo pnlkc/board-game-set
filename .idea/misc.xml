@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.196" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/aaaa.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/add_friend_icon.xml" value="0.1705" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/drawable/answer_correct_bg.xml" value="0.1605" />
@@ -48,7 +49,7 @@
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout-v26/set_multi_fragment.xml" value="0.3848958333333333" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/activity_main.xml" value="0.3848958333333333" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/dialog_confirm_delete_friend.xml" value="0.3159469858914066" />
-        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/dialog_friend.xml" value="0.27340129749768305" />
+        <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/dialog_friend.xml" value="0.5" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/dialog_invited.xml" value="0.3159469858914066" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/dialog_my_profile.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects-Kotlin/Set/app/src/main/res/layout/dialog_new_game.xml" value="0.3159469858914066" />
