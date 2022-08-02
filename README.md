@@ -4,7 +4,7 @@
 >이어하기 기능은 SharedPreference과 Gson을 사용  
 >카드 애니메이션은 Android View Animations in Kotlin(https://github.com/gayanvoice/android-animations-kotlin) 사용  
 >멀티플레이 기능은 Firebase - FireStore 사용  
->멀티플레이 중 동시 클릭 방지 기능은 FireStroe - Transaction 사용 -> 클릭 반응 지연 문제로 사용 중지  
+>멀티플레이 중 동시 클릭 방지 기능은 FireStore - Transaction 사용 -> 클릭 반응 지연 문제로 사용 중지  
 >멀티플레이 중 강제 종료 대응은 Service(버전별 대응) - onTaskRemoved 사용  
 >멀티플레이 중 다른화면 이동 대응은 NotificationChannel, NotificationCompat.Builder, PendingIntent(버전별 대응) 사용  
 >진동 피드백은 (버전별 대응) VibratorManager, Vibrator 사용  
