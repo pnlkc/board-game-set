@@ -139,4 +139,5 @@
     <string name="time_minute">분</string>
     <string name="time_hour">시</string>
     <string name="singleplay_result">%2$s 동안\n%1$s개를 맞추셨습니다!</string>
+    <string name="singleplay_result_score_highlight">%1$s개</string>
 </resources>

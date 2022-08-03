@@ -64,7 +64,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     // 파이어베이스 Authentication 기능을 사용하기 위해 필요
-    implementation('com.google.firebase:firebase-auth-ktx')
+    implementation('com.google.firebase:firebase-auth-ktx') {
+        // 구글 플레이 콘솔 에러 대응 : 다음 SDK 버전에서 심각한 문제가 보고되었습니다.
+        exclude module: "play-services-safetynet"
+    }
 
     // 파이어베이스 구글 인증을 사용하기 위해 필요
     implementation('com.google.android.gms:play-services-auth:20.2.0')

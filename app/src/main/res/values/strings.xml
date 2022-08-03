@@ -139,4 +139,5 @@
     <string name="time_minute">m</string>
     <string name="time_hour">h</string>
     <string name="singleplay_result">You got %1$s correct\nin %2$s!</string>
+    <string name="singleplay_result_score_highlight">%1$s</string>
 </resources>

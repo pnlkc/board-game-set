@@ -358,7 +358,8 @@ class SetSinglePlayFragment : CustomFragment() {
             startOne, endOne, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         // 맞춘 개수 텍스트 강조
-        val wordTwo = sharedViewModel.score.value.toString()
+        val wordTwo = getString(R.string.singleplay_result_score_highlight,
+            sharedViewModel.score.value.toString())
         val startTwo = dialogText.indexOf(wordTwo)
         val endTwo = startTwo + wordTwo.length
         spannableString.setSpan(ForegroundColorSpan(ContextCompat
