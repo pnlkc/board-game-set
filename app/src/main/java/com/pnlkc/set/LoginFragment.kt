@@ -2,6 +2,7 @@ package com.pnlkc.set
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,6 +63,8 @@ class LoginFragment : Fragment() {
         val gsoLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 // 구글 로그인 결과 처리
+                Log.d("로그", "LoginFragment - onViewCreated() 호출됨 / ${it.resultCode}")
+
                 if (it.resultCode == Activity.RESULT_OK) {
                     val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
                     try {

@@ -50,7 +50,7 @@ class SetViewModel : ViewModel() {
         fieldCardList.clear()
         repeat (12) {
             fieldCardList.add(shuffledCardList.first())
-            shuffledCardList.removeFirst()
+            shuffledCardList.removeAt(0)
         }
     }
 
@@ -58,11 +58,11 @@ class SetViewModel : ViewModel() {
     fun getNextCard() {
         if (shuffledCardList.isNotEmpty()) {
             fieldCardList[selectedCardIndex[0]!!] = shuffledCardList.first()
-            shuffledCardList.removeFirst()
+            shuffledCardList.removeAt(0)
             fieldCardList[selectedCardIndex[1]!!] = shuffledCardList.first()
-            shuffledCardList.removeFirst()
+            shuffledCardList.removeAt(0)
             fieldCardList[selectedCardIndex[2]!!] = shuffledCardList.first()
-            shuffledCardList.removeFirst()
+            shuffledCardList.removeAt(0)
         } else {
             fieldCardList[selectedCardIndex[0]!!] = CardItem(0, 0, 0, 0, "")
             fieldCardList[selectedCardIndex[1]!!] = CardItem(0, 0, 0, 0, "")

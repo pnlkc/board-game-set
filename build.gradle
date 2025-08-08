@@ -2,14 +2,14 @@
 buildscript {
     dependencies {
         // 버전 4.3.10 으로 하면 뒤에 R.string... 할 때 에러남
-        classpath 'com.google.gms:google-services:4.3.13'
+        classpath 'com.google.gms:google-services:4.3.13' // 참고: 이 버전도 오래되었을 수 있습니다. 최신 버전 확인을 권장합니다.
     }
 }
 
 plugins {
-    id 'com.android.application' version '7.2.1' apply false
-    id 'com.android.library' version '7.2.1' apply false
-    id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
+    id 'com.android.application' version '8.2.0' apply false
+    id 'com.android.library' version '8.2.0' apply false
+    id 'org.jetbrains.kotlin.android' version '1.9.22' apply false // AGP 8.2.0과 호환되는 Kotlin 버전으로 업데이트했습니다.
 }
 
 task clean(type: Delete) {

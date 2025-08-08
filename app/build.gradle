@@ -7,13 +7,14 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    namespace "com.pnlkc.set"
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.pnlkc.set"
         minSdk 26
-        targetSdk 33
-        versionCode 5
+        targetSdk 36
+        versionCode 11
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
